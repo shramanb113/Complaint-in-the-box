@@ -4,3 +4,5 @@ dist/
 .env.local
 .worktrees/
 *.log
+docs/
+PRD-complaint-in-a-box.md
