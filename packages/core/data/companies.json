@@ -1,0 +1,14 @@
+{
+  "flipkart": {
+    "legalName": "Flipkart Internet Private Limited",
+    "grievanceUrl": "https://www.flipkart.com/helpcentre",
+    "nchCompanyHint": "Flipkart",
+    "chatHint": "Use in-app chat → Help Centre"
+  },
+  "gpay": {
+    "legalName": "Google Pay",
+    "grievanceUrl": "https://support.google.com/pay/india/",
+    "nchCompanyHint": "Google Pay",
+    "chatHint": "Use in-app Help → Get support"
+  }
+}
