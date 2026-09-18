@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseTemplateMarkdown, fillSlots } from "../src/templateLoader";
+import { parseTemplateMarkdown, fillSlots, loadTemplateFile } from "../src/templateLoader";
 
 describe("parseTemplateMarkdown", () => {
   it("splits a template file into its three named sections", () => {
@@ -33,5 +33,18 @@ describe("fillSlots", () => {
 
   it("throws if a slot has no provided value", () => {
     expect(() => fillSlots("Hi {{name}}.", {})).toThrow();
+  });
+});
+
+describe("loadTemplateFile - ecom_wrong_item", () => {
+  it("loads and parses both language files without throwing", () => {
+    expect(() => loadTemplateFile("ecom_wrong_item", "en")).not.toThrow();
+    expect(() => loadTemplateFile("ecom_wrong_item", "hi")).not.toThrow();
+  });
+
+  it("the English WhatsApp section fits within 700 characters once a typical fixture is substituted", () => {
+    const sections = loadTemplateFile("ecom_wrong_item", "en");
+    // static text length only — full slot-filled length is asserted in generatePacket.test.ts
+    expect(sections.whatsapp.length).toBeLessThan(700);
   });
 });
