@@ -43,11 +43,11 @@ describe("generatePacket - ecom_wrong_item", () => {
     expect(packet.artifacts.whatsapp.hi).toContain("10 सितंबर 2026");
   });
 
-  it("produces an email body between roughly 130 and 400 words", () => {
+  it("produces an email body between 180 and 350 words", () => {
     const packet = generatePacket(ecomFixture, catalog, FIXED_NOW);
     const wordCount = packet.artifacts.emailBody.en.trim().split(/\s+/).length;
-    expect(wordCount).toBeGreaterThan(130);
-    expect(wordCount).toBeLessThan(400);
+    expect(wordCount).toBeGreaterThanOrEqual(180);
+    expect(wordCount).toBeLessThanOrEqual(350);
   });
 
   it("strips utr from the stored intake even if it was never set on this template", () => {
@@ -118,5 +118,12 @@ describe("generatePacket - upi_debit_merchant_no_credit", () => {
   it("computes the 2-day deadline from now, in IST", () => {
     const packet = generatePacket(upiFixture, catalog, FIXED_NOW);
     expect(packet.artifacts.whatsapp.en).toContain("17 Sep 2026");
+  });
+
+  it("produces an email body between 180 and 350 words", () => {
+    const packet = generatePacket(upiFixture, catalog, FIXED_NOW);
+    const wordCount = packet.artifacts.emailBody.en.trim().split(/\s+/).length;
+    expect(wordCount).toBeGreaterThanOrEqual(180);
+    expect(wordCount).toBeLessThanOrEqual(350);
   });
 });

@@ -39,7 +39,10 @@ const PORTAL_LINKS_UPI = [
 
 /** The payment app or platform itself — e.g. "Google Pay", "Flipkart Internet Private Limited". */
 function appLabel(intake: Intake, catalog: CompanyCatalog): string {
-  return catalog[intake.platform]?.legalName ?? intake.platform;
+  if (intake.category === "upi") {
+    return catalog[intake.platform]?.legalName ?? intake.platform;
+  }
+  return catalog[intake.platform]?.legalName ?? intake.companyName ?? intake.platform;
 }
 
 /**
