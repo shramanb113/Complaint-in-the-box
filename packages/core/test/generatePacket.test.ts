@@ -67,6 +67,50 @@ describe("generatePacket - ecom_wrong_item", () => {
     const packet = generatePacket(withoutOrderId as Intake, catalog, FIXED_NOW);
     expect(packet.artifacts.whatsapp.en).toContain("[ORDER ID NOT PROVIDED — attach screenshot]");
   });
+
+  it("keeps the Hindi WhatsApp text within 700 characters", () => {
+    const packet = generatePacket(ecomFixture, catalog, FIXED_NOW);
+    expect(packet.artifacts.whatsapp.hi.length).toBeLessThanOrEqual(700);
+  });
+
+  it("matches the known-good snapshot for all rendered artifacts", () => {
+    const packet = generatePacket(ecomFixture, catalog, FIXED_NOW);
+    expect(packet.artifacts).toMatchSnapshot();
+  });
+
+  it("never leaves an unfilled {{slot}} marker anywhere, in either language", () => {
+    const packet = generatePacket(ecomFixture, catalog, FIXED_NOW);
+    const allStrings = [
+      packet.artifacts.whatsapp.en,
+      packet.artifacts.whatsapp.hi,
+      packet.artifacts.emailSubject.en,
+      packet.artifacts.emailSubject.hi,
+      packet.artifacts.emailBody.en,
+      packet.artifacts.emailBody.hi,
+      ...packet.artifacts.nextSteps.en,
+      ...packet.artifacts.nextSteps.hi,
+    ];
+    for (const s of allStrings) {
+      expect(s).not.toMatch(/\{\{/);
+    }
+  });
+
+  it("keeps WhatsApp text (en and hi) within 700 chars and free of unfilled slots even with a whatHappened value near the schema's 400-char maximum", () => {
+    const longWhatHappened = (
+      "The item I received was completely different from what I ordered, and on top of that it arrived damaged with visible cracks and missing accessories that were listed as included in the original product description on the listing page, which I have screenshots of. " +
+      "This is completely unacceptable and I have already wasted so much time trying to sort this out with support over chat and phone calls without any real resolution being offered to me at all so far unfortunately despite my repeated follow ups every single day."
+    ).slice(0, 400);
+    expect(longWhatHappened.length).toBe(400); // guard: the fixture must actually be near-max
+    const packet = generatePacket(
+      { ...ecomFixture, whatHappened: longWhatHappened },
+      catalog,
+      FIXED_NOW
+    );
+    expect(packet.artifacts.whatsapp.en.length).toBeLessThanOrEqual(700);
+    expect(packet.artifacts.whatsapp.hi.length).toBeLessThanOrEqual(700);
+    expect(packet.artifacts.whatsapp.en).not.toMatch(/\{\{/);
+    expect(packet.artifacts.whatsapp.hi).not.toMatch(/\{\{/);
+  });
 });
 
 // PRD persona P2 fixture: Ramesh, UPI payment to a carpenter, GPay
@@ -125,5 +169,49 @@ describe("generatePacket - upi_debit_merchant_no_credit", () => {
     const wordCount = packet.artifacts.emailBody.en.trim().split(/\s+/).length;
     expect(wordCount).toBeGreaterThanOrEqual(180);
     expect(wordCount).toBeLessThanOrEqual(350);
+  });
+
+  it("keeps the Hindi WhatsApp text within 700 characters", () => {
+    const packet = generatePacket(upiFixture, catalog, FIXED_NOW);
+    expect(packet.artifacts.whatsapp.hi.length).toBeLessThanOrEqual(700);
+  });
+
+  it("matches the known-good snapshot for all rendered artifacts, including the Hindi UTR-missing placeholder", () => {
+    const packet = generatePacket(upiFixture, catalog, FIXED_NOW);
+    expect(packet.artifacts).toMatchSnapshot();
+  });
+
+  it("never leaves an unfilled {{slot}} marker anywhere, in either language", () => {
+    const packet = generatePacket(upiFixture, catalog, FIXED_NOW);
+    const allStrings = [
+      packet.artifacts.whatsapp.en,
+      packet.artifacts.whatsapp.hi,
+      packet.artifacts.emailSubject.en,
+      packet.artifacts.emailSubject.hi,
+      packet.artifacts.emailBody.en,
+      packet.artifacts.emailBody.hi,
+      ...packet.artifacts.nextSteps.en,
+      ...packet.artifacts.nextSteps.hi,
+    ];
+    for (const s of allStrings) {
+      expect(s).not.toMatch(/\{\{/);
+    }
+  });
+
+  it("keeps WhatsApp text (en and hi) within 700 chars even with a whatHappened value near the schema's 400-char maximum", () => {
+    const longWhatHappened = (
+      "I paid the carpenter via GPay for furniture repair work he completed at my home, and the payment was debited from my bank account immediately, but he insists to this day that he never received any confirmation of the payment landing in his own account. " +
+      "I have tried calling him multiple times and even visited his workshop in person to sort this out directly but he keeps saying the money never showed up on his side at all, which makes no sense given my bank statement clearly shows the debit."
+    ).slice(0, 400);
+    expect(longWhatHappened.length).toBe(400); // guard: the fixture must actually be near-max
+    const packet = generatePacket(
+      { ...upiFixture, whatHappened: longWhatHappened },
+      catalog,
+      FIXED_NOW
+    );
+    expect(packet.artifacts.whatsapp.en.length).toBeLessThanOrEqual(700);
+    expect(packet.artifacts.whatsapp.hi.length).toBeLessThanOrEqual(700);
+    expect(packet.artifacts.whatsapp.en).not.toMatch(/\{\{/);
+    expect(packet.artifacts.whatsapp.hi).not.toMatch(/\{\{/);
   });
 });

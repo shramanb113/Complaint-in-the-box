@@ -1,0 +1,196 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`generatePacket - ecom_wrong_item > matches the known-good snapshot for all rendered artifacts 1`] = `
+{
+  "bankFields": undefined,
+  "emailBody": {
+    "en": "Dear Flipkart Internet Private Limited Grievance Team,
+
+I am writing to formally raise a consumer complaint regarding Order OD123, placed on Flipkart Internet Private Limited and paid ₹2,499 on 10 Sep 2026.
+
+The order was delivered on 14 Sep 2026. However, the item delivered does not match what was listed and ordered: wrong mixer, cracked blade
+
+Already tried: raised in-app ticket. No resolution.
+
+Under the Consumer Protection Act, 2019, delivering an item that does not match its description is a deficiency in service and an unfair trade practice. I am requesting pickup of the wrong item and a full refund to the original payment mode, and I expect this to be actioned without further delay.
+
+Please acknowledge this email in writing, share a reference or ticket number for this complaint, and confirm the date by which the resolution will be completed. I expect this to be resolved by 22 Sep 2026. If I do not receive a satisfactory response by this date, I will escalate this complaint to the National Consumer Helpline (1915) and pursue the remedies available to me under the Consumer Protection Act, 2019, including filing a case with the Consumer Commission.
+
+I can provide order confirmation, payment proof, and delivery details on request, and I am keeping a record of all correspondence on this matter.
+
+Regards,
+[Your name]
+",
+    "hi": "प्रिय Flipkart Internet Private Limited शिकायत टीम,
+
+मैं ऑर्डर OD123 के संबंध में एक औपचारिक उपभोक्ता शिकायत दर्ज करने के लिए लिख रहा/रही हूं, जो Flipkart Internet Private Limited पर दिया गया था और जिसका भुगतान ₹2,499 10 सितंबर 2026 को किया गया था।
+
+यह ऑर्डर 14 सितंबर 2026 को डिलीवर हुआ। हालांकि, डिलीवर किया गया सामान सूचीबद्ध और ऑर्डर किए गए सामान से मेल नहीं खाता: wrong mixer, cracked blade
+
+पहले किया गया प्रयास: raised in-app ticket। अभी तक समाधान नहीं हुआ।
+
+उपभोक्ता संरक्षण अधिनियम, 2019 के तहत, सूची से अलग सामान डिलीवर करना सेवा में कमी और एक अनुचित व्यापार प्रथा है। मैं गलत सामान की पिकअप और मूल भुगतान माध्यम में पूरा रिफंड का अनुरोध करता/करती हूं, और उम्मीद करता/करती हूं कि इस पर बिना किसी और देरी के कार्रवाई की जाएगी।
+
+कृपया इस ईमेल की लिखित पुष्टि करें, इस शिकायत के लिए एक संदर्भ या टिकट नंबर साझा करें, और वह तिथि बताएं जिस तक समाधान पूरा किया जाएगा। मैं उम्मीद करता/करती हूं कि इसका समाधान 22 सितंबर 2026 तक हो जाएगा। यदि मुझे इस तिथि तक संतोषजनक उत्तर नहीं मिलता है, तो मैं इस शिकायत को नेशनल कंज्यूमर हेल्पलाइन (1915) पर आगे बढ़ाऊंगा/बढ़ाऊंगी और उपभोक्ता संरक्षण अधिनियम, 2019 के तहत उपलब्ध उपायों का उपयोग करूंगा/करूंगी, जिसमें उपभोक्ता आयोग में मामला दर्ज करना शामिल है।
+
+मैं अनुरोध पर ऑर्डर पुष्टिकरण, भुगतान प्रमाण और डिलीवरी विवरण प्रदान कर सकता/सकती हूं, और इस मामले से जुड़े सभी पत्राचार का रिकॉर्ड रख रहा/रही हूं।
+
+सादर,
+[आपका नाम]
+",
+  },
+  "emailSubject": {
+    "en": "Wrong item received — Order OD123, resolution requested by 22 Sep 2026",
+    "hi": "गलत सामान प्राप्त हुआ — ऑर्डर OD123, 22 सितंबर 2026 तक समाधान का अनुरोध",
+  },
+  "nchFields": {
+    "Amount (INR)": "₹2,499",
+    "Company / Platform Name": "Flipkart Internet Private Limited",
+    "Date of Purchase / Payment": "10 Sep 2026",
+    "Nature of Complaint": "wrong mixer, cracked blade",
+    "Order / Transaction ID": "OD123",
+    "Remedy Sought": "pickup of the wrong item and a full refund to the original payment mode",
+    "Response Deadline Given to Company": "22 Sep 2026",
+  },
+  "nextSteps": {
+    "en": [
+      "Send this message/email to the platform's official grievance channel.",
+      "If unresolved after the deadline, file a complaint on the National Consumer Helpline (1915) or consumerhelpline.gov.in.",
+      "If still unresolved, file a case on e-Daakhil under the Consumer Protection Act, 2019.",
+    ],
+    "hi": [
+      "यह संदेश/ईमेल प्लेटफ़ॉर्म के आधिकारिक शिकायत चैनल पर भेजें।",
+      "यदि डेडलाइन के बाद भी समाधान नहीं होता, तो नेशनल कंज्यूमर हेल्पलाइन (1915) या consumerhelpline.gov.in पर शिकायत दर्ज करें।",
+      "यदि फिर भी समाधान नहीं होता, तो उपभोक्ता संरक्षण अधिनियम, 2019 के तहत e-Daakhil पर मामला दर्ज करें।",
+    ],
+  },
+  "portalLinks": [
+    {
+      "help": "File a formal consumer complaint online.",
+      "href": "https://consumerhelpline.gov.in/",
+      "label": "National Consumer Helpline (NCH)",
+    },
+    {
+      "help": "File a case with the Consumer Commission.",
+      "href": "https://e-daakhil.nic.in/",
+      "label": "e-Daakhil / e-Jagriti",
+    },
+  ],
+  "whatsapp": {
+    "en": "Order OD123, Flipkart Internet Private Limited, paid ₹2,499 on 10 Sep 2026.
+Delivered 14 Sep 2026: wrong mixer, cracked blade
+Already tried: raised in-app ticket. No resolution.
+
+I want pickup of the wrong item and a full refund to the original payment mode.
+
+Please confirm in writing by 22 Sep 2026.
+If unresolved I will file on the National Consumer Helpline (1915) and pursue remedies under the Consumer Protection Act, 2019.",
+    "hi": "ऑर्डर OD123, Flipkart Internet Private Limited, ₹2,499 का भुगतान 10 सितंबर 2026 को किया गया।
+डिलीवरी 14 सितंबर 2026: wrong mixer, cracked blade
+पहले किया गया प्रयास: raised in-app ticket। अभी तक समाधान नहीं हुआ।
+
+मुझे गलत सामान की पिकअप और मूल भुगतान माध्यम में पूरा रिफंड चाहिए।
+
+कृपया 22 सितंबर 2026 तक लिखित में पुष्टि करें।
+यदि समाधान नहीं हुआ तो मैं नेशनल कंज्यूमर हेल्पलाइन (1915) पर शिकायत दर्ज करूंगा/करूंगी और उपभोक्ता संरक्षण अधिनियम, 2019 के तहत उपलब्ध उपायों का उपयोग करूंगा/करूंगी।",
+  },
+}
+`;
+
+exports[`generatePacket - upi_debit_merchant_no_credit > matches the known-good snapshot for all rendered artifacts, including the Hindi UTR-missing placeholder 1`] = `
+{
+  "bankFields": {
+    "Amount (INR)": "₹8,000",
+    "Date of Transaction": "12 Sep 2026",
+    "Deadline Given to Bank": "17 Sep 2026",
+    "Issue": "Paid the carpenter via GPay but he says he has not received the money.",
+    "Remitting App": "gpay",
+    "UTR / Transaction Reference": "Not available — locate via amount/date/time",
+  },
+  "emailBody": {
+    "en": "Dear Ramesh's Carpenter / Bank Grievance Team,
+
+I am writing to formally report an unresolved UPI transaction and request your urgent assistance. On 12 Sep 2026, an amount of ₹8,000 was debited from my account via UPI (Google Pay) intended for Ramesh's Carpenter (UTR not available — please locate using amount, date and time).
+
+The amount was debited from my account, but the recipient has not confirmed receipt and I have not received the goods/service, nor has the amount been refunded or reversed to my account. This has caused me financial inconvenience and I would like this matter investigated on priority.
+
+As per applicable RBI / NPCI turnaround times for failed or unconfirmed UPI transactions, I am requesting the amount to be reversed/credited back to my account at the earliest, and in any case by 17 Sep 2026. Please also share a complaint reference number and keep me informed of the investigation's progress.
+
+If this is not resolved by the above date, I will escalate this complaint to the RBI Banking Ombudsman through the Complaint Management System (CMS), and pursue the remedies available under the Consumer Protection Act, 2019.
+
+Please treat this as a formal request for investigation and resolution. I can provide my bank statement, transaction screenshot, and any other supporting information on request, and I am retaining a record of this correspondence.
+
+Regards,
+[Your name]
+",
+    "hi": "प्रिय Ramesh's Carpenter / बैंक शिकायत टीम,
+
+मैं एक अनसुलझे UPI लेनदेन की औपचारिक शिकायत दर्ज करने और आपकी शीघ्र सहायता का अनुरोध करने के लिए लिख रहा/रही हूं। 12 सितंबर 2026 को, मेरे खाते से UPI (Google Pay) के माध्यम से ₹8,000 की राशि Ramesh's Carpenter के लिए डेबिट हुई (UTR उपलब्ध नहीं — कृपया राशि, तिथि और समय के आधार पर खोजें)।
+
+राशि मेरे खाते से डेबिट हो गई है, लेकिन प्राप्तकर्ता ने प्राप्ति की पुष्टि नहीं की है और मुझे न तो सामान/सेवा मिली है, न ही राशि वापस/जमा हुई है। इससे मुझे वित्तीय असुविधा हुई है और मैं चाहता/चाहती हूं कि इस मामले की प्राथमिकता के आधार पर जांच की जाए।
+
+असफल या अपुष्ट UPI लेनदेन के लिए लागू RBI / NPCI टर्नअराउंड समय के अनुसार, मैं राशि मेरे खाते में वापस जमा/रिवर्स की जाए का अनुरोध करता/करती हूं, और किसी भी स्थिति में 17 सितंबर 2026 तक। कृपया इस शिकायत के लिए एक संदर्भ नंबर भी साझा करें और जांच की प्रगति के बारे में मुझे सूचित करते रहें।
+
+यदि उपरोक्त तिथि तक इसका समाधान नहीं होता है, तो मैं इस शिकायत को शिकायत प्रबंधन प्रणाली (CMS) के माध्यम से RBI बैंकिंग लोकपाल तक बढ़ाऊंगा/बढ़ाऊंगी, और उपभोक्ता संरक्षण अधिनियम, 2019 के तहत उपलब्ध उपायों का उपयोग करूंगा/करूंगी।
+
+कृपया इसे जांच और समाधान के लिए एक औपचारिक अनुरोध मानें। मैं अनुरोध पर अपना बैंक स्टेटमेंट, लेनदेन का स्क्रीनशॉट, और अन्य सहायक जानकारी प्रदान कर सकता/सकती हूं, और इस पत्राचार का रिकॉर्ड रख रहा/रही हूं।
+
+सादर,
+[आपका नाम]
+",
+  },
+  "emailSubject": {
+    "en": "Failed/unconfirmed UPI transaction — ₹8,000 debited 12 Sep 2026, resolution requested by 17 Sep 2026",
+    "hi": "असफल/अपुष्ट UPI लेनदेन — ₹8,000 12 सितंबर 2026 को डेबिट, 17 सितंबर 2026 तक समाधान का अनुरोध",
+  },
+  "nchFields": {
+    "Amount (INR)": "₹8,000",
+    "Company / Platform Name": "Ramesh's Carpenter",
+    "Date of Purchase / Payment": "12 Sep 2026",
+    "Nature of Complaint": "Paid the carpenter via GPay but he says he has not received the money.",
+    "Order / Transaction ID": "Not available",
+    "Remedy Sought": "the amount to be reversed/credited back to my account",
+    "Response Deadline Given to Company": "17 Sep 2026",
+  },
+  "nextSteps": {
+    "en": [
+      "Contact your bank's grievance/nodal officer with the UTR and this packet.",
+      "If unresolved after the deadline, file on the RBI Complaint Management System (CMS).",
+      "Escalate to the RBI Banking Ombudsman if the bank does not respond within 30 days.",
+    ],
+    "hi": [
+      "UTR और यह पैकेट लेकर अपने बैंक के शिकायत/नोडल अधिकारी से संपर्क करें।",
+      "यदि डेडलाइन के बाद भी समाधान नहीं होता, तो RBI शिकायत प्रबंधन प्रणाली (CMS) पर शिकायत दर्ज करें।",
+      "यदि बैंक 30 दिनों में जवाब नहीं देता, तो RBI बैंकिंग लोकपाल तक शिकायत बढ़ाएं।",
+    ],
+  },
+  "portalLinks": [
+    {
+      "help": "Escalate to the RBI Banking Ombudsman.",
+      "href": "https://cms.rbi.org.in/",
+      "label": "RBI Complaint Management System (CMS)",
+    },
+    {
+      "help": "UPI-specific dispute guidance.",
+      "href": "https://www.npci.org.in/what-we-do/upi/faqs",
+      "label": "NPCI UPI Help",
+    },
+  ],
+  "whatsapp": {
+    "en": "UPI payment of ₹8,000 was debited from my account on 12 Sep 2026 via Google Pay to Ramesh's Carpenter (UTR not available — please locate using amount, date and time).
+The amount was debited but the recipient has not confirmed receipt, and I have not received the goods/service or a refund.
+
+I want the amount to be reversed/credited back to my account.
+
+Please investigate and reverse/credit this amount by 17 Sep 2026, as per applicable RBI / NPCI turnaround times for failed or unconfirmed transactions.
+If unresolved I will escalate to the RBI Banking Ombudsman / Complaint Management System (CMS).",
+    "hi": "₹8,000 का UPI भुगतान 12 सितंबर 2026 को मेरे खाते से Google Pay के माध्यम से Ramesh's Carpenter को किया गया (UTR उपलब्ध नहीं — कृपया राशि, तिथि और समय के आधार पर खोजें)।
+राशि डेबिट हो गई है, लेकिन प्राप्तकर्ता ने इसकी प्राप्ति की पुष्टि नहीं की है, और मुझे न तो सामान/सेवा मिली है और न ही रिफंड।
+
+मुझे राशि मेरे खाते में वापस जमा/रिवर्स की जाए चाहिए।
+
+कृपया लागू RBI / NPCI टर्नअराउंड समय के अनुसार, 17 सितंबर 2026 तक इसकी जांच करें और राशि वापस/जमा करें।
+यदि समाधान नहीं हुआ तो मैं RBI बैंकिंग लोकपाल / शिकायत प्रबंधन प्रणाली (CMS) में शिकायत दर्ज करूंगा/करूंगी।",
+  },
+}
+`;
