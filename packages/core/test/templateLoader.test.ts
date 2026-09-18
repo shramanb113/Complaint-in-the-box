@@ -48,3 +48,16 @@ describe("loadTemplateFile - ecom_wrong_item", () => {
     expect(sections.whatsapp.length).toBeLessThan(700);
   });
 });
+
+describe("loadTemplateFile - upi_debit_merchant_no_credit", () => {
+  it("loads and parses both language files without throwing", () => {
+    expect(() => loadTemplateFile("upi_debit_merchant_no_credit", "en")).not.toThrow();
+    expect(() => loadTemplateFile("upi_debit_merchant_no_credit", "hi")).not.toThrow();
+  });
+
+  it("mentions RBI/NPCI turnaround times, never a specific penalty amount", () => {
+    const sections = loadTemplateFile("upi_debit_merchant_no_credit", "en");
+    expect(sections.email_body).toMatch(/RBI \/ NPCI turnaround times/);
+    expect(sections.whatsapp + sections.email_body).not.toMatch(/penalty/i);
+  });
+});
