@@ -1,0 +1,10 @@
+{
+  "name": "nyaypatra",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "npm run test --workspaces --if-present"
+  }
+}

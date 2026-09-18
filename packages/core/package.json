@@ -1,0 +1,20 @@
+{
+  "name": "@nyaypatra/core",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "print:fixture": "tsx src/cli.ts"
+  },
+  "dependencies": {
+    "zod": "^3.23.8",
+    "ulid": "^2.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5",
+    "tsx": "^4.16.2",
+    "@types/node": "^20.14.0"
+  }
+}
