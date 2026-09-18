@@ -23,7 +23,7 @@ export function parseTemplateMarkdown(raw: string): TemplateSections {
       throw new Error(`Template markdown missing required section "## ${key}"`);
     }
   }
-  return sections as TemplateSections;
+  return sections as unknown as TemplateSections;
 }
 
 export function fillSlots(text: string, slots: Record<string, string>): string {
