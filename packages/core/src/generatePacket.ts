@@ -11,6 +11,32 @@ import { formatInr, formatInrNumber } from "./money";
 import { REMEDY_TEXT } from "./remedyText";
 import { loadTemplateFile, fillSlots } from "./templateLoader";
 
+const WHATSAPP_MAX_CHARS = 700;
+const TRUNCATION_ELLIPSIS = "…";
+
+/**
+ * Fills the WhatsApp template and defensively enforces the PRD's ≤700-char
+ * cap. If the filled text is over budget, shrink the *whatHappened* slot
+ * value specifically (not the assembled string) so the closing
+ * demand/deadline/escalation language is never cut off, then re-fill.
+ */
+function fillWhatsappWithinBudget(template: string, slots: Record<string, string>): string {
+  const filled = fillSlots(template, slots);
+  if (filled.length <= WHATSAPP_MAX_CHARS) {
+    return filled;
+  }
+  const overBudget = filled.length - WHATSAPP_MAX_CHARS;
+  const originalWhatHappened = slots.whatHappened ?? "";
+  const targetLength = Math.max(
+    0,
+    originalWhatHappened.length - overBudget - TRUNCATION_ELLIPSIS.length
+  );
+  const truncatedWhatHappened =
+    originalWhatHappened.slice(0, targetLength).trimEnd() + TRUNCATION_ELLIPSIS;
+  const adjustedSlots = { ...slots, whatHappened: truncatedWhatHappened };
+  return fillSlots(template, adjustedSlots);
+}
+
 const PORTAL_LINKS_ECOM = [
   {
     label: "National Consumer Helpline (NCH)",
@@ -180,8 +206,8 @@ export function generatePacket(intake: Intake, catalog: CompanyCatalog, now: Dat
     intake: intakeWithoutUtr,
     artifacts: {
       whatsapp: {
-        en: fillSlots(en.whatsapp, slots.en),
-        hi: fillSlots(hi.whatsapp, slots.hi),
+        en: fillWhatsappWithinBudget(en.whatsapp, slots.en),
+        hi: fillWhatsappWithinBudget(hi.whatsapp, slots.hi),
       },
       emailSubject: {
         en: fillSlots(en.email_subject, slots.en),
