@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { generatePacket } from "../src/generatePacket";
 import { loadCompanyCatalog } from "../src/companies";
+import { createIntakeSchema, TemplateIdSchema } from "../src/schema";
 import type { Intake, TemplateId } from "../src/types";
 
 const catalog = loadCompanyCatalog();
@@ -387,8 +388,16 @@ describe("generatePacket - upi_double_debit", () => {
     const wa = packet.artifacts.whatsapp.en;
     expect(wa).toContain("409912345678");
     expect(wa).toMatch(/duplicate/i);
+    expect(wa).toContain("reverse the duplicate transaction");
+    expect(wa).toContain("RBI / NPCI turnaround times");
+    expect(wa).not.toMatch(/penalty/i);
     expect(wa).toContain("Sharma Electricians");
     expect(wa.length).toBeLessThanOrEqual(700);
+  });
+
+  it("strips utr from the stored intake", () => {
+    const packet = generatePacket(doubleDebitFixture, catalog, FIXED_NOW);
+    expect(packet.intake).not.toHaveProperty("utr");
   });
 
   it("includes bankFields for the UPI category", () => {
@@ -424,7 +433,7 @@ const missingItemFixture: Intake = {
   platform: "swiggy",
   orderId: "SW100",
   amountInr: 650,
-  paidOn: "2026-09-17",
+  paidOn: "2026-09-14",
   whatHappened: "2 of the 4 items I ordered were missing from the bag on delivery.",
   desiredRemedy: "full_refund_original_mode",
   deadlineDays: 7,
@@ -468,7 +477,7 @@ const wrongFoodFixture: Intake = {
   platform: "zomato",
   orderId: "ZM200",
   amountInr: 450,
-  paidOn: "2026-09-17",
+  paidOn: "2026-09-14",
   whatHappened: "Ordered paneer tikka but received chicken tikka instead, which I cannot eat.",
   desiredRemedy: "replacement",
   deadlineDays: 7,
@@ -505,7 +514,7 @@ const dripPricingFixture: Intake = {
   orderId: "ZP300",
   amountInr: 349,
   listedPriceInr: 299,
-  paidOn: "2026-09-17",
+  paidOn: "2026-09-14",
   whatHappened: "Checkout added a ₹50 handling fee that was only visible on the final payment screen.",
   desiredRemedy: "remove_hidden_fee",
   deadlineDays: 7,
@@ -549,7 +558,7 @@ describe("generatePacket - fee_drip_pricing", () => {
 });
 
 describe("generatePacket - full catalog coverage sweep", () => {
-  const allFixtures: Record<string, Intake> = {
+  const allFixtures: Record<TemplateId, Intake> = {
     ecom_wrong_item: ecomFixture,
     ecom_not_delivered: notDeliveredFixture,
     ecom_damaged: damagedFixture,
@@ -563,24 +572,15 @@ describe("generatePacket - full catalog coverage sweep", () => {
   };
 
   it("covers all 10 TemplateId values", () => {
-    const templateIds: TemplateId[] = [
-      "ecom_wrong_item",
-      "ecom_not_delivered",
-      "ecom_damaged",
-      "ecom_refund_to_wallet",
-      "ecom_seller_ghosted",
-      "upi_debit_merchant_no_credit",
-      "upi_double_debit",
-      "food_missing_item",
-      "food_wrong_item",
-      "fee_drip_pricing",
-    ];
+    const templateIds: TemplateId[] = [...TemplateIdSchema.options];
     expect(Object.keys(allFixtures).sort()).toEqual(templateIds.slice().sort());
   });
 
   it.each(Object.entries(allFixtures))(
     "%s: generates a complete packet with no unfilled slots in either language, WhatsApp within budget",
-    (_templateId, fixture) => {
+    (templateId, fixture) => {
+      expect(fixture.templateId).toBe(templateId);
+      expect(() => createIntakeSchema(FIXED_NOW).parse(fixture)).not.toThrow();
       const packet = generatePacket(fixture, catalog, FIXED_NOW);
       const allStrings = [
         packet.artifacts.whatsapp.en,
