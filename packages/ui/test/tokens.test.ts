@@ -48,6 +48,18 @@ describe("design tokens (theme.css)", () => {
     for (const line of shadows) expect(line).toMatch(/\d+px \d+px 0 /);
   });
 
+  it("keeps Space Mono for .font-mono inside Hindi, falling back to Mukta for Devanagari", () => {
+    expect(css).toMatch(
+      /\.font-mono:lang\(hi\)\s*\{[^}]*font-family:\s*var\(--font-space-mono\),\s*var\(--font-mukta\),[^;}]*;/
+    );
+  });
+
+  it("keeps Baloo 2 for .font-hi-display inside Hindi", () => {
+    expect(css).toMatch(
+      /\.font-hi-display:lang\(hi\)\s*\{[^}]*font-family:\s*var\(--font-hi-display\)\s*;/
+    );
+  });
+
   it("respects prefers-reduced-motion", () => {
     expect(css).toContain("prefers-reduced-motion: reduce");
   });

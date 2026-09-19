@@ -81,6 +81,21 @@
   letter-spacing: -0.01em;
 }
 
+/*
+ * lang is inherited, so the unlayered :lang(hi) rule above also lands on explicit font
+ * utilities inside Hindi content and beats them. Restore the two that must not become
+ * Mukta: mono (UTRs, dates, Latin text stay in Space Mono; Space Mono has no Devanagari,
+ * so Hindi inside it falls back to Mukta, not a system font) and Baloo 2 headings.
+ * .font-sans and .font-hi-body are deliberately not restored: Mukta is right for them.
+ */
+.font-mono:lang(hi) {
+  font-family: var(--font-space-mono), var(--font-mukta), ui-monospace, monospace;
+}
+
+.font-hi-display:lang(hi) {
+  font-family: var(--font-hi-display);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
