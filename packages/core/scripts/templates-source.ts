@@ -8,7 +8,7 @@ import { join } from "node:path";
  */
 export function buildTemplatesModuleSource(dir: string): string {
   const files = readdirSync(dir)
-    .filter((file) => file.endsWith(".md"))
+    .filter((file) => /^[a-z0-9_]+\.(en|hi)\.md$/.test(file))
     .sort();
   const entries = files.map((file) => {
     const key = file.slice(0, -".md".length);

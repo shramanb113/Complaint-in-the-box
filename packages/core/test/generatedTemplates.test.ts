@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -22,9 +22,28 @@ describe("generated templates module", () => {
     expect(TEMPLATES["fee_drip_pricing.hi"]).toContain("## email_body");
   });
 
-  it("strips CR characters so output is identical on Windows and Linux checkouts", () => {
-    const dir = mkdtempSync(join(tmpdir(), "tpl-"));
-    writeFileSync(join(dir, "x.en.md"), "## a\r\nb\r\n");
-    expect(buildTemplatesModuleSource(dir)).not.toContain("\\r");
+  describe("buildTemplatesModuleSource", () => {
+    let dir: string;
+    beforeEach(() => {
+      dir = mkdtempSync(join(tmpdir(), "tpl-"));
+    });
+    afterEach(() => {
+      rmSync(dir, { recursive: true, force: true });
+    });
+
+    it("emits no carriage returns for CRLF template files", () => {
+      writeFileSync(join(dir, "x.en.md"), "## a\r\nb\r\n");
+      expect(buildTemplatesModuleSource(dir)).not.toContain("\\r");
+    });
+
+    it("ignores files that are not <templateId>.<en|hi>.md", () => {
+      writeFileSync(join(dir, "x.en.md"), "## a\n");
+      writeFileSync(join(dir, "README.md"), "# notes\n");
+      writeFileSync(join(dir, "y.fr.md"), "## a\n");
+      const source = buildTemplatesModuleSource(dir);
+      expect(source).toContain('"x.en"');
+      expect(source).not.toContain("README");
+      expect(source).not.toContain("y.fr");
+    });
   });
 });

@@ -53,7 +53,9 @@ describe("@nyaypatra/core public entry point", () => {
     };
     const parsed = core.createIntakeSchema(NOW).parse(intake);
     const packet = core.generatePacket({ ...parsed, utr: core.UTR_TOKEN }, core.loadCompanyCatalog(), NOW);
+    expect(packet.artifacts.whatsapp.en).toContain(core.UTR_TOKEN);
     const final = core.applyUtr(packet, "409912345678");
+    expect(final.artifacts.whatsapp.en).not.toContain(core.UTR_TOKEN);
     expect(final.artifacts.whatsapp.en).toContain("409912345678");
   });
 
