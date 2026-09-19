@@ -291,3 +291,40 @@ describe("generatePacket - ecom_damaged", () => {
     expect(wordCount).toBeLessThanOrEqual(350);
   });
 });
+
+const walletFixture: Intake = {
+  category: "ecommerce",
+  templateId: "ecom_refund_to_wallet",
+  locale: "en",
+  platform: "flipkart",
+  orderId: "OD400",
+  amountInr: 999,
+  paidOn: "2026-08-20",
+  whatHappened: "Returned the item two weeks ago and the pickup was confirmed by the courier.",
+  desiredRemedy: "full_refund_original_mode",
+  deadlineDays: 7,
+};
+
+describe("generatePacket - ecom_refund_to_wallet", () => {
+  it("demands refund to original payment mode, not wallet", () => {
+    const packet = generatePacket(walletFixture, catalog, FIXED_NOW);
+    const wa = packet.artifacts.whatsapp.en;
+    expect(wa).toContain("OD400");
+    expect(wa).toMatch(/original payment mode/);
+    expect(wa).toMatch(/not wallet/);
+    expect(wa.length).toBeLessThanOrEqual(700);
+  });
+
+  it("produces a complete Hindi WhatsApp text with no unfilled slots", () => {
+    const packet = generatePacket(walletFixture, catalog, FIXED_NOW);
+    expect(packet.artifacts.whatsapp.hi).not.toMatch(/\{\{/);
+    expect(packet.artifacts.whatsapp.hi.length).toBeLessThanOrEqual(700);
+  });
+
+  it("produces an email body within the 180-350 word range", () => {
+    const packet = generatePacket(walletFixture, catalog, FIXED_NOW);
+    const wordCount = packet.artifacts.emailBody.en.trim().split(/\s+/).length;
+    expect(wordCount).toBeGreaterThanOrEqual(180);
+    expect(wordCount).toBeLessThanOrEqual(350);
+  });
+});
