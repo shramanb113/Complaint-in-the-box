@@ -10,6 +10,7 @@ import {
 import { formatInr, formatInrNumber } from "./money";
 import { REMEDY_TEXT } from "./remedyText";
 import { loadTemplateFile, fillSlots } from "./templateLoader";
+import { utrLine, UTR_BANK_MISSING } from "./utr";
 
 const WHATSAPP_MAX_CHARS = 700;
 const TRUNCATION_ELLIPSIS = "…";
@@ -99,12 +100,8 @@ function buildSlots(intake: Intake, catalog: CompanyCatalog, deadline: YMD) {
   const alreadyDidHi = intake.alreadyDid
     ? `पहले किया गया प्रयास: ${intake.alreadyDid}। अभी तक समाधान नहीं हुआ।`
     : "";
-  const utrLineEn = intake.utr
-    ? ` (UTR: ${intake.utr})`
-    : " (UTR not available — please locate using amount, date and time)";
-  const utrLineHi = intake.utr
-    ? ` (UTR: ${intake.utr})`
-    : " (UTR उपलब्ध नहीं — कृपया राशि, तिथि और समय के आधार पर खोजें)";
+  const utrLineEn = utrLine(intake.utr, "en");
+  const utrLineHi = utrLine(intake.utr, "hi");
   const paidOnYMD = ymdFromISODate(intake.paidOn);
   const deliveredOnYMD = intake.deliveredOn ? ymdFromISODate(intake.deliveredOn) : null;
   const listedPriceInrFormatted =
@@ -171,7 +168,7 @@ function nchFields(intake: Intake, catalog: CompanyCatalog, deadline: YMD): Reco
 function bankFields(intake: Intake, deadline: YMD): Record<string, string> | undefined {
   if (intake.category !== "upi") return undefined;
   return {
-    "UTR / Transaction Reference": intake.utr ?? "Not available — locate via amount/date/time",
+    "UTR / Transaction Reference": intake.utr ?? UTR_BANK_MISSING,
     "Amount (INR)": formatInr(intake.amountInr),
     "Date of Transaction": formatYMDEn(ymdFromISODate(intake.paidOn)),
     "Remitting App": intake.platform,
