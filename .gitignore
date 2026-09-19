@@ -7,3 +7,6 @@ dist/
 docs/
 PRD-complaint-in-a-box.md
 .superpowers/
+.next/
+next-env.d.ts
+*.tsbuildinfo
