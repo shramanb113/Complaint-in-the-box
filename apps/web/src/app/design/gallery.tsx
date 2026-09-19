@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   Button,
+  CategoryTile,
   ChatBubble,
   ChipGroup,
   CopyButton,
@@ -16,6 +17,7 @@ import {
   TabsTrigger,
   Textarea,
 } from "@nyaypatra/ui";
+import { CATEGORY_ICON } from "@/components/icons";
 
 const COLORS = [
   { name: "cream", className: "bg-cream" },
@@ -47,6 +49,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export function Gallery() {
   const [platform, setPlatform] = React.useState<string | undefined>("flipkart");
+  const [category, setCategory] = React.useState<string | undefined>("ecommerce");
 
   return (
     <div className="mx-auto max-w-[960px]">
@@ -127,6 +130,34 @@ export function Gallery() {
             <Label htmlFor="what">What happened?</Label>
             <Textarea id="what" placeholder="Only facts, in your own words." />
           </div>
+        </div>
+      </Section>
+
+      <Section title="Category tiles">
+        <div role="radiogroup" aria-label="Type of problem" className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {(
+            [
+              { value: "ecommerce", title: "Online shopping", description: "Wrong, damaged or missing orders", tone: "peach" },
+              { value: "upi", title: "UPI payment", description: "Money debited but not received", tone: "mint" },
+              { value: "food", title: "Food delivery", description: "Missing or wrong items", tone: "butter" },
+              { value: "hidden_fee", title: "Hidden charges", description: "Extra charges shown only at payment", tone: "sky" },
+            ] as const
+          ).map((tile) => {
+            const Icon = CATEGORY_ICON[tile.value];
+            return (
+              <CategoryTile
+                key={tile.value}
+                name="category"
+                value={tile.value}
+                title={tile.title}
+                description={tile.description}
+                tone={tile.tone}
+                icon={<Icon />}
+                checked={category === tile.value}
+                onSelect={setCategory}
+              />
+            );
+          })}
         </div>
       </Section>
 

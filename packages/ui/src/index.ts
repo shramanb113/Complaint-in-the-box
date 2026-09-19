@@ -10,3 +10,4 @@ export { DeadlineTag, type DeadlineTagProps } from "./components/deadline-tag";
 export { Sticker, type StickerProps } from "./components/sticker";
 export { copyToClipboard } from "./lib/clipboard";
 export { CopyButton, type CopyButtonProps } from "./components/copy-button";
+export { CategoryTile, type CategoryTileProps } from "./components/category-tile";
