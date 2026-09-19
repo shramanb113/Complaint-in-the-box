@@ -453,3 +453,39 @@ describe("generatePacket - food_missing_item", () => {
     expect(wordCount).toBeLessThanOrEqual(350);
   });
 });
+
+const wrongFoodFixture: Intake = {
+  category: "food",
+  templateId: "food_wrong_item",
+  locale: "en",
+  platform: "zomato",
+  orderId: "ZM200",
+  amountInr: 450,
+  paidOn: "2026-09-17",
+  whatHappened: "Ordered paneer tikka but received chicken tikka instead, which I cannot eat.",
+  desiredRemedy: "replacement",
+  deadlineDays: 7,
+};
+
+describe("generatePacket - food_wrong_item", () => {
+  it("mentions the mismatch between ordered and delivered items", () => {
+    const packet = generatePacket(wrongFoodFixture, catalog, FIXED_NOW);
+    const wa = packet.artifacts.whatsapp.en;
+    expect(wa).toContain("ZM200");
+    expect(wa).toMatch(/do not match|does not match/);
+    expect(wa.length).toBeLessThanOrEqual(700);
+  });
+
+  it("produces a complete Hindi WhatsApp text with no unfilled slots", () => {
+    const packet = generatePacket(wrongFoodFixture, catalog, FIXED_NOW);
+    expect(packet.artifacts.whatsapp.hi).not.toMatch(/\{\{/);
+    expect(packet.artifacts.whatsapp.hi.length).toBeLessThanOrEqual(700);
+  });
+
+  it("produces an email body within the 180-350 word range", () => {
+    const packet = generatePacket(wrongFoodFixture, catalog, FIXED_NOW);
+    const wordCount = packet.artifacts.emailBody.en.trim().split(/\s+/).length;
+    expect(wordCount).toBeGreaterThanOrEqual(180);
+    expect(wordCount).toBeLessThanOrEqual(350);
+  });
+});
