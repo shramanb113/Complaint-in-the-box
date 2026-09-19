@@ -28,5 +28,47 @@
     "grievanceUrl": "https://www.zeptonow.com/support",
     "nchCompanyHint": "Zepto",
     "chatHint": "Use in-app Help → Order Issues"
+  },
+  "amazon": {
+    "legalName": "Amazon",
+    "grievanceUrl": "https://www.amazon.in/",
+    "nchCompanyHint": "Amazon",
+    "chatHint": "Use in-app Help → Contact us"
+  },
+  "meesho": {
+    "legalName": "Meesho",
+    "grievanceUrl": "https://www.meesho.com/",
+    "nchCompanyHint": "Meesho",
+    "chatHint": "Use in-app Help → Contact us"
+  },
+  "myntra": {
+    "legalName": "Myntra",
+    "grievanceUrl": "https://www.myntra.com/",
+    "nchCompanyHint": "Myntra",
+    "chatHint": "Use in-app Help → Contact us"
+  },
+  "ajio": {
+    "legalName": "Ajio",
+    "grievanceUrl": "https://www.ajio.com/",
+    "nchCompanyHint": "Ajio",
+    "chatHint": "Use in-app Help → Contact us"
+  },
+  "blinkit": {
+    "legalName": "Blinkit",
+    "grievanceUrl": "https://blinkit.com/",
+    "nchCompanyHint": "Blinkit",
+    "chatHint": "Use in-app Help → Order Issues"
+  },
+  "phonepe": {
+    "legalName": "PhonePe",
+    "grievanceUrl": "https://www.phonepe.com/",
+    "nchCompanyHint": "PhonePe",
+    "chatHint": "Use in-app Help → Contact support"
+  },
+  "paytm": {
+    "legalName": "Paytm",
+    "grievanceUrl": "https://paytm.com/",
+    "nchCompanyHint": "Paytm",
+    "chatHint": "Use in-app Help → Contact support"
   }
 }
