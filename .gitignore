@@ -9,4 +9,7 @@ PRD-complaint-in-a-box.md
 .superpowers/
 .next/
 next-env.d.ts
+# `next dev` auto-generates these agent files
+apps/web/AGENTS.md
+apps/web/CLAUDE.md
 *.tsbuildinfo

@@ -100,7 +100,7 @@ export function Gallery() {
       <Section title="Form">
         <div className="grid gap-4 sm:max-w-md">
           <div>
-            <Label>Where did you order?</Label>
+            <p className="mb-1.5 block font-display text-sm font-extrabold">Where did you order?</p>
             <ChipGroup
               name="platform"
               legend="Where did you order?"
