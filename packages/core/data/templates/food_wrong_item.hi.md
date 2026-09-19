@@ -1,5 +1,5 @@
 ## whatsapp
-ऑर्डर {{orderId}}, {{platformName}}, ₹{{amountInr}} का भुगतान {{paidOnFormatted}} को किया गया। {{whatHappened}} — डिलीवर किया गया सामान मेरे ऑर्डर से मेल नहीं खाता।
+ऑर्डर {{orderId}}, {{platformName}}, ₹{{amountInr}} का भुगतान {{paidOnFormatted}} को किया गया। डिलीवर किया गया सामान मेरे ऑर्डर से मेल नहीं खाता: {{whatHappened}}
 {{alreadyDidLine}}
 
 मुझे {{remedyText}} चाहिए।

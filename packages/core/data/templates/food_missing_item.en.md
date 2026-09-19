@@ -1,5 +1,5 @@
 ## whatsapp
-Order {{orderId}} on {{platformName}}, paid ₹{{amountInr}} on {{paidOnFormatted}}. {{whatHappened}} — item(s) from my order were missing on delivery.
+Order {{orderId}} on {{platformName}}, paid ₹{{amountInr}} on {{paidOnFormatted}}. Item(s) from my order were missing on delivery: {{whatHappened}}
 {{alreadyDidLine}}
 
 I want {{remedyText}}.

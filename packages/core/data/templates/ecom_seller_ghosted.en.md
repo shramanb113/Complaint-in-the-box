@@ -19,7 +19,7 @@ The seller for this order has stopped responding to my messages and has not reso
 
 {{alreadyDidLine}}
 
-Under the Consumer Protection Act, 2019, leaving a paying consumer's grievance unaddressed is a deficiency in service and an unfair trade practice, and the platform is expected to step in when a seller is unresponsive. I am requesting {{remedyText}}, and I expect this to be actioned without further delay.
+Under the Consumer Protection Act, 2019, leaving a paying consumer's grievance unaddressed is a deficiency in service and an unfair trade practice. I am requesting {{remedyText}}, and I expect this to be actioned without further delay.
 
 Please acknowledge this email in writing, share a reference or ticket number for this complaint, and confirm the date by which the resolution will be completed. I expect this to be resolved by {{deadlineFormatted}}. If I do not receive a satisfactory response by this date, I will escalate this complaint to the National Consumer Helpline (1915) and pursue the remedies available to me under the Consumer Protection Act, 2019, including filing a case with the Consumer Commission.
 

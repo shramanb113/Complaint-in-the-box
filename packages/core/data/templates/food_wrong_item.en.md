@@ -1,5 +1,5 @@
 ## whatsapp
-Order {{orderId}} on {{platformName}}, paid ₹{{amountInr}} on {{paidOnFormatted}}. {{whatHappened}} — the item(s) delivered do not match what I ordered.
+Order {{orderId}} on {{platformName}}, paid ₹{{amountInr}} on {{paidOnFormatted}}. The item(s) delivered do not match what I ordered: {{whatHappened}}
 {{alreadyDidLine}}
 
 I want {{remedyText}}.

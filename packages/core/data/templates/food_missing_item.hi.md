@@ -1,5 +1,5 @@
 ## whatsapp
-ऑर्डर {{orderId}}, {{platformName}}, ₹{{amountInr}} का भुगतान {{paidOnFormatted}} को किया गया। {{whatHappened}} — डिलीवरी में मेरे ऑर्डर के कुछ सामान गायब थे।
+ऑर्डर {{orderId}}, {{platformName}}, ₹{{amountInr}} का भुगतान {{paidOnFormatted}} को किया गया। डिलीवरी में मेरे ऑर्डर के कुछ सामान गायब थे: {{whatHappened}}
 {{alreadyDidLine}}
 
 मुझे {{remedyText}} चाहिए।

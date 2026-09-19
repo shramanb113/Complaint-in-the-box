@@ -349,7 +349,7 @@ describe("generatePacket - ecom_seller_ghosted", () => {
     const wa = packet.artifacts.whatsapp.en;
     expect(wa).toContain("OD500");
     expect(wa).toContain("Local Furniture Store");
-    expect(wa).toMatch(/not responded|stopped responding/);
+    expect(wa).toContain("The seller has stopped responding to my messages");
     expect(wa.length).toBeLessThanOrEqual(700);
   });
 
@@ -435,7 +435,7 @@ describe("generatePacket - food_missing_item", () => {
     const packet = generatePacket(missingItemFixture, catalog, FIXED_NOW);
     const wa = packet.artifacts.whatsapp.en;
     expect(wa).toContain("SW100");
-    expect(wa).toContain("missing");
+    expect(wa).toContain("were missing on delivery");
     expect(wa.length).toBeLessThanOrEqual(700);
   });
 
