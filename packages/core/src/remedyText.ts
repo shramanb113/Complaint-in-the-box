@@ -15,10 +15,10 @@ export const REMEDY_TEXT: Record<DesiredRemedy, { en: string; hi: string }> = {
   },
   reverse_failed_upi: {
     en: "the amount to be reversed/credited back to my account",
-    hi: "राशि मेरे खाते में वापस जमा/रिवर्स की जाए",
+    hi: "राशि की मेरे खाते में वापसी (रिवर्सल)",
   },
   remove_hidden_fee: {
     en: "a refund of the hidden charges and removal of the extra fee",
-    hi: "छुपे हुए शुल्क की वापसी और अतिरिक्त शुल्क को हटाना",
+    hi: "छुपे हुए शुल्क की वापसी और अतिरिक्त शुल्क की समाप्ति",
   },
 };

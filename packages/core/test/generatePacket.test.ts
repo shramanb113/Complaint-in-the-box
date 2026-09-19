@@ -396,6 +396,13 @@ describe("generatePacket - upi_double_debit", () => {
     expect(packet.artifacts.bankFields).toBeDefined();
   });
 
+  it("renders the Hindi remedy as a grammatical noun phrase in the WhatsApp text", () => {
+    const packet = generatePacket(doubleDebitFixture, catalog, FIXED_NOW);
+    expect(packet.artifacts.whatsapp.hi).toContain(
+      "मुझे डुप्लिकेट डेबिट के लिए राशि की मेरे खाते में वापसी (रिवर्सल) चाहिए"
+    );
+  });
+
   it("produces a complete Hindi WhatsApp text with no unfilled slots", () => {
     const packet = generatePacket(doubleDebitFixture, catalog, FIXED_NOW);
     expect(packet.artifacts.whatsapp.hi).not.toMatch(/\{\{/);
@@ -524,6 +531,13 @@ describe("generatePacket - fee_drip_pricing", () => {
     expect(packet.artifacts.whatsapp.hi).toContain("अतिरिक्त ₹50 केवल भुगतान के समय सामने आया");
     expect(packet.artifacts.whatsapp.hi).toContain("₹299");
     expect(packet.artifacts.whatsapp.hi).toContain("₹349");
+  });
+
+  it("renders the Hindi remedy as a grammatical noun phrase in the WhatsApp text", () => {
+    const packet = generatePacket(dripPricingFixture, catalog, FIXED_NOW);
+    expect(packet.artifacts.whatsapp.hi).toContain(
+      "मुझे छुपे हुए शुल्क की वापसी और अतिरिक्त शुल्क की समाप्ति चाहिए"
+    );
   });
 
   it("produces an email body within the 180-350 word range", () => {
