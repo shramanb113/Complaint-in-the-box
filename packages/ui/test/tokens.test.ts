@@ -14,6 +14,7 @@ describe("design tokens (theme.css)", () => {
     ["--color-ink", "#111111"],
     ["--color-turmeric", "#ffc21a"],
     ["--color-wa", "#25d366"],
+    ["--color-wa-dark", "#075e54"],
     ["--color-tomato", "#ff5a36"],
     ["--color-sky", "#d9e8ff"],
     ["--color-peach", "#ffd9cf"],

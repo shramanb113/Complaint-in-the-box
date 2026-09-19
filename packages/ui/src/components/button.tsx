@@ -19,7 +19,7 @@ export const buttonVariants = cva(
         primary: "bg-wa text-ink",
         accent: "bg-turmeric text-ink",
         secondary: "bg-white text-ink",
-        danger: "bg-tomato text-white",
+        danger: "bg-tomato text-ink",
       },
       size: {
         md: "rounded-xl px-5 py-3 text-[15px]",

@@ -20,6 +20,14 @@ describe("Button", () => {
     expect(button.className).not.toContain("bg-wa");
   });
 
+  it("puts ink text on the tomato danger variant (white on tomato is only ~3.1:1, ink is ~6.1:1)", () => {
+    render(<Button variant="danger">Delete</Button>);
+    const button = screen.getByRole("button", { name: "Delete" });
+    expect(button.className).toContain("bg-tomato");
+    expect(button.className).toContain("text-ink");
+    expect(button.className).not.toContain("text-white");
+  });
+
   it("meets the 44px tap target in every size", () => {
     render(
       <>

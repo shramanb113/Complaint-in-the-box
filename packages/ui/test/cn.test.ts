@@ -40,5 +40,7 @@ describe("cn with the Poster Pop theme tokens", () => {
   it("still merges the custom colour tokens", () => {
     expect(cn("bg-cream", "bg-turmeric")).toBe("bg-turmeric");
     expect(cn("text-ink", "text-wa")).toBe("text-wa");
+    expect(cn("text-ink", "text-wa-dark")).toBe("text-wa-dark");
+    expect(cn("text-sm", "text-wa-dark")).toBe("text-sm text-wa-dark");
   });
 });

@@ -5,6 +5,7 @@ import { Input } from "../src/components/input";
 import { Textarea } from "../src/components/textarea";
 import { Label } from "../src/components/label";
 import { ChipGroup } from "../src/components/chip-group";
+import { fontSizePx } from "./font-size";
 
 describe("Label + Input", () => {
   it("associates the label with the input and accepts typing", async () => {
@@ -20,6 +21,11 @@ describe("Label + Input", () => {
     expect(input).toHaveValue("2499");
     expect(input.className).toContain("border-ink");
     expect(input.className).toContain("min-h-12");
+  });
+
+  it("sets the label at 14px or larger so Hindi labels stay readable", () => {
+    render(<Label htmlFor="city">शहर</Label>);
+    expect(fontSizePx(screen.getByText("शहर").className)).toBeGreaterThanOrEqual(14);
   });
 
   it("switches to the tomato error style when aria-invalid", () => {
