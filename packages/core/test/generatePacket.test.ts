@@ -328,3 +328,41 @@ describe("generatePacket - ecom_refund_to_wallet", () => {
     expect(wordCount).toBeLessThanOrEqual(350);
   });
 });
+
+const ghostedFixture: Intake = {
+  category: "ecommerce",
+  templateId: "ecom_seller_ghosted",
+  locale: "en",
+  platform: "other",
+  companyName: "Local Furniture Store",
+  orderId: "OD500",
+  amountInr: 5500,
+  paidOn: "2026-08-25",
+  whatHappened: "Seller stopped responding to my messages 10 days ago after the item never arrived.",
+  desiredRemedy: "full_refund_original_mode",
+  deadlineDays: 7,
+};
+
+describe("generatePacket - ecom_seller_ghosted", () => {
+  it("mentions seller unresponsiveness and resolves platform='other' via companyName", () => {
+    const packet = generatePacket(ghostedFixture, catalog, FIXED_NOW);
+    const wa = packet.artifacts.whatsapp.en;
+    expect(wa).toContain("OD500");
+    expect(wa).toContain("Local Furniture Store");
+    expect(wa).toMatch(/not responded|stopped responding/);
+    expect(wa.length).toBeLessThanOrEqual(700);
+  });
+
+  it("produces a complete Hindi WhatsApp text with no unfilled slots", () => {
+    const packet = generatePacket(ghostedFixture, catalog, FIXED_NOW);
+    expect(packet.artifacts.whatsapp.hi).not.toMatch(/\{\{/);
+    expect(packet.artifacts.whatsapp.hi.length).toBeLessThanOrEqual(700);
+  });
+
+  it("produces an email body within the 180-350 word range", () => {
+    const packet = generatePacket(ghostedFixture, catalog, FIXED_NOW);
+    const wordCount = packet.artifacts.emailBody.en.trim().split(/\s+/).length;
+    expect(wordCount).toBeGreaterThanOrEqual(180);
+    expect(wordCount).toBeLessThanOrEqual(350);
+  });
+});
