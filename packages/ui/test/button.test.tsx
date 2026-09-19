@@ -39,6 +39,15 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "Large" }).className).toContain("min-h-11");
   });
 
+  it("only lifts and presses when not disabled, so a disabled button does not animate", () => {
+    render(<Button>Lift</Button>);
+    const tokens = screen.getByRole("button", { name: "Lift" }).className.split(/\s+/);
+    // not-disabled: (rather than enabled:) so a link rendered with asChild still lifts.
+    const moving = tokens.filter((t) => /(^|:)(hover|active):(-?translate|shadow)/.test(t));
+    expect(moving.length).toBeGreaterThan(0);
+    for (const token of moving) expect(token).toContain("not-disabled:");
+  });
+
   it("does not fire onClick when disabled", async () => {
     const onClick = vi.fn();
     const user = userEvent.setup();

@@ -9,9 +9,10 @@ export const buttonVariants = cva(
     "border-[3px] border-ink font-display font-extrabold tracking-tight",
     "transition-[transform,box-shadow,background-color] duration-[120ms] ease-out",
     "cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
-    "motion-safe:hover:-translate-x-0.5 motion-safe:hover:-translate-y-0.5",
-    "motion-safe:active:translate-x-1 motion-safe:active:translate-y-1",
-    "shadow-hard hover:shadow-hard-lg active:shadow-none",
+    // not-disabled: rather than enabled: so a link rendered with asChild (never :enabled) still lifts.
+    "motion-safe:not-disabled:hover:-translate-x-0.5 motion-safe:not-disabled:hover:-translate-y-0.5",
+    "motion-safe:not-disabled:active:translate-x-1 motion-safe:not-disabled:active:translate-y-1",
+    "shadow-hard not-disabled:hover:shadow-hard-lg not-disabled:active:shadow-none",
   ],
   {
     variants: {
