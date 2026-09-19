@@ -489,3 +489,43 @@ describe("generatePacket - food_wrong_item", () => {
     expect(wordCount).toBeLessThanOrEqual(350);
   });
 });
+
+const dripPricingFixture: Intake = {
+  category: "hidden_fee",
+  templateId: "fee_drip_pricing",
+  locale: "en",
+  platform: "zepto",
+  orderId: "ZP300",
+  amountInr: 349,
+  listedPriceInr: 299,
+  paidOn: "2026-09-17",
+  whatHappened: "Checkout added a ₹50 handling fee that was only visible on the final payment screen.",
+  desiredRemedy: "remove_hidden_fee",
+  deadlineDays: 7,
+};
+
+describe("generatePacket - fee_drip_pricing", () => {
+  it("states the listed price, paid price, and the difference, without accusing a crime", () => {
+    const packet = generatePacket(dripPricingFixture, catalog, FIXED_NOW);
+    const wa = packet.artifacts.whatsapp.en;
+    expect(wa).toContain("₹299");
+    expect(wa).toContain("₹349");
+    expect(wa).toContain("₹50");
+    expect(wa).toMatch(/revealed only at payment/);
+    expect(packet.artifacts.emailBody.en).not.toMatch(/crime|fraud|illegal/i);
+    expect(wa.length).toBeLessThanOrEqual(700);
+  });
+
+  it("produces a complete Hindi WhatsApp text with no unfilled slots", () => {
+    const packet = generatePacket(dripPricingFixture, catalog, FIXED_NOW);
+    expect(packet.artifacts.whatsapp.hi).not.toMatch(/\{\{/);
+    expect(packet.artifacts.whatsapp.hi.length).toBeLessThanOrEqual(700);
+  });
+
+  it("produces an email body within the 180-350 word range", () => {
+    const packet = generatePacket(dripPricingFixture, catalog, FIXED_NOW);
+    const wordCount = packet.artifacts.emailBody.en.trim().split(/\s+/).length;
+    expect(wordCount).toBeGreaterThanOrEqual(180);
+    expect(wordCount).toBeLessThanOrEqual(350);
+  });
+});

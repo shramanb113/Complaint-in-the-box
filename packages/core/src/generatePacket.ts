@@ -101,6 +101,12 @@ function buildSlots(intake: Intake, catalog: CompanyCatalog, deadline: YMD) {
     : " (UTR उपलब्ध नहीं — कृपया राशि, तिथि और समय के आधार पर खोजें)";
   const paidOnYMD = ymdFromISODate(intake.paidOn);
   const deliveredOnYMD = intake.deliveredOn ? ymdFromISODate(intake.deliveredOn) : null;
+  const listedPriceInrFormatted =
+    intake.listedPriceInr !== undefined ? formatInrNumber(intake.listedPriceInr) : "";
+  const priceDifferenceFormatted =
+    intake.listedPriceInr !== undefined
+      ? formatInrNumber(intake.amountInr - intake.listedPriceInr)
+      : "";
 
   return {
     en: {
@@ -108,6 +114,8 @@ function buildSlots(intake: Intake, catalog: CompanyCatalog, deadline: YMD) {
       platformName,
       companyName,
       amountInr: formatInrNumber(intake.amountInr),
+      listedPriceInr: listedPriceInrFormatted,
+      priceDifference: priceDifferenceFormatted,
       paidOnFormatted: formatYMDEn(paidOnYMD),
       deliveredOnFormatted: deliveredOnYMD
         ? formatYMDEn(deliveredOnYMD)
@@ -125,6 +133,8 @@ function buildSlots(intake: Intake, catalog: CompanyCatalog, deadline: YMD) {
       platformName,
       companyName,
       amountInr: formatInrNumber(intake.amountInr),
+      listedPriceInr: listedPriceInrFormatted,
+      priceDifference: priceDifferenceFormatted,
       paidOnFormatted: formatYMDHi(paidOnYMD),
       deliveredOnFormatted: deliveredOnYMD
         ? formatYMDHi(deliveredOnYMD)
