@@ -510,8 +510,9 @@ describe("generatePacket - fee_drip_pricing", () => {
     const wa = packet.artifacts.whatsapp.en;
     expect(wa).toContain("₹299");
     expect(wa).toContain("₹349");
-    expect(wa).toContain("₹50");
+    expect(wa).toContain("an additional ₹50 was revealed only at payment");
     expect(wa).toMatch(/revealed only at payment/);
+    expect(packet.artifacts.emailSubject.en).toContain("refund of ₹50 requested by");
     expect(packet.artifacts.emailBody.en).not.toMatch(/crime|fraud|illegal/i);
     expect(wa.length).toBeLessThanOrEqual(700);
   });
@@ -520,6 +521,9 @@ describe("generatePacket - fee_drip_pricing", () => {
     const packet = generatePacket(dripPricingFixture, catalog, FIXED_NOW);
     expect(packet.artifacts.whatsapp.hi).not.toMatch(/\{\{/);
     expect(packet.artifacts.whatsapp.hi.length).toBeLessThanOrEqual(700);
+    expect(packet.artifacts.whatsapp.hi).toContain("अतिरिक्त ₹50 केवल भुगतान के समय सामने आया");
+    expect(packet.artifacts.whatsapp.hi).toContain("₹299");
+    expect(packet.artifacts.whatsapp.hi).toContain("₹349");
   });
 
   it("produces an email body within the 180-350 word range", () => {
