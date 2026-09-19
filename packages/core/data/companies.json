@@ -10,5 +10,23 @@
     "grievanceUrl": "https://support.google.com/pay/india/",
     "nchCompanyHint": "Google Pay",
     "chatHint": "Use in-app Help → Get support"
+  },
+  "swiggy": {
+    "legalName": "Bundl Technologies Private Limited (Swiggy)",
+    "grievanceUrl": "https://www.swiggy.com/help",
+    "nchCompanyHint": "Swiggy",
+    "chatHint": "Use in-app Help → Order Issues"
+  },
+  "zomato": {
+    "legalName": "Zomato Limited",
+    "grievanceUrl": "https://www.zomato.com/help",
+    "nchCompanyHint": "Zomato",
+    "chatHint": "Use in-app Help → Order Issues"
+  },
+  "zepto": {
+    "legalName": "Kiranakart Technologies Private Limited (Zepto)",
+    "grievanceUrl": "https://www.zeptonow.com/support",
+    "nchCompanyHint": "Zepto",
+    "chatHint": "Use in-app Help → Order Issues"
   }
 }
