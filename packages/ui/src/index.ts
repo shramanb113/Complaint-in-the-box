@@ -8,3 +8,5 @@ export { Tabs, TabsList, TabsTrigger, TabsContent } from "./components/tabs";
 export { ChatBubble, type ChatBubbleProps } from "./components/chat-bubble";
 export { DeadlineTag, type DeadlineTagProps } from "./components/deadline-tag";
 export { Sticker, type StickerProps } from "./components/sticker";
+export { copyToClipboard } from "./lib/clipboard";
+export { CopyButton, type CopyButtonProps } from "./components/copy-button";
