@@ -80,7 +80,7 @@ export function createIntakeSchema(now: Date = new Date()): z.ZodType<Intake> {
       templateId: TemplateIdSchema,
       locale: LocaleSchema,
       platform: PlatformSchema,
-      companyName: z.string().min(1).max(60).optional(),
+      companyName: z.string().trim().min(1).max(60).optional(),
       orderId: z.string().max(30).optional(),
       utr: z.string().max(35).optional(),
       amountInr: z.number().int().positive(),

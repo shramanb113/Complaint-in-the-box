@@ -65,7 +65,8 @@ export interface CompanyInfo {
   chatHint: string;
 }
 
-export type CompanyCatalog = Record<string, CompanyInfo>;
+/** Every platform except "other" has an entry, so a lookup can be undefined. */
+export type CompanyCatalog = Partial<Record<Platform, CompanyInfo>>;
 
 export interface Packet {
   id: string;

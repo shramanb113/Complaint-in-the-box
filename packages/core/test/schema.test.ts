@@ -47,6 +47,18 @@ describe("IntakeSchema", () => {
     ).not.toThrow();
   });
 
+  it("rejects a whitespace-only companyName, including for platform 'other'", () => {
+    expect(() =>
+      IntakeSchema.parse({ ...baseIntake, platform: "other", companyName: "   " })
+    ).toThrow();
+    expect(() => IntakeSchema.parse({ ...baseIntake, companyName: "   " })).toThrow();
+  });
+
+  it("accepts a padded companyName and stores it trimmed", () => {
+    const parsed = IntakeSchema.parse({ ...baseIntake, platform: "other", companyName: "  Acme  " });
+    expect(parsed.companyName).toBe("Acme");
+  });
+
   it("rejects an unknown desiredRemedy value", () => {
     expect(() =>
       IntakeSchema.parse({ ...baseIntake, desiredRemedy: "give_me_everything" })
