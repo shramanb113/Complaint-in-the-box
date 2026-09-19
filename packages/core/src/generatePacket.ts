@@ -84,6 +84,12 @@ function recipientLabel(intake: Intake, catalog: CompanyCatalog): string {
 }
 
 function buildSlots(intake: Intake, catalog: CompanyCatalog, deadline: YMD) {
+  if (
+    intake.templateId === "fee_drip_pricing" &&
+    (intake.listedPriceInr === undefined || intake.listedPriceInr >= intake.amountInr)
+  ) {
+    throw new Error("fee_drip_pricing requires listedPriceInr < amountInr");
+  }
   const remedy = REMEDY_TEXT[intake.desiredRemedy];
   const platformName = appLabel(intake, catalog);
   const companyName = recipientLabel(intake, catalog);

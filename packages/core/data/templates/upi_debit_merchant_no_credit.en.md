@@ -17,6 +17,8 @@ I am writing to formally report an unresolved UPI transaction and request your u
 
 The amount was debited from my account, but the recipient has not confirmed receipt and I have not received the goods/service, nor has the amount been refunded or reversed to my account. This has caused me financial inconvenience and I would like this matter investigated on priority.
 
+{{alreadyDidLine}}
+
 As per applicable RBI / NPCI turnaround times for failed or unconfirmed UPI transactions, I am requesting {{remedyText}} at the earliest, and in any case by {{deadlineFormatted}}. Please also share a complaint reference number and keep me informed of the investigation's progress.
 
 If this is not resolved by the above date, I will escalate this complaint to the RBI Banking Ombudsman through the Complaint Management System (CMS), and pursue the remedies available under the Consumer Protection Act, 2019.

@@ -400,6 +400,16 @@ describe("generatePacket - upi_double_debit", () => {
     expect(packet.intake).not.toHaveProperty("utr");
   });
 
+  it("carries alreadyDid into both the English and Hindi email bodies", () => {
+    const packet = generatePacket(
+      { ...doubleDebitFixture, alreadyDid: "raised a ticket with my bank" },
+      catalog,
+      FIXED_NOW
+    );
+    expect(packet.artifacts.emailBody.en).toContain("raised a ticket with my bank");
+    expect(packet.artifacts.emailBody.hi).toContain("raised a ticket with my bank");
+  });
+
   it("includes bankFields for the UPI category", () => {
     const packet = generatePacket(doubleDebitFixture, catalog, FIXED_NOW);
     expect(packet.artifacts.bankFields).toBeDefined();
@@ -554,6 +564,24 @@ describe("generatePacket - fee_drip_pricing", () => {
     const wordCount = packet.artifacts.emailBody.en.trim().split(/\s+/).length;
     expect(wordCount).toBeGreaterThanOrEqual(180);
     expect(wordCount).toBeLessThanOrEqual(350);
+  });
+});
+
+describe("generatePacket - fee_drip_pricing input validation", () => {
+  it("throws when listedPriceInr is missing", () => {
+    const { listedPriceInr, ...withoutListedPrice } = dripPricingFixture;
+    expect(() => generatePacket(withoutListedPrice as Intake, catalog, FIXED_NOW)).toThrow(
+      "fee_drip_pricing requires listedPriceInr < amountInr"
+    );
+  });
+
+  it("throws when listedPriceInr is not below amountInr", () => {
+    expect(() =>
+      generatePacket({ ...dripPricingFixture, listedPriceInr: 349 }, catalog, FIXED_NOW)
+    ).toThrow("fee_drip_pricing requires listedPriceInr < amountInr");
+    expect(() =>
+      generatePacket({ ...dripPricingFixture, listedPriceInr: 400 }, catalog, FIXED_NOW)
+    ).toThrow("fee_drip_pricing requires listedPriceInr < amountInr");
   });
 });
 

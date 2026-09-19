@@ -16,6 +16,8 @@ I am writing to formally report a duplicate UPI debit and request your urgent as
 
 Only one transaction was intended; the second debit is a duplicate. {{whatHappened}}
 
+{{alreadyDidLine}}
+
 As per applicable RBI / NPCI turnaround times for duplicate or erroneous UPI transactions, I am requesting {{remedyText}} for the duplicate debit at the earliest, and in any case by {{deadlineFormatted}}. Please also share a complaint reference number and keep me informed of the investigation's progress.
 
 If this is not resolved by the above date, I will escalate this complaint to the RBI Banking Ombudsman through the Complaint Management System (CMS), and pursue the remedies available under the Consumer Protection Act, 2019.
