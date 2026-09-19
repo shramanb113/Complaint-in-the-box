@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { generatePacket } from "../src/generatePacket";
 import { loadCompanyCatalog } from "../src/companies";
-import type { Intake } from "../src/types";
+import type { Intake, TemplateId } from "../src/types";
 
 const catalog = loadCompanyCatalog();
 const FIXED_NOW = new Date("2026-09-15T12:00:00Z"); // 2026-09-15 17:30 IST
@@ -532,4 +532,57 @@ describe("generatePacket - fee_drip_pricing", () => {
     expect(wordCount).toBeGreaterThanOrEqual(180);
     expect(wordCount).toBeLessThanOrEqual(350);
   });
+});
+
+describe("generatePacket - full catalog coverage sweep", () => {
+  const allFixtures: Record<string, Intake> = {
+    ecom_wrong_item: ecomFixture,
+    ecom_not_delivered: notDeliveredFixture,
+    ecom_damaged: damagedFixture,
+    ecom_refund_to_wallet: walletFixture,
+    ecom_seller_ghosted: ghostedFixture,
+    upi_debit_merchant_no_credit: upiFixture,
+    upi_double_debit: doubleDebitFixture,
+    food_missing_item: missingItemFixture,
+    food_wrong_item: wrongFoodFixture,
+    fee_drip_pricing: dripPricingFixture,
+  };
+
+  it("covers all 10 TemplateId values", () => {
+    const templateIds: TemplateId[] = [
+      "ecom_wrong_item",
+      "ecom_not_delivered",
+      "ecom_damaged",
+      "ecom_refund_to_wallet",
+      "ecom_seller_ghosted",
+      "upi_debit_merchant_no_credit",
+      "upi_double_debit",
+      "food_missing_item",
+      "food_wrong_item",
+      "fee_drip_pricing",
+    ];
+    expect(Object.keys(allFixtures).sort()).toEqual(templateIds.slice().sort());
+  });
+
+  it.each(Object.entries(allFixtures))(
+    "%s: generates a complete packet with no unfilled slots in either language, WhatsApp within budget",
+    (_templateId, fixture) => {
+      const packet = generatePacket(fixture, catalog, FIXED_NOW);
+      const allStrings = [
+        packet.artifacts.whatsapp.en,
+        packet.artifacts.whatsapp.hi,
+        packet.artifacts.emailSubject.en,
+        packet.artifacts.emailSubject.hi,
+        packet.artifacts.emailBody.en,
+        packet.artifacts.emailBody.hi,
+        ...packet.artifacts.nextSteps.en,
+        ...packet.artifacts.nextSteps.hi,
+      ];
+      for (const s of allStrings) {
+        expect(s).not.toMatch(/\{\{/);
+      }
+      expect(packet.artifacts.whatsapp.en.length).toBeLessThanOrEqual(700);
+      expect(packet.artifacts.whatsapp.hi.length).toBeLessThanOrEqual(700);
+    }
+  );
 });
