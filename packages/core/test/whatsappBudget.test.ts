@@ -12,6 +12,8 @@ const catalog = loadCompanyCatalog();
 
 // Every free-text field at its schema maximum, platform "other" so the
 // (60-char) company name is used for both the app and recipient labels.
+// Deliberate tripwire: with no alreadyDid this maxed case lands on exactly 700
+// (zero headroom in M1), so any template edit that grows it must fail the sweep.
 const MAXED = {
   locale: "both",
   platform: "other",
@@ -57,6 +59,11 @@ describe("WhatsApp budget with every free-text field at its maximum", () => {
         utr: UTR_TOKEN,
       } as Intake;
       const packet = generatePacket(intake, catalog, NOW);
+      // Guard against a vacuous sweep: UPI templates must really carry the token pre-swap.
+      if (TEMPLATE_CATEGORY[templateId] === "upi") {
+        expect(packet.artifacts.whatsapp.en).toContain(UTR_TOKEN);
+        expect(packet.artifacts.whatsapp.hi).toContain(UTR_TOKEN);
+      }
       for (const input of ["U".repeat(35), undefined, "not a utr!"]) {
         const wa = applyUtr(packet, input).artifacts.whatsapp;
         expect(wa.en.length, `en, input=${String(input)}`).toBeLessThanOrEqual(700);
@@ -66,6 +73,51 @@ describe("WhatsApp budget with every free-text field at its maximum", () => {
       }
     }
   );
+
+  it.each(TemplateIdSchema.options.filter((id) => TEMPLATE_CATEGORY[id] === "upi"))(
+    "%s: counts every [[UTR]] the user typed into the narrative, not just the template's own",
+    (templateId) => {
+      const intake = {
+        ...MAXED,
+        category: "upi",
+        templateId,
+        utr: UTR_TOKEN,
+        whatHappened: `${UTR_TOKEN} `.repeat(50).slice(0, 400),
+      } as Intake;
+      const packet = generatePacket(intake, catalog, NOW);
+      const wa = packet.artifacts.whatsapp;
+      expect(wa.en.length, "en, pre-swap").toBeLessThanOrEqual(700);
+      expect(wa.hi.length, "hi, pre-swap").toBeLessThanOrEqual(700);
+      for (const input of ["U".repeat(35), undefined]) {
+        const after = applyUtr(packet, input).artifacts.whatsapp;
+        expect(after.en.length, `en, input=${String(input)}`).toBeLessThanOrEqual(700);
+        expect(after.hi.length, `hi, input=${String(input)}`).toBeLessThanOrEqual(700);
+      }
+    }
+  );
+
+  it("never cuts an emoji in half when shrinking (no lone surrogate, so encodeURIComponent cannot throw)", () => {
+    const emoji = "\u{1F600}";
+    for (const template of ["ecom_wrong_item", "upi_double_debit"] as const) {
+      for (let len = 380; len <= 400; len++) {
+        // "x" padding flips the parity of the cut point relative to the surrogate pairs.
+        const pad = len % 2;
+        const emojiText = (n: number) => "x".repeat(pad) + emoji.repeat(Math.floor((n - pad) / 2));
+        const intake = {
+          ...MAXED,
+          category: TEMPLATE_CATEGORY[template],
+          templateId: template,
+          whatHappened: emojiText(len),
+          alreadyDid: emojiText(100 + (len % 100)),
+        } as Intake;
+        const wa = generatePacket(intake, catalog, NOW).artifacts.whatsapp;
+        for (const text of [wa.en, wa.hi]) {
+          expect(text.length, `${template} len=${len}`).toBeLessThanOrEqual(700);
+          expect(() => encodeURIComponent(text), `${template} len=${len}`).not.toThrow();
+        }
+      }
+    }
+  });
 
   it("shrinks the 'already tried' line before the user's own narrative", () => {
     const intake: Intake = {

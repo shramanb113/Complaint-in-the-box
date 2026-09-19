@@ -36,25 +36,31 @@ const UTR_WORST_CASE_GROWTH =
     utrLine("x".repeat(UTR_MAX_LENGTH), "en").length
   ) - utrLine(UTR_TOKEN, "en").length;
 
+const occurrences = (text: string): number => text.split(UTR_TOKEN).length - 1;
+
 /**
  * Fills the WhatsApp template and enforces the PRD's <=700-char cap by
  * shrinking the slot *values* (not the assembled string) and re-filling.
- * When the text carries UTR_TOKEN, the cap applies to the text *after* the
- * worst-case UTR substitution.
+ * applyUtr replaces every UTR_TOKEN, including any the user typed into free
+ * text, so the cap applies to the text *after* the worst-case substitution of
+ * each occurrence still present.
  */
 function fillWhatsappWithinBudget(template: string, slots: Record<string, string>): string {
   let adjusted = slots;
   let filled = fillSlots(template, adjusted);
-  const budget = WHATSAPP_MAX_CHARS - (filled.includes(UTR_TOKEN) ? UTR_WORST_CASE_GROWTH : 0);
   for (const key of SHRINKABLE_SLOTS) {
+    const budget = WHATSAPP_MAX_CHARS - occurrences(filled) * UTR_WORST_CASE_GROWTH;
     const overBudget = filled.length - budget;
     if (overBudget <= 0) break;
     const original = adjusted[key] ?? "";
     if (original.length === 0) continue;
     const targetLength = Math.max(0, original.length - overBudget - TRUNCATION_ELLIPSIS.length);
+    let cut = original.slice(0, targetLength);
+    // Never leave half of a surrogate pair (emoji) at the cut.
+    if (/[\uD800-\uDBFF]$/.test(cut)) cut = cut.slice(0, -1);
     adjusted = {
       ...adjusted,
-      [key]: original.slice(0, targetLength).trimEnd() + TRUNCATION_ELLIPSIS,
+      [key]: cut.trimEnd() + TRUNCATION_ELLIPSIS,
     };
     filled = fillSlots(template, adjusted);
   }
