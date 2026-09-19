@@ -45,6 +45,7 @@ export interface Intake {
   orderId?: string;
   utr?: string;
   amountInr: number;
+  listedPriceInr?: number;
   paidOn: string;
   deliveredOn?: string;
   issueOn?: string;

@@ -67,6 +67,36 @@ describe("IntakeSchema", () => {
   });
 });
 
+describe("IntakeSchema - fee_drip_pricing", () => {
+  const dripFixture = {
+    ...baseIntake,
+    category: "hidden_fee" as const,
+    templateId: "fee_drip_pricing" as const,
+    platform: "zepto" as const,
+    desiredRemedy: "remove_hidden_fee" as const,
+  };
+
+  it("requires listedPriceInr for fee_drip_pricing", () => {
+    expect(() => IntakeSchema.parse(dripFixture)).toThrow();
+  });
+
+  it("accepts fee_drip_pricing when listedPriceInr is present and less than amountInr", () => {
+    expect(() =>
+      IntakeSchema.parse({ ...dripFixture, listedPriceInr: 299, amountInr: 349 })
+    ).not.toThrow();
+  });
+
+  it("rejects listedPriceInr >= amountInr for fee_drip_pricing", () => {
+    expect(() =>
+      IntakeSchema.parse({ ...dripFixture, listedPriceInr: 400, amountInr: 349 })
+    ).toThrow();
+  });
+
+  it("does not require listedPriceInr for other templates", () => {
+    expect(() => IntakeSchema.parse(baseIntake)).not.toThrow();
+  });
+});
+
 describe("IntakeSchema type", () => {
   it("IntakeSchema's inferred output satisfies the Intake interface (compile-time check)", () => {
     // If IntakeSchema's inferred type ever diverges from Intake, this

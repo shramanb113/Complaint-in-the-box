@@ -83,6 +83,7 @@ export function createIntakeSchema(now: Date = new Date()): z.ZodType<Intake> {
       orderId: z.string().optional(),
       utr: z.string().optional(),
       amountInr: z.number().int().positive(),
+      listedPriceInr: z.number().int().positive().optional(),
       paidOn: isoDateNotFuture,
       deliveredOn: isoDateNotFuture.optional(),
       issueOn: isoDateNotFuture.optional(),
@@ -97,7 +98,17 @@ export function createIntakeSchema(now: Date = new Date()): z.ZodType<Intake> {
     .refine((data) => data.platform !== "other" || !!data.companyName, {
       message: "companyName is required when platform is 'other'",
       path: ["companyName"],
-    });
+    })
+    .refine(
+      (data) =>
+        data.templateId !== "fee_drip_pricing" ||
+        (data.listedPriceInr !== undefined && data.listedPriceInr < data.amountInr),
+      {
+        message:
+          "listedPriceInr is required and must be less than amountInr for fee_drip_pricing",
+        path: ["listedPriceInr"],
+      }
+    );
 }
 
 export const IntakeSchema: z.ZodType<Intake> = createIntakeSchema();
