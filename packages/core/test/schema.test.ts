@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { z } from "zod";
-import { IntakeSchema, createIntakeSchema } from "../src/schema";
+import { IntakeSchema, TemplateIdSchema, createIntakeSchema } from "../src/schema";
+import { TEMPLATE_CATEGORY } from "../src/templateCategory";
 import type { Intake } from "../src/types";
 
 const baseIntake = {
@@ -103,5 +104,34 @@ describe("IntakeSchema type", () => {
     // assignment fails to compile under `tsc --noEmit` — that's the point.
     const _typeCheck: Intake = {} as z.infer<typeof IntakeSchema>;
     expect(_typeCheck).toBeDefined();
+  });
+});
+
+describe("IntakeSchema - free-text bounds and category consistency", () => {
+  it.each([
+    ["companyName", 60],
+    ["orderId", 30],
+    ["city", 50],
+    ["state", 50],
+    ["alreadyDid", 200],
+    ["userDisplayName", 50],
+    ["utr", 35],
+  ] as const)("accepts %s at %i characters and rejects one more", (field, max) => {
+    const base = { ...baseIntake, platform: "other" as const, companyName: "Local Shop" };
+    expect(() => IntakeSchema.parse({ ...base, [field]: "a".repeat(max) })).not.toThrow();
+    expect(() => IntakeSchema.parse({ ...base, [field]: "a".repeat(max + 1) })).toThrow();
+  });
+
+  it("rejects a templateId that does not belong to the chosen category", () => {
+    expect(() => IntakeSchema.parse({ ...baseIntake, category: "upi" as const })).toThrow();
+    expect(() => IntakeSchema.parse({ ...baseIntake, category: "food" as const })).toThrow();
+  });
+
+  it("maps every template id to a category", () => {
+    expect(Object.keys(TEMPLATE_CATEGORY).sort()).toEqual([...TemplateIdSchema.options].sort());
+    expect(TEMPLATE_CATEGORY.fee_drip_pricing).toBe("hidden_fee");
+    expect(TEMPLATE_CATEGORY.upi_double_debit).toBe("upi");
+    expect(TEMPLATE_CATEGORY.food_missing_item).toBe("food");
+    expect(TEMPLATE_CATEGORY.ecom_damaged).toBe("ecommerce");
   });
 });

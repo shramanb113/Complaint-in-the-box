@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { nowToIstYMD, ymdFromISODate, type YMD } from "./dates";
 import type { Intake } from "./types";
+import { TEMPLATE_CATEGORY } from "./templateCategory";
 
 export const LocaleSchema = z.enum(["en", "hi", "both"]);
 export const CategorySchema = z.enum(["ecommerce", "upi", "food", "hidden_fee"]);
@@ -79,21 +80,21 @@ export function createIntakeSchema(now: Date = new Date()): z.ZodType<Intake> {
       templateId: TemplateIdSchema,
       locale: LocaleSchema,
       platform: PlatformSchema,
-      companyName: z.string().min(1).optional(),
-      orderId: z.string().optional(),
-      utr: z.string().optional(),
+      companyName: z.string().min(1).max(60).optional(),
+      orderId: z.string().max(30).optional(),
+      utr: z.string().max(35).optional(),
       amountInr: z.number().int().positive(),
       listedPriceInr: z.number().int().positive().optional(),
       paidOn: isoDateNotFuture,
       deliveredOn: isoDateNotFuture.optional(),
       issueOn: isoDateNotFuture.optional(),
-      city: z.string().optional(),
-      state: z.string().optional(),
+      city: z.string().max(50).optional(),
+      state: z.string().max(50).optional(),
       whatHappened: z.string().min(20).max(400),
-      alreadyDid: z.string().optional(),
+      alreadyDid: z.string().max(200).optional(),
       desiredRemedy: DesiredRemedySchema,
       deadlineDays: z.union([z.literal(2), z.literal(7), z.literal(15)]),
-      userDisplayName: z.string().optional(),
+      userDisplayName: z.string().max(50).optional(),
     })
     .refine((data) => data.platform !== "other" || !!data.companyName, {
       message: "companyName is required when platform is 'other'",
@@ -108,7 +109,11 @@ export function createIntakeSchema(now: Date = new Date()): z.ZodType<Intake> {
           "listedPriceInr is required and must be less than amountInr for fee_drip_pricing",
         path: ["listedPriceInr"],
       }
-    );
+    )
+    .refine((data) => TEMPLATE_CATEGORY[data.templateId] === data.category, {
+      message: "templateId does not belong to the chosen category",
+      path: ["templateId"],
+    });
 }
 
 export const IntakeSchema: z.ZodType<Intake> = createIntakeSchema();
