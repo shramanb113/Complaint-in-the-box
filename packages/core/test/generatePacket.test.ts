@@ -253,3 +253,41 @@ describe("generatePacket - ecom_not_delivered", () => {
     expect(wordCount).toBeLessThanOrEqual(350);
   });
 });
+
+const damagedFixture: Intake = {
+  category: "ecommerce",
+  templateId: "ecom_damaged",
+  locale: "en",
+  platform: "flipkart",
+  orderId: "OD300",
+  amountInr: 3200,
+  paidOn: "2026-09-05",
+  deliveredOn: "2026-09-09",
+  whatHappened: "Box was crushed in transit and the glass item inside arrived shattered.",
+  desiredRemedy: "replacement",
+  deadlineDays: 7,
+};
+
+describe("generatePacket - ecom_damaged", () => {
+  it("mentions the condition on arrival and includes all required facts", () => {
+    const packet = generatePacket(damagedFixture, catalog, FIXED_NOW);
+    const wa = packet.artifacts.whatsapp.en;
+    expect(wa).toContain("OD300");
+    expect(wa).toContain("damaged");
+    expect(wa).toContain("shattered");
+    expect(wa.length).toBeLessThanOrEqual(700);
+  });
+
+  it("produces a complete Hindi WhatsApp text with no unfilled slots", () => {
+    const packet = generatePacket(damagedFixture, catalog, FIXED_NOW);
+    expect(packet.artifacts.whatsapp.hi).not.toMatch(/\{\{/);
+    expect(packet.artifacts.whatsapp.hi.length).toBeLessThanOrEqual(700);
+  });
+
+  it("produces an email body within the 180-350 word range", () => {
+    const packet = generatePacket(damagedFixture, catalog, FIXED_NOW);
+    const wordCount = packet.artifacts.emailBody.en.trim().split(/\s+/).length;
+    expect(wordCount).toBeGreaterThanOrEqual(180);
+    expect(wordCount).toBeLessThanOrEqual(350);
+  });
+});
