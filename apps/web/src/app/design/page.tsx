@@ -4,7 +4,7 @@ import { isDesignPageEnabled } from "@/lib/design-page";
 import { Gallery } from "./gallery";
 
 export const metadata: Metadata = {
-  title: "Design system — Nyay Patra",
+  title: "Design system",
   robots: { index: false, follow: false },
 };
 

@@ -49,7 +49,7 @@ export function Gallery() {
   const [platform, setPlatform] = React.useState<string | undefined>("flipkart");
 
   return (
-    <main className="mx-auto max-w-[960px] px-4 py-8">
+    <div className="mx-auto max-w-[960px]">
       <h1 className="mb-1 font-display text-4xl font-extrabold tracking-tighter">Design system</h1>
       <p className="mb-8 text-sm font-medium">Poster Pop tokens and components. Internal page — not linked from the site.</p>
 
@@ -160,6 +160,6 @@ export function Gallery() {
           </div>
         </div>
       </Section>
-    </main>
+    </div>
   );
 }

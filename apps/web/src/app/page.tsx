@@ -10,7 +10,7 @@ export default function HomePage() {
   const sample = buildSampleLetter();
 
   return (
-    <main className="mx-auto flex max-w-[1040px] flex-col gap-16 px-4 py-10 sm:py-14">
+    <div className="flex flex-col gap-16">
       <section className="grid items-start gap-10 lg:grid-cols-[1fr_minmax(0,460px)]">
         <div className="flex flex-col items-start gap-6">
           <div className="motion-safe:animate-rise" style={rise(0)}>
@@ -41,13 +41,6 @@ export default function HomePage() {
       <WhatYouGet />
       <HowItWorks />
       <Promises />
-
-      <footer className="border-t-[3px] border-ink pt-6 text-sm font-medium">
-        <p className="font-display text-base font-extrabold">Nyay Patra</p>
-        <p className="mt-1 max-w-2xl">
-          In development. Not affiliated with any shop, app or bank, and not a substitute for advice from a lawyer.
-        </p>
-      </footer>
-    </main>
+    </div>
   );
 }

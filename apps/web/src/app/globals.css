@@ -2,6 +2,9 @@
 @import "@nyaypatra/ui/styles.css";
 @source "../../../../packages/ui/src";
 
+/* Hindi needs more line height than Latin: matras above and below the line collide at tight headings. */
+@custom-variant hi (&:lang(hi));
+
 /* Page-level entrance used by the landing page; the shared design tokens live in @nyaypatra/ui. */
 @theme {
   --animate-rise: rise 520ms cubic-bezier(0.2, 0.9, 0.3, 1) both;
