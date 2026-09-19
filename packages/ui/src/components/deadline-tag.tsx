@@ -11,7 +11,7 @@ export function DeadlineTag({ tone = "urgent", children, className }: DeadlineTa
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-lg border-2 border-ink px-2 py-0.5 text-xs font-extrabold shadow-hard-sm",
+        "inline-flex items-center rounded-lg border-2 border-ink px-2 py-0.5 text-sm font-extrabold shadow-hard-sm",
         tone === "urgent" ? "bg-tomato text-ink" : "bg-turmeric text-ink",
         className
       )}

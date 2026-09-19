@@ -34,6 +34,20 @@ describe("Label + Input", () => {
     expect(screen.getByLabelText("Order ID")).toHaveAttribute("aria-invalid", "true");
   });
 
+  it("keeps placeholder text at 65% ink, not the 40% that fails AA contrast", () => {
+    render(
+      <>
+        <Input aria-label="City" />
+        <Textarea aria-label="Story" />
+      </>
+    );
+    for (const name of ["City", "Story"]) {
+      const { className } = screen.getByLabelText(name);
+      expect(className).toContain("placeholder:text-ink/65");
+      expect(className).not.toContain("placeholder:text-ink/40");
+    }
+  });
+
   it("forwards a custom className", () => {
     render(<Input aria-label="City" className="max-w-40" />);
     expect(screen.getByLabelText("City").className).toContain("max-w-40");
