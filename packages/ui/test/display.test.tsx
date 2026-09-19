@@ -21,6 +21,11 @@ describe("ChatBubble", () => {
     expect(fontSizePx(bubble.className)).toBeGreaterThanOrEqual(14);
   });
 
+  it("breaks long unbroken strings (order ids, URLs) instead of overflowing the bubble", () => {
+    render(<ChatBubble>{"https://example.com/" + "a".repeat(200)}</ChatBubble>);
+    expect(screen.getByText(/https:\/\/example\.com/).className).toContain("wrap-break-word");
+  });
+
   it("uses the wa-dark token, not a raw hex, for the time and ticks", () => {
     render(<ChatBubble time="10:42">Hi</ChatBubble>);
     const time = screen.getByText("✓✓ 10:42");
@@ -44,6 +49,11 @@ describe("DeadlineTag", () => {
     expect(screen.getByText("Reply by 26 Sep").className).not.toContain("text-white");
     rerender(<DeadlineTag tone="ready">Ready ✓</DeadlineTag>);
     expect(screen.getByText("Ready ✓").className).toContain("bg-turmeric");
+  });
+
+  it("sets its text at 14px or larger so Hindi deadlines stay readable", () => {
+    render(<DeadlineTag>{"26 सितंबर तक जवाब दें"}</DeadlineTag>);
+    expect(fontSizePx(screen.getByText(/सितंबर/).className)).toBeGreaterThanOrEqual(14);
   });
 });
 
