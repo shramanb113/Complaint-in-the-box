@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "generate:templates": "tsx scripts/generate-templates.ts",
     "print:fixture": "tsx src/cli.ts"
   },
   "dependencies": {

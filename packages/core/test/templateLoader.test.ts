@@ -61,3 +61,9 @@ describe("loadTemplateFile - upi_debit_merchant_no_credit", () => {
     expect(sections.whatsapp + sections.email_body).not.toMatch(/penalty/i);
   });
 });
+
+describe("loadTemplateFile - unknown template", () => {
+  it("throws a clear error for a template that does not exist", () => {
+    expect(() => loadTemplateFile("does_not_exist", "en")).toThrow('Unknown template "does_not_exist.en"');
+  });
+});

@@ -1,6 +1,4 @@
-import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { TEMPLATES } from "./generated/templates.generated";
 
 export interface TemplateSections {
   whatsapp: string;
@@ -39,11 +37,10 @@ export function fillSlots(text: string, slots: Record<string, string>): string {
   });
 }
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const TEMPLATES_DIR = join(__dirname, "..", "data", "templates");
-
 export function loadTemplateFile(templateId: string, locale: "en" | "hi"): TemplateSections {
-  const path = join(TEMPLATES_DIR, `${templateId}.${locale}.md`);
-  const raw = readFileSync(path, "utf-8");
+  const raw = TEMPLATES[`${templateId}.${locale}`];
+  if (raw === undefined) {
+    throw new Error(`Unknown template "${templateId}.${locale}"`);
+  }
   return parseTemplateMarkdown(raw);
 }
