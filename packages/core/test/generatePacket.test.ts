@@ -215,3 +215,41 @@ describe("generatePacket - upi_debit_merchant_no_credit", () => {
     expect(packet.artifacts.whatsapp.hi).not.toMatch(/\{\{/);
   });
 });
+
+const notDeliveredFixture: Intake = {
+  category: "ecommerce",
+  templateId: "ecom_not_delivered",
+  locale: "en",
+  platform: "flipkart",
+  orderId: "OD200",
+  amountInr: 1499,
+  paidOn: "2026-09-08",
+  whatHappened: "Promised delivery date was 3 days ago and the item has still not arrived.",
+  alreadyDid: "contacted support twice",
+  desiredRemedy: "full_refund_original_mode",
+  deadlineDays: 7,
+};
+
+describe("generatePacket - ecom_not_delivered", () => {
+  it("includes all required facts and mentions non-delivery, in English", () => {
+    const packet = generatePacket(notDeliveredFixture, catalog, FIXED_NOW);
+    const wa = packet.artifacts.whatsapp.en;
+    expect(wa).toContain("OD200");
+    expect(wa).toContain("₹1,499");
+    expect(wa).toContain("not been delivered");
+    expect(wa.length).toBeLessThanOrEqual(700);
+  });
+
+  it("produces a complete Hindi WhatsApp text with no unfilled slots", () => {
+    const packet = generatePacket(notDeliveredFixture, catalog, FIXED_NOW);
+    expect(packet.artifacts.whatsapp.hi).not.toMatch(/\{\{/);
+    expect(packet.artifacts.whatsapp.hi.length).toBeLessThanOrEqual(700);
+  });
+
+  it("produces an email body within the 180-350 word range", () => {
+    const packet = generatePacket(notDeliveredFixture, catalog, FIXED_NOW);
+    const wordCount = packet.artifacts.emailBody.en.trim().split(/\s+/).length;
+    expect(wordCount).toBeGreaterThanOrEqual(180);
+    expect(wordCount).toBeLessThanOrEqual(350);
+  });
+});
