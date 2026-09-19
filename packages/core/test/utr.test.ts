@@ -97,3 +97,34 @@ describe("applyUtr", () => {
     expect(applyUtr(ecom, "409912345678").artifacts).toEqual(ecom.artifacts);
   });
 });
+
+describe("applyUtr never leaves a bare token in the finished letter", () => {
+  const embedded: Intake = { ...upiIntake, whatHappened: "Ref [[UTR]] shown in my app statement" };
+  const packet = generatePacket(embedded, catalog, NOW);
+
+  it("starts with the token typed into the narrative reaching every artifact (guards against a vacuous test)", () => {
+    expect(packet.artifacts.whatsapp.en).toContain("Ref [[UTR]] shown");
+    expect(packet.artifacts.whatsapp.hi).toContain("Ref [[UTR]] shown");
+    expect(packet.artifacts.emailBody.en).toContain("Ref [[UTR]] shown");
+    expect(packet.artifacts.bankFields?.Issue).toContain(UTR_TOKEN);
+    expect(packet.artifacts.nchFields["Nature of Complaint"]).toContain(UTR_TOKEN);
+  });
+
+  it("removes it from every output field when no UTR is entered", () => {
+    const { artifacts } = applyUtr(packet, undefined);
+    expect(JSON.stringify(artifacts)).not.toContain(UTR_TOKEN);
+    expect(artifacts.nchFields["Nature of Complaint"]).toBe("Ref  shown in my app statement");
+  });
+
+  it("swaps it for the UTR in every output field, including embedded portal and bank values", () => {
+    const { artifacts } = applyUtr(packet, "409912345678");
+    expect(JSON.stringify(artifacts)).not.toContain(UTR_TOKEN);
+    expect(artifacts.nchFields["Nature of Complaint"]).toBe("Ref 409912345678 shown in my app statement");
+    expect(artifacts.bankFields?.Issue).toBe("Ref 409912345678 shown in my app statement");
+  });
+
+  it.each([undefined, "409912345678"])("leaves no token anywhere for a normal UPI packet (input=%s)", (input) => {
+    const { artifacts } = applyUtr(generatePacket(upiIntake, catalog, NOW), input);
+    expect(JSON.stringify(artifacts)).not.toContain(UTR_TOKEN);
+  });
+});

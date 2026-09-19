@@ -23,14 +23,24 @@ export function normalizeUtr(input: string): string | undefined {
   return /^[A-Za-z0-9]{8,35}$/.test(compact) ? compact : undefined;
 }
 
-/** Returns a new packet with UTR_TOKEN replaced by the (normalized) UTR, or by the "not available" wording. */
+/**
+ * Returns a new packet with every UTR_TOKEN replaced by the (normalized) UTR,
+ * or by the "not available" wording. The token can also appear where the user
+ * typed it into free text, so on the missing path any token left after the
+ * " (UTR: [[UTR]])" rewrite is removed, and embedded portal/bank values are
+ * swapped like the text artifacts.
+ */
 export function applyUtr(packet: Packet, input: string | undefined): Packet {
   const utr = input === undefined ? undefined : normalizeUtr(input);
   const tokenLine = ` (UTR: ${UTR_TOKEN})`;
   const swap = (text: string, locale: "en" | "hi"): string =>
     utr
       ? text.split(UTR_TOKEN).join(utr)
-      : text.split(tokenLine).join(utrLine(undefined, locale));
+      : text.split(tokenLine).join(utrLine(undefined, locale)).split(UTR_TOKEN).join("");
+  const swapField = (value: string): string =>
+    value === UTR_TOKEN ? (utr ?? UTR_BANK_MISSING) : value.split(UTR_TOKEN).join(utr ?? "");
+  const swapFields = (fields: Record<string, string>): Record<string, string> =>
+    Object.fromEntries(Object.entries(fields).map(([key, value]) => [key, swapField(value)]));
 
   const { artifacts } = packet;
   return {
@@ -49,14 +59,8 @@ export function applyUtr(packet: Packet, input: string | undefined): Packet {
         en: swap(artifacts.emailBody.en, "en"),
         hi: swap(artifacts.emailBody.hi, "hi"),
       },
-      bankFields: artifacts.bankFields
-        ? Object.fromEntries(
-            Object.entries(artifacts.bankFields).map(([key, value]) => [
-              key,
-              value === UTR_TOKEN ? (utr ?? UTR_BANK_MISSING) : value,
-            ])
-          )
-        : undefined,
+      nchFields: swapFields(artifacts.nchFields),
+      bankFields: artifacts.bankFields ? swapFields(artifacts.bankFields) : undefined,
     },
   };
 }
