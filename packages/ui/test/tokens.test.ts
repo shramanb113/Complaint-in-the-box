@@ -46,7 +46,14 @@ describe("design tokens (theme.css)", () => {
   it("uses no blur in hard shadows", () => {
     const shadows = css.split("\n").filter((line) => line.includes("--shadow-hard"));
     expect(shadows.length).toBeGreaterThanOrEqual(4);
-    for (const line of shadows) expect(line).toMatch(/\d+px \d+px 0 /);
+    // Anchored: exactly "<n>px <n>px 0 <color>", so a blur like "4px 4px 8px 0 ..." fails.
+    const noBlur = /--shadow-hard[\w-]*:\s*\d+px \d+px 0 [^\s,;]+;\s*$/;
+    for (const line of shadows) expect(line).toMatch(noBlur);
+    expect("--shadow-hard: 4px 4px 8px 0 var(--color-ink);").not.toMatch(noBlur);
+  });
+
+  it("draws the 3px green focus ring for every :focus-visible element", () => {
+    expect(css).toMatch(/:focus-visible\s*\{[^}]*outline:\s*3px\s+solid\s+var\(--color-wa\)\s*;/);
   });
 
   it("keeps Space Mono for .font-mono inside Hindi, falling back to Mukta for Devanagari", () => {
