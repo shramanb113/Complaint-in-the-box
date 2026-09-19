@@ -5,3 +5,6 @@ export { Textarea } from "./components/textarea";
 export { Label } from "./components/label";
 export { ChipGroup, type ChipGroupProps } from "./components/chip-group";
 export { Tabs, TabsList, TabsTrigger, TabsContent } from "./components/tabs";
+export { ChatBubble, type ChatBubbleProps } from "./components/chat-bubble";
+export { DeadlineTag, type DeadlineTagProps } from "./components/deadline-tag";
+export { Sticker, type StickerProps } from "./components/sticker";
