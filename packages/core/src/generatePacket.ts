@@ -10,32 +10,55 @@ import {
 import { formatInr, formatInrNumber } from "./money";
 import { REMEDY_TEXT } from "./remedyText";
 import { loadTemplateFile, fillSlots } from "./templateLoader";
-import { utrLine, UTR_BANK_MISSING } from "./utr";
+import { utrLine, UTR_BANK_MISSING, UTR_TOKEN } from "./utr";
 
 const WHATSAPP_MAX_CHARS = 700;
 const TRUNCATION_ELLIPSIS = "…";
 
 /**
- * Fills the WhatsApp template and defensively enforces the PRD's ≤700-char
- * cap. If the filled text is over budget, shrink the *whatHappened* slot
- * value specifically (not the assembled string) so the closing
- * demand/deadline/escalation language is never cut off, then re-fill.
+ * Slots shrunk, in this order, when the WhatsApp text is over budget. The
+ * secondary "already tried" line goes first; the user's own narrative is
+ * shrunk last so the closing demand/deadline/escalation language and the core
+ * facts are never cut off.
+ */
+const SHRINKABLE_SLOTS = ["alreadyDidLine", "whatHappened"] as const;
+
+/**
+ * The browser swaps UTR_TOKEN for a real UTR (up to 35 chars) or the "not
+ * available" wording, which can be longer than the token line. Reserve the
+ * worst case so the text is still <= WHATSAPP_MAX_CHARS after substitution.
+ */
+const UTR_MAX_LENGTH = 35;
+const UTR_WORST_CASE_GROWTH =
+  Math.max(
+    utrLine(undefined, "en").length,
+    utrLine(undefined, "hi").length,
+    utrLine("x".repeat(UTR_MAX_LENGTH), "en").length
+  ) - utrLine(UTR_TOKEN, "en").length;
+
+/**
+ * Fills the WhatsApp template and enforces the PRD's <=700-char cap by
+ * shrinking the slot *values* (not the assembled string) and re-filling.
+ * When the text carries UTR_TOKEN, the cap applies to the text *after* the
+ * worst-case UTR substitution.
  */
 function fillWhatsappWithinBudget(template: string, slots: Record<string, string>): string {
-  const filled = fillSlots(template, slots);
-  if (filled.length <= WHATSAPP_MAX_CHARS) {
-    return filled;
+  let adjusted = slots;
+  let filled = fillSlots(template, adjusted);
+  const budget = WHATSAPP_MAX_CHARS - (filled.includes(UTR_TOKEN) ? UTR_WORST_CASE_GROWTH : 0);
+  for (const key of SHRINKABLE_SLOTS) {
+    const overBudget = filled.length - budget;
+    if (overBudget <= 0) break;
+    const original = adjusted[key] ?? "";
+    if (original.length === 0) continue;
+    const targetLength = Math.max(0, original.length - overBudget - TRUNCATION_ELLIPSIS.length);
+    adjusted = {
+      ...adjusted,
+      [key]: original.slice(0, targetLength).trimEnd() + TRUNCATION_ELLIPSIS,
+    };
+    filled = fillSlots(template, adjusted);
   }
-  const overBudget = filled.length - WHATSAPP_MAX_CHARS;
-  const originalWhatHappened = slots.whatHappened ?? "";
-  const targetLength = Math.max(
-    0,
-    originalWhatHappened.length - overBudget - TRUNCATION_ELLIPSIS.length
-  );
-  const truncatedWhatHappened =
-    originalWhatHappened.slice(0, targetLength).trimEnd() + TRUNCATION_ELLIPSIS;
-  const adjustedSlots = { ...slots, whatHappened: truncatedWhatHappened };
-  return fillSlots(template, adjustedSlots);
+  return filled;
 }
 
 const PORTAL_LINKS_ECOM = [
