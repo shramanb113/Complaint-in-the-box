@@ -366,3 +366,46 @@ describe("generatePacket - ecom_seller_ghosted", () => {
     expect(wordCount).toBeLessThanOrEqual(350);
   });
 });
+
+const doubleDebitFixture: Intake = {
+  category: "upi",
+  templateId: "upi_double_debit",
+  locale: "en",
+  platform: "gpay",
+  companyName: "Sharma Electricians",
+  amountInr: 1200,
+  paidOn: "2026-09-13",
+  utr: "409912345678",
+  whatHappened: "The same ₹1,200 was debited twice within one minute for a single payment.",
+  desiredRemedy: "reverse_failed_upi",
+  deadlineDays: 2,
+};
+
+describe("generatePacket - upi_double_debit", () => {
+  it("asks the bank to reverse the duplicate transaction, with the UTR included", () => {
+    const packet = generatePacket(doubleDebitFixture, catalog, FIXED_NOW);
+    const wa = packet.artifacts.whatsapp.en;
+    expect(wa).toContain("409912345678");
+    expect(wa).toMatch(/duplicate/i);
+    expect(wa).toContain("Sharma Electricians");
+    expect(wa.length).toBeLessThanOrEqual(700);
+  });
+
+  it("includes bankFields for the UPI category", () => {
+    const packet = generatePacket(doubleDebitFixture, catalog, FIXED_NOW);
+    expect(packet.artifacts.bankFields).toBeDefined();
+  });
+
+  it("produces a complete Hindi WhatsApp text with no unfilled slots", () => {
+    const packet = generatePacket(doubleDebitFixture, catalog, FIXED_NOW);
+    expect(packet.artifacts.whatsapp.hi).not.toMatch(/\{\{/);
+    expect(packet.artifacts.whatsapp.hi.length).toBeLessThanOrEqual(700);
+  });
+
+  it("produces an email body within the 180-350 word range", () => {
+    const packet = generatePacket(doubleDebitFixture, catalog, FIXED_NOW);
+    const wordCount = packet.artifacts.emailBody.en.trim().split(/\s+/).length;
+    expect(wordCount).toBeGreaterThanOrEqual(180);
+    expect(wordCount).toBeLessThanOrEqual(350);
+  });
+});
