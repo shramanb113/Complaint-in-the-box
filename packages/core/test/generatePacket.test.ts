@@ -409,3 +409,47 @@ describe("generatePacket - upi_double_debit", () => {
     expect(wordCount).toBeLessThanOrEqual(350);
   });
 });
+
+const missingItemFixture: Intake = {
+  category: "food",
+  templateId: "food_missing_item",
+  locale: "en",
+  platform: "swiggy",
+  orderId: "SW100",
+  amountInr: 650,
+  paidOn: "2026-09-17",
+  whatHappened: "2 of the 4 items I ordered were missing from the bag on delivery.",
+  desiredRemedy: "full_refund_original_mode",
+  deadlineDays: 7,
+};
+
+describe("generatePacket - food_missing_item", () => {
+  it("mentions missing items and includes all required facts", () => {
+    const packet = generatePacket(missingItemFixture, catalog, FIXED_NOW);
+    const wa = packet.artifacts.whatsapp.en;
+    expect(wa).toContain("SW100");
+    expect(wa).toContain("missing");
+    expect(wa.length).toBeLessThanOrEqual(700);
+  });
+
+  it("uses ecommerce-style portal links (NCH), not UPI links, for the food category", () => {
+    const packet = generatePacket(missingItemFixture, catalog, FIXED_NOW);
+    expect(
+      packet.artifacts.portalLinks.some((l) => l.label.includes("National Consumer Helpline"))
+    ).toBe(true);
+    expect(packet.artifacts.bankFields).toBeUndefined();
+  });
+
+  it("produces a complete Hindi WhatsApp text with no unfilled slots", () => {
+    const packet = generatePacket(missingItemFixture, catalog, FIXED_NOW);
+    expect(packet.artifacts.whatsapp.hi).not.toMatch(/\{\{/);
+    expect(packet.artifacts.whatsapp.hi.length).toBeLessThanOrEqual(700);
+  });
+
+  it("produces an email body within the 180-350 word range", () => {
+    const packet = generatePacket(missingItemFixture, catalog, FIXED_NOW);
+    const wordCount = packet.artifacts.emailBody.en.trim().split(/\s+/).length;
+    expect(wordCount).toBeGreaterThanOrEqual(180);
+    expect(wordCount).toBeLessThanOrEqual(350);
+  });
+});
