@@ -14,7 +14,12 @@ if (!existsSync(server)) {
 
 // Next's standalone output omits .next/static and public/. A real deploy copies
 // them next to server.js, so do the same here to test the deployable shape.
-cpSync(join(webRoot, ".next", "static"), join(standaloneWeb, ".next", "static"), { recursive: true, force: true });
+const staticDir = join(webRoot, ".next", "static");
+if (!existsSync(staticDir)) {
+  console.error(`Static assets not found at ${staticDir}. Run \`npm run build -w @nyaypatra/web\` first.`);
+  process.exit(1);
+}
+cpSync(staticDir, join(standaloneWeb, ".next", "static"), { recursive: true, force: true });
 const publicDir = join(webRoot, "public");
 if (existsSync(publicDir)) {
   cpSync(publicDir, join(standaloneWeb, "public"), { recursive: true, force: true });
@@ -26,10 +31,10 @@ const base = `http://127.0.0.1:${port}`;
 // Do not pass against somebody else's server that is already on the port.
 let portInUse = false;
 try {
-  await fetch(`${base}/api/health`);
+  await fetch(`${base}/api/health`, { signal: AbortSignal.timeout(2000) });
   portInUse = true;
 } catch {
-  // nothing is listening, which is what we want
+  // nothing is listening (or nothing answers within 2s), which is what we want
 }
 if (portInUse) {
   console.error(`Port ${port} is already in use by another server. Stop it and run the smoke test again.`);
@@ -78,7 +83,11 @@ try {
   check("/ returns 200", home.status === 200);
   check("/design is hidden in production", (await fetch(`${base}/design`)).status === 404);
 
-  const cssHref = (await home.text()).match(/href="(\/_next\/static\/[^"]+\.css)"/)?.[1];
+  // Tolerate attribute order and a ?dpl=... query string: find each stylesheet <link>, then its href.
+  const stylesheetTags = (await home.text()).match(/<link\b[^>]*>/g)?.filter((tag) => /\brel="stylesheet"/.test(tag)) ?? [];
+  const cssHref = stylesheetTags
+    .map((tag) => /\bhref="([^"]+)"/.exec(tag)?.[1])
+    .find((href) => href?.startsWith("/_next/static/"));
   let cssOk = false;
   if (cssHref) {
     const css = await fetch(`${base}${cssHref}`);
