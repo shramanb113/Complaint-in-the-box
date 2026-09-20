@@ -1,4 +1,4 @@
-import { computeDeadlineYMD, formatYMDEn, generatePacket, loadCompanyCatalog, type Intake } from "@nyaypatra/core";
+import { computeDeadlineYMD, formatYMDEn, formatYMDHi, generatePacket, loadCompanyCatalog, type Intake } from "@nyaypatra/core";
 
 /** Fixed on purpose: a moving date would change the prerendered page on every build. 12:00 IST. */
 const SAMPLE_NOW = new Date("2026-09-19T06:30:00Z");
@@ -30,9 +30,10 @@ export function buildSampleLetter() {
   const catalog = loadCompanyCatalog();
   const en = generatePacket(BASE_INTAKE, catalog, SAMPLE_NOW);
   const hi = generatePacket({ ...BASE_INTAKE, locale: "hi", whatHappened: HINDI_STORY }, catalog, SAMPLE_NOW);
+  const deadline = computeDeadlineYMD(BASE_INTAKE.deadlineDays, SAMPLE_NOW);
   return {
     whatsapp: { en: en.artifacts.whatsapp.en, hi: hi.artifacts.whatsapp.hi },
     deadlineDays: BASE_INTAKE.deadlineDays,
-    deadlineLabel: formatYMDEn(computeDeadlineYMD(BASE_INTAKE.deadlineDays, SAMPLE_NOW)),
+    deadlineLabel: { en: formatYMDEn(deadline), hi: formatYMDHi(deadline) },
   };
 }

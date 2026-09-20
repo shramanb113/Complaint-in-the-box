@@ -22,11 +22,11 @@ describe("buildSampleLetter", () => {
     expect(buildSampleLetter()).toEqual(sample);
   });
 
-  it("states a reply deadline seven days after the fixed sample date", () => {
+  it("states a reply deadline seven days after the fixed sample date, in both languages", () => {
     expect(sample.deadlineDays).toBe(7);
-    expect(sample.deadlineLabel).toBe("26 Sep 2026");
-    expect(sample.whatsapp.en).toContain(sample.deadlineLabel);
-    expect(sample.whatsapp.hi).toContain("26 सितंबर 2026");
+    expect(sample.deadlineLabel).toEqual({ en: "26 Sep 2026", hi: "26 सितंबर 2026" });
+    expect(sample.whatsapp.en).toContain(sample.deadlineLabel.en);
+    expect(sample.whatsapp.hi).toContain(sample.deadlineLabel.hi);
   });
 
   it("uses a fictional store, never a real company's name or legal name", () => {
