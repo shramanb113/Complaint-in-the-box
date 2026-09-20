@@ -14,4 +14,8 @@ The `/design` gallery is hidden by default and returns 404 in production. Set `N
 
 Do not add `"type": "module"` to `apps/web/package.json`. The standalone build copies that file next to a CommonJS `server.js`, which would then fail to load.
 
-`npm run smoke -w @nyaypatra/web` starts the built standalone server on port 3457, copies `.next/static` and `public/` into place as a deploy would, and checks the health endpoint, the home page, the hidden `/design` page and that the stylesheet is served.
+Every page is rendered per request, because the layout reads the `np_lang` language cookie (Next opts a route into dynamic rendering when it reads cookies). The cookie is set by a Server Action from the header's language toggle, is `HttpOnly`, lasts a year, and only accepts `en` or `hi`. The legal pages read an optional `CONTACT_EMAIL` environment variable **at run time** and show a contact line only when it is set.
+
+Routes: `/`, `/how-it-works`, `/new/[category]` (a stub until the intake form ships), `/legal/disclaimer`, `/legal/privacy`, `/legal/terms`, `/api/health`, and the hidden `/design`.
+
+`npm run smoke -w @nyaypatra/web` starts the built standalone server on port 3457, copies `.next/static` and `public/` into place as a deploy would, and checks the health endpoint, the home page, every public page, the 404s, that the language cookie switches `<html lang>` and the Hindi text, the hidden `/design` page and that the stylesheet is served.

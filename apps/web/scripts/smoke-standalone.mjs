@@ -82,6 +82,30 @@ try {
   const home = await fetch(`${base}/`);
   check("/ returns 200", home.status === 200);
   check("/design is hidden in production", (await fetch(`${base}/design`)).status === 404);
+  for (const path of [
+    "/how-it-works",
+    "/legal/disclaimer",
+    "/legal/privacy",
+    "/legal/terms",
+    "/new/ecommerce",
+    "/new/hidden_fee?template=fee_drip_pricing",
+    "/new/ecommerce?template=upi_double_debit",
+  ]) {
+    check(`${path} returns 200`, (await fetch(`${base}${path}`)).status === 200);
+  }
+  check("/new/bogus returns 404", (await fetch(`${base}/new/bogus`)).status === 404);
+  check("an unknown page returns 404", (await fetch(`${base}/no-such-page`)).status === 404);
+
+  // The site language comes from the np_lang cookie and must be right in the first HTML.
+  const htmlLang = async (cookie) => {
+    const response = await fetch(`${base}/`, cookie ? { headers: { cookie } } : undefined);
+    return /<html[^>]*\blang="([^"]+)"/.exec(await response.text())?.[1];
+  };
+  check("/ is English by default", (await htmlLang()) === "en");
+  check("the np_lang=hi cookie serves Hindi", (await htmlLang("np_lang=hi")) === "hi");
+  check("a junk np_lang cookie falls back to English", (await htmlLang("np_lang=zz")) === "en");
+  const hindiHome = await (await fetch(`${base}/`, { headers: { cookie: "np_lang=hi" } })).text();
+  check("the Hindi home page has Hindi text and the picker anchor", /ऐसी शिकायत/.test(hindiHome) && hindiHome.includes('id="start"'));
 
   // Tolerate attribute order and a ?dpl=... query string: find each stylesheet <link>, then its href.
   const stylesheetTags = (await home.text()).match(/<link\b[^>]*>/g)?.filter((tag) => /\brel="stylesheet"/.test(tag)) ?? [];
