@@ -34,6 +34,11 @@ describe("CategoryPicker", () => {
     expect(document.getElementById("start")).not.toBeNull();
   });
 
+  it("keeps the kicker readable in Hindi (14px minimum)", () => {
+    renderPicker("hi");
+    expect(screen.getByText(pickerMessages.hi.kicker).className).toContain("hi:text-sm");
+  });
+
   it("lists the situations of the chosen category, each linking to the intake route with its template", async () => {
     const user = userEvent.setup();
     renderPicker();

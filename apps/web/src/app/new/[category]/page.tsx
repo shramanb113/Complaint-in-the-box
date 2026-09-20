@@ -32,7 +32,7 @@ export default async function NewComplaintPage({ params, searchParams }: Props) 
 
   return (
     <div className="mx-auto flex max-w-xl flex-col items-start gap-4">
-      <p className="font-mono text-xs font-bold uppercase tracking-wide">{picker.categories[route.category].title}</p>
+      <p className="font-mono text-xs hi:text-sm font-bold uppercase tracking-wide">{picker.categories[route.category].title}</p>
       <h1 className="font-display text-4xl font-extrabold leading-tight tracking-tighter">{t.title}</h1>
       {route.templateId ? (
         <p className="text-lg font-bold">{fill(t.picked, { template: picker.templates[route.templateId] })}</p>
