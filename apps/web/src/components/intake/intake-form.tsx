@@ -29,6 +29,15 @@ export interface IntakeFormProps {
 
 const IDLE: SubmitState = { status: "idle" };
 
+/**
+ * The moment the validator should treat as "now". The validator reads the IST calendar date off it, so noon IST
+ * on the server's `today` gives exactly that date, whatever timezone or (wrong) clock this device has.
+ */
+function serverNow(today: string): Date | undefined {
+  const moment = new Date(`${today}T12:00:00+05:30`);
+  return Number.isNaN(moment.getTime()) ? undefined : moment;
+}
+
 export function IntakeForm({ templateId, locale, strings: t, packetStrings, disclaimer, today, action }: IntakeFormProps) {
   const config = formConfig(templateId);
   const [values, setValues] = useState<RawIntake>(() => defaultRaw(config));
@@ -60,7 +69,7 @@ export function IntakeForm({ templateId, locale, strings: t, packetStrings, disc
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (pending) return;
-    const result = validateIntakeForm(templateId, values);
+    const result = validateIntakeForm(templateId, values, serverNow(today));
     if (!result.ok) {
       setErrors(result.errors);
       focusFirst(result.errors);

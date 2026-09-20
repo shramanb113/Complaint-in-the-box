@@ -30,6 +30,9 @@ function PortalList({ fields }: { fields: Record<string, string> }) {
 /**
  * A plain, no-frills view of a letter: the stopgap until Milestone 4's tabbed page.
  * It ALWAYS shows applyUtr(packet, undefined), so the server's [[UTR]] placeholder never reaches a page.
+ *
+ * Two languages live side by side here. The page chrome (headings, labels, buttons) is in the site language
+ * (`lang={locale}` on the article); only the letter text itself (the <pre> blocks) carries the letter's own language.
  */
 export function PacketPlain({ packet, locale, strings: t, expiresLine }: PacketPlainProps) {
   const { artifacts } = applyUtr(packet, undefined);
@@ -37,7 +40,7 @@ export function PacketPlain({ packet, locale, strings: t, expiresLine }: PacketP
   const languages: UiLocale[] = locale === "hi" ? ["hi", "en"] : ["en", "hi"];
 
   return (
-    <article className="mx-auto flex max-w-2xl flex-col gap-8">
+    <article lang={locale} className="mx-auto flex max-w-2xl flex-col gap-8">
       <header>
         <h2 className="font-display text-3xl font-extrabold leading-tight tracking-tight">{t.title}</h2>
         <p className="mt-2 text-base font-bold">{fill(t.deadline, { date: format(packetDeadline(packet)) })}</p>
@@ -45,21 +48,21 @@ export function PacketPlain({ packet, locale, strings: t, expiresLine }: PacketP
       </header>
 
       {languages.map((lang) => (
-        <section key={lang} lang={lang} aria-label={t.language[lang]} className="flex flex-col gap-4 rounded-card border-[3px] border-ink bg-white p-4 shadow-hard">
+        <section key={lang} aria-label={t.language[lang]} className="flex flex-col gap-4 rounded-card border-[3px] border-ink bg-white p-4 shadow-hard">
           <h3 className="font-display text-xl font-extrabold tracking-tight">
             {t.whatsapp} <span className="font-medium">({t.language[lang]})</span>
           </h3>
-          <pre className={`${box} bg-chat`}>{artifacts.whatsapp[lang]}</pre>
+          <pre lang={lang} className={`${box} bg-chat`}>{artifacts.whatsapp[lang]}</pre>
           <CopyButton className="self-start" text={artifacts.whatsapp[lang]} idleLabel={t.copy} doneLabel={t.copied} />
 
           <h3 className="font-display text-xl font-extrabold tracking-tight">
             {t.email} <span className="font-medium">({t.language[lang]})</span>
           </h3>
           <p className="-mb-2 text-sm font-extrabold">{t.subject}</p>
-          <pre className={`${box} bg-cream`}>{artifacts.emailSubject[lang]}</pre>
+          <pre lang={lang} className={`${box} bg-cream`}>{artifacts.emailSubject[lang]}</pre>
           <CopyButton className="self-start" text={artifacts.emailSubject[lang]} idleLabel={t.copy} doneLabel={t.copied} />
           <p className="-mb-2 text-sm font-extrabold">{t.body}</p>
-          <pre className={`${box} bg-cream`}>{artifacts.emailBody[lang]}</pre>
+          <pre lang={lang} className={`${box} bg-cream`}>{artifacts.emailBody[lang]}</pre>
           <CopyButton className="self-start" text={artifacts.emailBody[lang]} idleLabel={t.copy} doneLabel={t.copied} />
         </section>
       ))}

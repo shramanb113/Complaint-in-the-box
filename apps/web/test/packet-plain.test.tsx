@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from "vitest";
 import { render, screen, within } from "@testing-library/react";
-import { generatePacket, loadCompanyCatalog, UTR_TOKEN, type Intake } from "@nyaypatra/core";
+import { applyUtr, generatePacket, loadCompanyCatalog, UTR_TOKEN, type Intake } from "@nyaypatra/core";
 import { PacketPlain } from "../src/components/packet/packet-plain";
 import { packetMessages } from "../src/lib/i18n/messages/packet";
 import { SAVED_AT, samplePacket } from "./helpers/packet";
@@ -22,16 +22,34 @@ const upiIntake: Intake = {
 
 describe("PacketPlain", () => {
   it("shows the letter in both languages, the site language first", () => {
-    render(<PacketPlain packet={samplePacket()} locale="hi" strings={packetMessages.hi} />);
-    const sections = screen.getAllByRole("region");
-    const langs = sections.map((section) => section.getAttribute("lang"));
-    expect(langs.slice(0, 2)).toEqual(["hi", "en"]);
+    const { container, unmount } = render(<PacketPlain packet={samplePacket()} locale="hi" strings={packetMessages.hi} />);
+    expect(Array.from(container.querySelectorAll("pre"), (pre) => pre.getAttribute("lang"))).toEqual(["hi", "hi", "hi", "en", "en", "en"]);
+    unmount();
+    const english = render(<PacketPlain packet={samplePacket()} locale="en" strings={packetMessages.en} />);
+    expect(Array.from(english.container.querySelectorAll("pre"), (pre) => pre.getAttribute("lang"))).toEqual(["en", "en", "en", "hi", "hi", "hi"]);
   });
 
-  it("tags each language block so the right font and screen-reader voice apply", () => {
-    const { container } = render(<PacketPlain packet={samplePacket()} locale="en" strings={packetMessages.en} />);
-    expect(container.querySelector('section[lang="en"]')).not.toBeNull();
-    expect(container.querySelector('section[lang="hi"]')).not.toBeNull();
+  it.each(["en", "hi"] as const)("tags only the letter text with the letter's language, in the %s site language", (locale) => {
+    const packet = samplePacket();
+    const { artifacts } = applyUtr(packet, undefined);
+    const { container } = render(<PacketPlain packet={packet} locale={locale} strings={packetMessages[locale]} />);
+    for (const lang of ["en", "hi"] as const) {
+      const texts = Array.from(container.querySelectorAll(`pre[lang="${lang}"]`), (pre) => pre.textContent);
+      expect(texts).toEqual([artifacts.whatsapp[lang], artifacts.emailSubject[lang], artifacts.emailBody[lang]]);
+    }
+  });
+
+  it.each(["en", "hi"] as const)("leaves the headings, labels and buttons in the %s site language, not the letter's", (locale) => {
+    const { container } = render(<PacketPlain packet={samplePacket()} locale={locale} strings={packetMessages[locale]} />);
+    const blocks = [packetMessages[locale].language.en, packetMessages[locale].language.hi].map((name) => screen.getByRole("region", { name }));
+    for (const block of blocks) {
+      expect(block.hasAttribute("lang")).toBe(false);
+      for (const tagged of Array.from(block.querySelectorAll("[lang]"))) expect(tagged.tagName).toBe("PRE");
+      for (const chrome of [...within(block).getAllByRole("heading"), ...within(block).getAllByRole("button")]) {
+        expect(chrome.closest("[lang]")?.getAttribute("lang")).toBe(locale);
+      }
+    }
+    expect(container.querySelector("article")?.getAttribute("lang")).toBe(locale);
   });
 
   it("never shows the raw UTR token: a UPI letter reads 'not available' until the browser fills it", () => {

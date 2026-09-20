@@ -12,7 +12,12 @@ import { samplePacket } from "./helpers/packet";
 
 const TODAY = "2026-09-20";
 
-function setup(templateId: TemplateId = "ecom_wrong_item", locale: "en" | "hi" = "en", action = vi.fn(async (): Promise<SubmitState> => ({ status: "idle" }))) {
+function setup(
+  templateId: TemplateId = "ecom_wrong_item",
+  locale: "en" | "hi" = "en",
+  action = vi.fn(async (): Promise<SubmitState> => ({ status: "idle" })),
+  today: string = TODAY
+) {
   const utils = render(
     <IntakeForm
       templateId={templateId}
@@ -20,17 +25,17 @@ function setup(templateId: TemplateId = "ecom_wrong_item", locale: "en" | "hi" =
       strings={intakeMessages[locale]}
       packetStrings={packetMessages[locale]}
       disclaimer={shellMessages[locale].footer.disclaimer}
-      today={TODAY}
+      today={today}
       action={action}
     />
   );
   return { ...utils, action, user: userEvent.setup() };
 }
 
-async function fillValidWrongItem(user: ReturnType<typeof userEvent.setup>) {
+async function fillValidWrongItem(user: ReturnType<typeof userEvent.setup>, paidOn = "2024-05-10") {
   await user.click(screen.getByRole("radio", { name: "Flipkart" }));
   await user.type(screen.getByLabelText("Amount you paid"), "2,499");
-  fireEvent.change(screen.getByLabelText("Date you paid"), { target: { value: "2024-05-10" } });
+  fireEvent.change(screen.getByLabelText("Date you paid"), { target: { value: paidOn } });
   await user.type(screen.getByLabelText("What happened?"), "The item never reached me even after the promised date.");
 }
 
@@ -120,6 +125,23 @@ describe("IntakeForm: validation before sending", () => {
     expect(amount).toHaveAttribute("aria-invalid", "true");
     await user.type(amount, "2");
     expect(amount).not.toHaveAttribute("aria-invalid");
+  });
+
+  it("judges dates against the server's 'today', not the device clock: a date after it is rejected", async () => {
+    const { user, action } = setup("ecom_wrong_item", "en", undefined, "2024-05-09");
+    await fillValidWrongItem(user, "2024-05-10");
+    await user.click(screen.getByRole("button", { name: "Make my letter" }));
+    expect(screen.getByText("This date is in the future. Pick today or an earlier date.")).toBeInTheDocument();
+    expect(screen.getByLabelText("Date you paid")).toHaveAttribute("aria-invalid", "true");
+    expect(action).not.toHaveBeenCalled();
+  });
+
+  it("judges dates against the server's 'today', not the device clock: a date up to it is accepted", async () => {
+    const { user, action } = setup("ecom_wrong_item", "en", undefined, "2099-01-02");
+    await fillValidWrongItem(user, "2099-01-01");
+    await user.click(screen.getByRole("button", { name: "Make my letter" }));
+    await waitFor(() => expect(action).toHaveBeenCalledTimes(1));
+    expect(screen.queryByText("This date is in the future. Pick today or an earlier date.")).toBeNull();
   });
 
   it("explains a rejected amount in plain words", async () => {
