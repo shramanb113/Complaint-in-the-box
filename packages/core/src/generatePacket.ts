@@ -11,6 +11,7 @@ import { formatInr, formatInrNumber } from "./money";
 import { REMEDY_TEXT } from "./remedyText";
 import { loadTemplateFile, fillSlots } from "./templateLoader";
 import { utrLine, UTR_BANK_MISSING, UTR_TOKEN } from "./utr";
+import { truncateGraphemes } from "./text";
 
 const WHATSAPP_MAX_CHARS = 700;
 const TRUNCATION_ELLIPSIS = "…";
@@ -55,9 +56,8 @@ function fillWhatsappWithinBudget(template: string, slots: Record<string, string
     const original = adjusted[key] ?? "";
     if (original.length === 0) continue;
     const targetLength = Math.max(0, original.length - overBudget - TRUNCATION_ELLIPSIS.length);
-    let cut = original.slice(0, targetLength);
-    // Never leave half of a surrogate pair (emoji) at the cut.
-    if (/[\uD800-\uDBFF]$/.test(cut)) cut = cut.slice(0, -1);
+    // Whole characters only: a plain slice can split emoji pairs and Devanagari conjuncts.
+    const cut = truncateGraphemes(original, targetLength);
     adjusted = {
       ...adjusted,
       [key]: cut.trimEnd() + TRUNCATION_ELLIPSIS,
@@ -93,10 +93,10 @@ const PORTAL_LINKS_UPI = [
   },
 ];
 
-/** The payment app or platform itself — e.g. "Google Pay", "Flipkart Internet Private Limited". */
-function appLabel(intake: Intake, catalog: CompanyCatalog): string {
+/** The payment app or platform itself: "Google Pay", "Flipkart Internet Private Limited", or "my UPI app" for an app we do not list. */
+function appLabel(intake: Intake, catalog: CompanyCatalog, locale: "en" | "hi"): string {
   if (intake.category === "upi") {
-    return catalog[intake.platform]?.legalName ?? intake.platform;
+    return catalog[intake.platform]?.legalName ?? (locale === "en" ? "my UPI app" : "मेरे UPI ऐप");
   }
   return catalog[intake.platform]?.legalName ?? intake.companyName ?? intake.platform;
 }
@@ -121,7 +121,8 @@ function buildSlots(intake: Intake, catalog: CompanyCatalog, deadline: YMD) {
     throw new Error("fee_drip_pricing requires listedPriceInr < amountInr");
   }
   const remedy = REMEDY_TEXT[intake.desiredRemedy];
-  const platformName = appLabel(intake, catalog);
+  const platformNameEn = appLabel(intake, catalog, "en");
+  const platformNameHi = appLabel(intake, catalog, "hi");
   const companyName = recipientLabel(intake, catalog);
   const alreadyDidEn = intake.alreadyDid
     ? `Already tried: ${intake.alreadyDid}. No resolution.`
@@ -143,7 +144,7 @@ function buildSlots(intake: Intake, catalog: CompanyCatalog, deadline: YMD) {
   return {
     en: {
       orderId: intake.orderId ?? "[ORDER ID NOT PROVIDED — attach screenshot]",
-      platformName,
+      platformName: platformNameEn,
       companyName,
       amountInr: formatInrNumber(intake.amountInr),
       listedPriceInr: listedPriceInrFormatted,
@@ -162,7 +163,7 @@ function buildSlots(intake: Intake, catalog: CompanyCatalog, deadline: YMD) {
     },
     hi: {
       orderId: intake.orderId ?? "[ऑर्डर आईडी उपलब्ध नहीं — स्क्रीनशॉट संलग्न करें]",
-      platformName,
+      platformName: platformNameHi,
       companyName,
       amountInr: formatInrNumber(intake.amountInr),
       listedPriceInr: listedPriceInrFormatted,
@@ -200,7 +201,7 @@ function bankFields(intake: Intake, deadline: YMD): Record<string, string> | und
     "UTR / Transaction Reference": intake.utr ?? UTR_BANK_MISSING,
     "Amount (INR)": formatInr(intake.amountInr),
     "Date of Transaction": formatYMDEn(ymdFromISODate(intake.paidOn)),
-    "Remitting App": intake.platform,
+    "Remitting App": intake.platform === "other" ? "Other UPI app" : intake.platform,
     Issue: intake.whatHappened,
     "Deadline Given to Bank": formatYMDEn(deadline),
   };
