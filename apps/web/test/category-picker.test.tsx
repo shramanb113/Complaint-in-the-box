@@ -16,7 +16,6 @@ function renderPicker(locale: "en" | "hi" = "en") {
       hint={t.hint}
       legend={t.legend}
       templatesHeading={t.templatesHeading}
-      notSure={t.notSure}
       categories={CATEGORY_ORDER.map((id) => ({ id, title: t.categories[id].title, example: t.categories[id].example }))}
       templates={Object.fromEntries(
         CATEGORY_ORDER.map((id) => [id, grouped[id].map((templateId) => ({ id: templateId, label: t.templates[templateId] }))])
@@ -47,7 +46,7 @@ describe("CategoryPicker", () => {
     const wrong = screen.getByRole("link", { name: /Wrong item delivered/ });
     expect(wrong).toHaveAttribute("href", "/new/ecommerce?template=ecom_wrong_item");
     expect(screen.getAllByRole("link").filter((link) => link.getAttribute("href")?.includes("?template="))).toHaveLength(5);
-    expect(screen.getByRole("link", { name: "None of these? Continue anyway" })).toHaveAttribute("href", "/new/ecommerce");
+    expect(screen.queryByRole("link", { name: /None of these/ })).toBeNull();
   });
 
   it("swaps the list when another category is chosen", async () => {

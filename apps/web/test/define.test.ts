@@ -9,6 +9,10 @@ describe("fill", () => {
   it("leaves a marker with no value visible so the mistake is easy to spot", () => {
     expect(fill("Hi {name}", {})).toBe("Hi {name}");
   });
+
+  it("does not treat inherited object properties as values", () => {
+    expect(fill("{constructor} {toString}", {})).toBe("{constructor} {toString}");
+  });
 });
 
 describe("placeholders", () => {

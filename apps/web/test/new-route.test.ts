@@ -28,4 +28,16 @@ describe("parseNewRoute", () => {
     expect(parseNewRoute("ecommerce", "upi_double_debit")).toEqual({ category: "ecommerce" });
     expect(parseNewRoute("ecommerce", ["ecom_wrong_item", "ecom_damaged"])).toEqual({ category: "ecommerce" });
   });
+
+  it("treats prototype-property names as unknown, never as a hit", () => {
+    for (const name of ["constructor", "__proto__", "toString", "hasOwnProperty"]) {
+      expect(parseNewRoute(name, undefined), name).toBeNull();
+      expect(parseNewRoute("ecommerce", name), name).toEqual({ category: "ecommerce" });
+    }
+  });
+
+  it("ignores an empty template and a one-element array", () => {
+    expect(parseNewRoute("ecommerce", "")).toEqual({ category: "ecommerce" });
+    expect(parseNewRoute("ecommerce", ["ecom_wrong_item"])).toEqual({ category: "ecommerce" });
+  });
 });

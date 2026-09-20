@@ -13,7 +13,7 @@ export function defineMessages<T>(en: T, hi: T): Bilingual<T> {
 
 /** Replaces {name} markers. A marker with no value is left visible so the mistake shows up. */
 export function fill(template: string, values: Record<string, string | number>): string {
-  return template.replace(/\{(\w+)\}/g, (marker, key: string) => (key in values ? String(values[key]) : marker));
+  return template.replace(/\{(\w+)\}/g, (marker, key: string) => (Object.hasOwn(values, key) ? String(values[key]) : marker));
 }
 
 /** The markers in a template, sorted (repeats included). */

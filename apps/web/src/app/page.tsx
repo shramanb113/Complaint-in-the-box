@@ -62,7 +62,6 @@ export default async function HomePage() {
         hint={picker.hint}
         legend={picker.legend}
         templatesHeading={picker.templatesHeading}
-        notSure={picker.notSure}
         categories={CATEGORY_ORDER.map((id) => ({
           id,
           title: picker.categories[id].title,

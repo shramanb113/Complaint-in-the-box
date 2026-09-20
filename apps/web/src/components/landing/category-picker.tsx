@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CategoryTile } from "@nyaypatra/ui";
 import type { Category, TemplateId } from "@nyaypatra/core";
 import { CATEGORY_ICON } from "@/components/icons";
+import { Kicker } from "@/components/kicker";
 
 const TONE: Record<Category, "peach" | "mint" | "butter" | "sky"> = {
   ecommerce: "peach",
@@ -19,7 +20,6 @@ interface CategoryPickerProps {
   hint: string;
   legend: string;
   templatesHeading: string;
-  notSure: string;
   categories: { id: Category; title: string; example: string }[];
   templates: Record<Category, { id: TemplateId; label: string }[]>;
 }
@@ -31,7 +31,6 @@ export function CategoryPicker({
   hint,
   legend,
   templatesHeading,
-  notSure,
   categories,
   templates,
 }: CategoryPickerProps) {
@@ -40,7 +39,7 @@ export function CategoryPicker({
   return (
     <section id="start" aria-labelledby="picker-title" className="scroll-mt-24">
       <div className="mb-6">
-        <p className="mb-1 font-mono text-xs hi:text-sm font-bold uppercase tracking-wide">{kicker}</p>
+        <Kicker className="mb-1">{kicker}</Kicker>
         <h2 id="picker-title" className="font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
           {title}
         </h2>
@@ -83,14 +82,6 @@ export function CategoryPicker({
                 </li>
               ))}
             </ul>
-            <p className="mt-4">
-              <Link
-                href={`/new/${selected}`}
-                className="inline-flex min-h-11 items-center text-sm font-extrabold underline decoration-2 underline-offset-4 hover:decoration-turmeric"
-              >
-                {notSure}
-              </Link>
-            </p>
           </div>
         ) : null}
       </div>

@@ -7,7 +7,6 @@ export interface PickerStrings {
   hint: string;
   legend: string;
   templatesHeading: string;
-  notSure: string;
   categories: Record<Category, { title: string; example: string }>;
   templates: Record<TemplateId, string>;
 }
@@ -19,7 +18,6 @@ export const pickerMessages = defineMessages<PickerStrings>(
     hint: "Pick one, then the situation that matches.",
     legend: "Type of problem",
     templatesHeading: "Which one matches?",
-    notSure: "None of these? Continue anyway",
     categories: {
       ecommerce: { title: "Online shopping", example: "Wrong, damaged or missing orders" },
       upi: { title: "UPI payment", example: "Money debited but not received" },
@@ -45,7 +43,6 @@ export const pickerMessages = defineMessages<PickerStrings>(
     hint: "एक चुनें, फिर वह स्थिति जो आपसे मेल खाती है।",
     legend: "समस्या का प्रकार",
     templatesHeading: "इनमें से कौन-सी स्थिति है?",
-    notSure: "इनमें से कोई नहीं? फिर भी आगे बढ़ें",
     categories: {
       ecommerce: { title: "ऑनलाइन ख़रीदारी", example: "ग़लत, टूटे या न पहुँचे ऑर्डर" },
       upi: { title: "UPI भुगतान", example: "पैसा कटा, पर पहुँचा नहीं" },

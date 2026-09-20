@@ -1,11 +1,12 @@
 import type { ReactNode } from "react";
+import { Kicker } from "@/components/kicker";
 import type { UiLocale } from "@/lib/i18n/locale";
 import { landingMessages } from "@/lib/i18n/messages/landing";
 
 function SectionTitle({ kicker, children }: { kicker: string; children: ReactNode }) {
   return (
     <div className="mb-6">
-      <p className="mb-1 font-mono text-xs hi:text-sm font-bold uppercase tracking-wide">{kicker}</p>
+      <Kicker className="mb-1">{kicker}</Kicker>
       <h2 className="font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">{children}</h2>
     </div>
   );

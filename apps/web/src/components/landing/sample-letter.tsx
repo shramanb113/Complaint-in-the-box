@@ -1,6 +1,7 @@
 "use client";
 
 import { ChatBubble, CopyButton, DeadlineTag, Tabs, TabsContent, TabsList, TabsTrigger } from "@nyaypatra/ui";
+import { Kicker } from "@/components/kicker";
 import type { UiLocale } from "@/lib/i18n/locale";
 
 interface SampleLetterProps {
@@ -16,7 +17,7 @@ export function SampleLetter({ locale, whatsapp, labels }: SampleLetterProps) {
   return (
     <div className="rounded-card border-[3px] border-ink bg-white p-4 shadow-hard-lg">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <p className="font-mono text-xs hi:text-sm font-bold uppercase tracking-wide">{labels.sample}</p>
+        <Kicker>{labels.sample}</Kicker>
         <DeadlineTag>{labels.deadline}</DeadlineTag>
       </div>
       {/* key: a language change re-renders this in place, so reset to the new language's tab. */}
