@@ -2,6 +2,7 @@ import { z } from "zod";
 import { nowToIstYMD, ymdFromISODate, type YMD } from "./dates";
 import type { Intake } from "./types";
 import { TEMPLATE_CATEGORY } from "./templateCategory";
+import { UTR_TOKEN } from "./utr";
 
 export const LocaleSchema = z.enum(["en", "hi", "both"]);
 export const CategorySchema = z.enum(["ecommerce", "upi", "food", "hidden_fee"]);
@@ -43,6 +44,24 @@ export const DesiredRemedySchema = z.enum([
   "remove_hidden_fee",
 ]);
 
+/** Sanity bounds. The amount ceiling is the width the WhatsApp-budget test already assumes; UPI did not exist before 2016. */
+export const MAX_AMOUNT_INR = 999_999_999;
+export const MIN_ISO_DATE = "2016-01-01";
+
+/** The exact issue messages the schema emits. The web form maps issues to plain-language text by these strings. */
+export const SCHEMA_ISSUES = {
+  futureDate: "Date cannot be in the future",
+  tooOldDate: `Date cannot be before ${MIN_ISO_DATE}`,
+  companyRequired: "companyName is required when platform is 'other'",
+  listedPrice: "listedPriceInr is required and must be less than amountInr for fee_drip_pricing",
+  templateCategory: "templateId does not belong to the chosen category",
+  reservedText: "Text cannot contain the reserved marker [[UTR]]",
+} as const;
+
+/** [[UTR]] is the server's placeholder for the UTR; nobody may type it into free text. */
+const noReservedMarker = (schema: z.ZodString) =>
+  schema.refine((val) => !val.includes(UTR_TOKEN), { message: SCHEMA_ISSUES.reservedText });
+
 /**
  * "Today" for date-boundary validation must be the IST calendar date, not the
  * UTC calendar date — the rest of the codebase (dates.ts) treats "today" as
@@ -64,7 +83,8 @@ export function isNotFutureIsoDate(val: string, now: Date = new Date()): boolean
 function createIsoDateNotFutureSchema(now: Date = new Date()) {
   return z
     .string()
-    .refine((val) => isNotFutureIsoDate(val, now), { message: "Date cannot be in the future" });
+    .refine((val) => isNotFutureIsoDate(val, now), { message: SCHEMA_ISSUES.futureDate })
+    .refine((val) => val >= MIN_ISO_DATE, { message: SCHEMA_ISSUES.tooOldDate });
 }
 
 /**
@@ -80,24 +100,24 @@ export function createIntakeSchema(now: Date = new Date()): z.ZodType<Intake> {
       templateId: TemplateIdSchema,
       locale: LocaleSchema,
       platform: PlatformSchema,
-      companyName: z.string().trim().min(1).max(60).optional(),
-      orderId: z.string().max(30).optional(),
+      companyName: noReservedMarker(z.string().trim().min(1).max(60)).optional(),
+      orderId: noReservedMarker(z.string().max(30)).optional(),
       utr: z.string().max(35).optional(),
-      amountInr: z.number().int().positive(),
-      listedPriceInr: z.number().int().positive().optional(),
+      amountInr: z.number().int().positive().max(MAX_AMOUNT_INR),
+      listedPriceInr: z.number().int().positive().max(MAX_AMOUNT_INR).optional(),
       paidOn: isoDateNotFuture,
       deliveredOn: isoDateNotFuture.optional(),
       issueOn: isoDateNotFuture.optional(),
-      city: z.string().max(50).optional(),
-      state: z.string().max(50).optional(),
-      whatHappened: z.string().min(20).max(400),
-      alreadyDid: z.string().max(200).optional(),
+      city: noReservedMarker(z.string().max(50)).optional(),
+      state: noReservedMarker(z.string().max(50)).optional(),
+      whatHappened: noReservedMarker(z.string().min(20).max(400)),
+      alreadyDid: noReservedMarker(z.string().max(200)).optional(),
       desiredRemedy: DesiredRemedySchema,
       deadlineDays: z.union([z.literal(2), z.literal(7), z.literal(15)]),
-      userDisplayName: z.string().max(50).optional(),
+      userDisplayName: noReservedMarker(z.string().max(50)).optional(),
     })
     .refine((data) => data.platform !== "other" || !!data.companyName, {
-      message: "companyName is required when platform is 'other'",
+      message: SCHEMA_ISSUES.companyRequired,
       path: ["companyName"],
     })
     .refine(
@@ -105,13 +125,12 @@ export function createIntakeSchema(now: Date = new Date()): z.ZodType<Intake> {
         data.templateId !== "fee_drip_pricing" ||
         (data.listedPriceInr !== undefined && data.listedPriceInr < data.amountInr),
       {
-        message:
-          "listedPriceInr is required and must be less than amountInr for fee_drip_pricing",
+        message: SCHEMA_ISSUES.listedPrice,
         path: ["listedPriceInr"],
       }
     )
     .refine((data) => TEMPLATE_CATEGORY[data.templateId] === data.category, {
-      message: "templateId does not belong to the chosen category",
+      message: SCHEMA_ISSUES.templateCategory,
       path: ["templateId"],
     });
 }
