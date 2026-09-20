@@ -102,7 +102,9 @@ describe("submitIntake: rate limiting", () => {
     const limiter: RateLimiter = { hit: async () => { throw new Error("db down"); }, purge: async () => 0 };
     expect((await run(deps({ limiter }), "ecom_wrong_item")).status).toBe("saved");
     expect(String(error.mock.calls)).toContain("db down");
-    expect(String(error.mock.calls)).not.toContain("never reached me");
+    const logged = String(error.mock.calls);
+    expect(logged).not.toContain("203.0.113.9");
+    expect(logged).not.toContain("OD123456");
   });
 });
 
@@ -116,6 +118,29 @@ describe("submitIntake: failures", () => {
     expect(result.packet.artifacts.whatsapp.en).toContain("OD123456");
     expect(String(error.mock.calls)).toContain("connection refused");
     expect(String(error.mock.calls)).not.toContain("OD123456");
+  });
+
+  it("logs the underlying cause, never a Drizzle-style message that carries the bound letter", async () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    const drizzleShaped = Object.assign(
+      new Error("Failed query: insert into packets (id, body) values ($1, $2)\nparams: 01ABC,OD123456 The item never reached me even after the promised date passed. Pune Asha"),
+      { cause: new Error("connection refused") }
+    );
+    const store: PacketStore = { save: async () => { throw drizzleShaped; }, get: async () => undefined, deleteExpired: async () => 0 };
+    const result = await run(deps({ store }), "ecom_wrong_item");
+    expect(result.status).toBe("unsaved");
+    const logged = String(error.mock.calls);
+    expect(logged).toContain("connection refused");
+    expect(logged).not.toContain("OD123456");
+    expect(logged).not.toContain("never reached me");
+    expect(logged).not.toContain("params");
+  });
+
+  it("logs a plain error without a cause by its own message", async () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    const store: PacketStore = { save: async () => { throw new Error("disk full"); }, get: async () => undefined, deleteExpired: async () => 0 };
+    expect((await run(deps({ store }), "ecom_wrong_item")).status).toBe("unsaved");
+    expect(String(error.mock.calls)).toContain("disk full");
   });
 
   it("returns a plain error, and stores nothing, when the letter cannot be generated", async () => {
