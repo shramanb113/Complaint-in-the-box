@@ -39,8 +39,11 @@ describe("truncateGraphemes", () => {
       vi.resetModules();
       const fresh = await import("../src/text");
       expect(fresh.truncateGraphemes("ab\u{1F600}cd", 3)).toBe("ab");
+      // The two paths differ here: code points keep "क्" (2 units), the Segmenter path drops the whole conjunct.
+      expect(fresh.truncateGraphemes("क्षत्रिय", 2)).toBe("क्");
     } finally {
       Reflect.set(Intl, "Segmenter", original);
     }
+    expect(truncateGraphemes("क्षत्रिय", 2)).toBe("");
   });
 });
