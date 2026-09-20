@@ -1,6 +1,5 @@
 import { shellMessages } from "./shell";
 import { pickerMessages } from "./picker";
-import { newStubMessages } from "./new-stub";
 import { landingMessages } from "./landing";
 import { howItWorksMessages } from "./how-it-works";
 import { intakeMessages } from "./intake";
@@ -10,7 +9,6 @@ import { packetMessages } from "./packet";
 export const ALL_MESSAGES = {
   shell: shellMessages,
   picker: pickerMessages,
-  newStub: newStubMessages,
   landing: landingMessages,
   howItWorks: howItWorksMessages,
   intake: intakeMessages,

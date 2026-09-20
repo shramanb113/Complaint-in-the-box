@@ -42,7 +42,7 @@ if (portInUse) {
 }
 
 const child = spawn(process.execPath, [server], {
-  env: { ...process.env, PORT: String(port), HOSTNAME: "127.0.0.1", NODE_ENV: "production" },
+  env: { ...process.env, PORT: String(port), HOSTNAME: "127.0.0.1", NODE_ENV: "production", PACKET_STORE: "memory" },
   stdio: "inherit",
 });
 let exited = null;
@@ -95,6 +95,15 @@ try {
   }
   check("/new/bogus returns 404", (await fetch(`${base}/new/bogus`)).status === 404);
   check("an unknown page returns 404", (await fetch(`${base}/no-such-page`)).status === 404);
+  const list = await (await fetch(`${base}/new/ecommerce`)).text();
+  check("/new/ecommerce lists the situations as links (no JavaScript needed)", list.includes("template=ecom_wrong_item") && list.includes("template=ecom_damaged"));
+  const formPage = await (await fetch(`${base}/new/ecommerce?template=ecom_wrong_item`)).text();
+  check("the intake form is in the server-rendered page", formPage.includes("Make my letter") && formPage.includes("Flipkart"));
+  const hindiForm = await (await fetch(`${base}/new/ecommerce?template=ecom_wrong_item`, { headers: { cookie: "np_lang=hi" } })).text();
+  check("the intake form is in Hindi with the Hindi cookie", hindiForm.includes("मेरा पत्र बनाएँ"));
+  const unknownLetter = await fetch(`${base}/packet/01K5ZZZZZZZZZZZZZZZZZZZZZZ`);
+  check("an unknown letter link is a 404 with the friendly expired message", unknownLetter.status === 404 && (await unknownLetter.text()).includes("has expired"));
+  check("a malformed letter link is a 404", (await fetch(`${base}/packet/not-a-link`)).status === 404);
 
   // The site language comes from the np_lang cookie and must be right in the first HTML.
   const htmlLang = async (cookie) => {

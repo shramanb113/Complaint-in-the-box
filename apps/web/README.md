@@ -16,6 +16,16 @@ Do not add `"type": "module"` to `apps/web/package.json`. The standalone build c
 
 Every page is rendered per request, because the layout reads the `np_lang` language cookie (Next opts a route into dynamic rendering when it reads cookies). The cookie is set by a Server Action from the header's language toggle, is `HttpOnly`, lasts a year, and only accepts `en` or `hi`. The legal pages read an optional `CONTACT_EMAIL` environment variable **at run time** and show a contact line only when it is set.
 
-Routes: `/`, `/how-it-works`, `/new/[category]` (a stub until the intake form ships), `/legal/disclaimer`, `/legal/privacy`, `/legal/terms`, `/api/health`, and the hidden `/design`.
+Routes: `/`, `/how-it-works`, `/new/[category]` (the situation list, or the intake form when `?template=` names one), `/packet/[id]` (a plain-text stopgap for a saved letter; Milestone 4 replaces it), `/legal/disclaimer`, `/legal/privacy`, `/legal/terms`, `/api/health`, and the hidden `/design`.
 
 `npm run smoke -w @nyaypatra/web` starts the built standalone server on port 3457, copies `.next/static` and `public/` into place as a deploy would, and checks the health endpoint, the home page, every public page, the 404s, that the language cookie switches `<html lang>` and the Hindi text, the hidden `/design` page and that the stylesheet is served.
+
+## Configuration and storage
+
+Letters are saved for 7 days behind a random link. Storage is chosen by environment (see `.env.example`):
+
+- `DATABASE_URL` set: plain Postgres through Drizzle. Apply the schema with `npm run db:migrate -w @nyaypatra/web` (a deploy step; it reads `DATABASE_URL`). Change the schema in `src/server/store/db-schema.ts`, then `npm run db:generate -w @nyaypatra/web` and commit the new SQL under `drizzle/`.
+- Not set: letters live in memory (fine for development, lost on restart). A production build refuses to start without `DATABASE_URL` unless `PACKET_STORE=memory` is set on purpose (demos only).
+- `IP_HASH_SALT` (16+ characters, required in production with a database) salts the hash used for rate limiting; addresses themselves are never stored. `RATE_LIMIT_PER_HOUR` defaults to 10.
+
+The UTR never reaches the server: the form has no field for it, the server action ignores any `utr` it is sent, and the server leaves a `[[UTR]]` placeholder in UPI letters for the browser to fill in.

@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { CategoryTile } from "@nyaypatra/ui";
 import type { Category, TemplateId } from "@nyaypatra/core";
 import { CATEGORY_ICON } from "@/components/icons";
 import { Kicker } from "@/components/kicker";
+import { SituationLink } from "@/components/situation-link";
 
 const TONE: Record<Category, "peach" | "mint" | "butter" | "sky"> = {
   ecommerce: "peach",
@@ -70,15 +70,7 @@ export function CategoryPicker({
             <ul role="list" className="grid gap-3 sm:grid-cols-2">
               {templates[selected].map((template) => (
                 <li key={template.id}>
-                  <Link
-                    href={`/new/${selected}?template=${template.id}`}
-                    className="flex min-h-11 items-center justify-between gap-3 rounded-xl border-[2.5px] border-ink bg-white px-4 py-3 font-bold shadow-hard-sm transition-[translate,box-shadow] duration-[120ms] motion-safe:hover:-translate-x-px motion-safe:hover:-translate-y-px hover:shadow-hard"
-                  >
-                    <span>{template.label}</span>
-                    <span aria-hidden="true" className="font-display text-lg font-extrabold">
-                      →
-                    </span>
-                  </Link>
+                  <SituationLink href={`/new/${selected}?template=${template.id}`} label={template.label} />
                 </li>
               ))}
             </ul>

@@ -2,45 +2,87 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@nyaypatra/ui";
-import { fill } from "@/lib/i18n/define";
+import { IntakeForm } from "@/components/intake/intake-form";
+import { Kicker } from "@/components/kicker";
+import { SituationLink } from "@/components/situation-link";
+import { templatesByCategory } from "@/lib/catalog";
 import { getLocale } from "@/lib/i18n/get-locale";
-import { newStubMessages } from "@/lib/i18n/messages/new-stub";
+import { intakeMessages } from "@/lib/i18n/messages/intake";
+import { packetMessages } from "@/lib/i18n/messages/packet";
 import { pickerMessages } from "@/lib/i18n/messages/picker";
+import { shellMessages } from "@/lib/i18n/messages/shell";
+import { todayIstIso } from "@/lib/intake/dates";
 import { parseNewRoute } from "@/lib/new-route";
+import { submitIntakeAction } from "./actions";
 
 interface Props {
   params: Promise<{ category: string }>;
   searchParams: Promise<{ template?: string | string[] }>;
 }
 
-export async function generateMetadata({ params }: Pick<Props, "params">): Promise<Metadata> {
-  const { category } = await params;
-  const route = parseNewRoute(category, undefined);
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+  const [{ category }, { template }] = await Promise.all([params, searchParams]);
+  const route = parseNewRoute(category, template);
   if (!route) return {};
-  return { title: pickerMessages[await getLocale()].categories[route.category].title };
+  const picker = pickerMessages[await getLocale()];
+  return { title: route.templateId ? picker.templates[route.templateId] : picker.categories[route.category].title };
 }
 
-/** Stub until Milestone 3 builds the intake form; the route and its validation are the part that stays. */
+const heading = "font-display text-4xl font-extrabold leading-tight tracking-tighter";
+
 export default async function NewComplaintPage({ params, searchParams }: Props) {
   const [{ category }, { template }] = await Promise.all([params, searchParams]);
   const route = parseNewRoute(category, template);
   if (!route) notFound();
 
   const locale = await getLocale();
-  const t = newStubMessages[locale];
+  const t = intakeMessages[locale];
   const picker = pickerMessages[locale];
 
+  if (!route.templateId) {
+    return (
+      <div className="mx-auto flex max-w-xl flex-col gap-6">
+        <div>
+          <Kicker className="mb-1">{picker.categories[route.category].title}</Kicker>
+          <h1 className={heading}>{t.page.listTitle}</h1>
+          <p className="mt-2 text-base font-medium">{t.page.listHint}</p>
+        </div>
+        <ul role="list" className="grid gap-3">
+          {templatesByCategory()[route.category].map((id) => (
+            <li key={id}>
+              <SituationLink href={`/new/${route.category}?template=${id}`} label={picker.templates[id]} />
+            </li>
+          ))}
+        </ul>
+        <Button asChild variant="secondary" className="self-start">
+          <Link href="/#start">{t.page.back}</Link>
+        </Button>
+      </div>
+    );
+  }
+
   return (
-    <div className="mx-auto flex max-w-xl flex-col items-start gap-4">
-      <p className="font-mono text-xs hi:text-sm font-bold uppercase tracking-wide">{picker.categories[route.category].title}</p>
-      <h1 className="font-display text-4xl font-extrabold leading-tight tracking-tighter">{t.title}</h1>
-      {route.templateId ? (
-        <p className="text-lg font-bold">{fill(t.picked, { template: picker.templates[route.templateId] })}</p>
-      ) : null}
-      <p className="text-lg font-medium">{t.body}</p>
-      <Button asChild variant="secondary">
-        <Link href="/#start">{t.back}</Link>
-      </Button>
+    <div className="mx-auto flex max-w-xl flex-col gap-5">
+      <div>
+        <Kicker className="mb-1">{t.page.formKicker}</Kicker>
+        <h1 className={heading}>{picker.templates[route.templateId]}</h1>
+        <p className="mt-2 text-base font-medium">{t.page.formIntro}</p>
+      </div>
+      <Link
+        href={`/new/${route.category}`}
+        className="inline-flex min-h-11 items-center self-start text-sm font-extrabold underline decoration-2 underline-offset-4 hover:decoration-turmeric"
+      >
+        {t.page.change}
+      </Link>
+      <IntakeForm
+        templateId={route.templateId}
+        locale={locale}
+        strings={t}
+        packetStrings={packetMessages[locale]}
+        disclaimer={shellMessages[locale].footer.disclaimer}
+        today={todayIstIso()}
+        action={submitIntakeAction}
+      />
     </div>
   );
 }
