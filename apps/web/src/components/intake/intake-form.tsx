@@ -106,7 +106,7 @@ export function IntakeForm({ templateId, locale, strings: t, packetStrings, disc
   }[config.category];
   // The UTR has no field in this version, so a UPI payer may type it into the free text, which is stored. Say not to.
   const upiNoUtrId = config.category === "upi" ? "field-whatHappened-upi-note" : undefined;
-  const deadlineLabels = { "2":t.deadlines.d2, "7": t.deadlines.d7, "15": t.deadlines.d15 };
+  const deadlineLabels = { "2": t.deadlines.d2,"7": t.deadlines.d7, "15": t.deadlines.d15 };
   const problem =
     state.status === "rate_limited"
       ? t.form.rateLimited
