@@ -3,6 +3,8 @@ import { pickerMessages } from "./picker";
 import { newStubMessages } from "./new-stub";
 import { landingMessages } from "./landing";
 import { howItWorksMessages } from "./how-it-works";
+import { intakeMessages } from "./intake";
+import { packetMessages } from "./packet";
 
 /** Every block of site text. The parity test walks this registry, so add each new block here. */
 export const ALL_MESSAGES = {
@@ -11,4 +13,6 @@ export const ALL_MESSAGES = {
   newStub: newStubMessages,
   landing: landingMessages,
   howItWorks: howItWorksMessages,
+  intake: intakeMessages,
+  packet: packetMessages,
 } as const;
