@@ -11,7 +11,10 @@ describe("loadConfig", () => {
   });
 
   it("uses Postgres when DATABASE_URL is set", () => {
-    expect(loadConfig({ DATABASE_URL: "postgres://u:p@h/db" })).toMatchObject({ storage: "postgres", databaseUrl: "postgres://u:p@h/db" });
+    expect(loadConfig({ DATABASE_URL: "postgres://u:p@h/db", IP_HASH_SALT: SALT })).toMatchObject({
+      storage: "postgres",
+      databaseUrl: "postgres://u:p@h/db",
+    });
   });
 
   it("treats empty values (as in a copied .env.example) as unset", () => {
@@ -34,9 +37,20 @@ describe("loadConfig", () => {
     expect(loadConfig({ ...PROD, PACKET_STORE: "memory" }).storage).toBe("memory");
   });
 
-  it("requires a real salt in production with a database", () => {
-    expect(() => loadConfig({ ...PROD, DATABASE_URL: "postgres://u:p@h/db" })).toThrow(/IP_HASH_SALT/);
-    expect(loadConfig({ ...PROD, DATABASE_URL: "postgres://u:p@h/db", IP_HASH_SALT: SALT }).ipHashSalt).toBe(SALT);
+  it("requires a real salt whenever a database is used, in production or not", () => {
+    const DB = { DATABASE_URL: "postgres://u:p@h/db" };
+    expect(() => loadConfig({ ...PROD, ...DB })).toThrow(/IP_HASH_SALT/);
+    expect(() => loadConfig({ NODE_ENV: "development", ...DB })).toThrow(/IP_HASH_SALT/);
+    expect(() => loadConfig({ ...DB })).toThrow(/IP_HASH_SALT/);
+    expect(() => loadConfig({ PACKET_STORE: "postgres", ...DB })).toThrow(/IP_HASH_SALT/);
+    expect(loadConfig({ ...PROD, ...DB, IP_HASH_SALT: SALT }).ipHashSalt).toBe(SALT);
+    expect(loadConfig({ NODE_ENV: "development", ...DB, IP_HASH_SALT: SALT }).ipHashSalt).toBe(SALT);
+  });
+
+  it("uses the public dev salt only with the in-memory store", () => {
+    expect(loadConfig({}).ipHashSalt).toBe("dev-only-salt-not-secret");
+    expect(loadConfig({ ...PROD, PACKET_STORE: "memory" }).ipHashSalt).toBe("dev-only-salt-not-secret");
+    expect(loadConfig({ DATABASE_URL: "postgres://u:p@h/db", PACKET_STORE: "memory" }).ipHashSalt).toBe("dev-only-salt-not-secret");
   });
 
   it("rejects a salt that is too short", () => {

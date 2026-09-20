@@ -26,6 +26,6 @@ Letters are saved for 7 days behind a random link. Storage is chosen by environm
 
 - `DATABASE_URL` set: plain Postgres through Drizzle. Apply the schema with `npm run db:migrate -w @nyaypatra/web` (a deploy step; it reads `DATABASE_URL`). Change the schema in `src/server/store/db-schema.ts`, then `npm run db:generate -w @nyaypatra/web` and commit the new SQL under `drizzle/`.
 - Not set: letters live in memory (fine for development, lost on restart). A production build refuses to start without `DATABASE_URL` unless `PACKET_STORE=memory` is set on purpose (demos only).
-- `IP_HASH_SALT` (16+ characters, required in production with a database) salts the hash used for rate limiting; addresses themselves are never stored. `RATE_LIMIT_PER_HOUR` defaults to 10.
+- `IP_HASH_SALT` (16+ characters, required whenever `DATABASE_URL` is set, in any environment; the in-memory store uses a public development salt) salts the hash used for rate limiting; addresses themselves are never stored. `RATE_LIMIT_PER_HOUR` defaults to 10.
 
 The UTR never reaches the server: the form has no field for it, the server action ignores any `utr` it is sent, and the server leaves a `[[UTR]]` placeholder in UPI letters for the browser to fill in.

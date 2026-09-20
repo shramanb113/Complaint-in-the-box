@@ -7,7 +7,7 @@ export interface ServerConfig {
   rateLimitPerHour: number;
 }
 
-/** Not secret, and only used away from production, so a fresh checkout runs with no setup. */
+/** Public, so it protects nothing: used only with the in-memory store, where no hash is ever written to a database. */
 const DEV_SALT = "dev-only-salt-not-secret";
 
 /** A copied .env.example leaves empty values behind; treat them as unset. */
@@ -41,8 +41,8 @@ export function loadConfig(env: Record<string, string | undefined>): ServerConfi
   if (production && storage === "memory" && PACKET_STORE !== "memory") {
     throw new Error("DATABASE_URL is required in production. Set PACKET_STORE=memory only for demos: letters are lost on restart.");
   }
-  if (production && storage === "postgres" && !IP_HASH_SALT) {
-    throw new Error("IP_HASH_SALT (at least 16 characters) is required in production.");
+  if (storage === "postgres" && !IP_HASH_SALT) {
+    throw new Error("IP_HASH_SALT (at least 16 characters) is required when a database is used.");
   }
 
   return {
