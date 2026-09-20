@@ -50,7 +50,7 @@ export function CategoryTile({
       <span
         className={cn(
           "flex h-full min-h-11 flex-col gap-3 rounded-card border-[3px] border-ink p-4 shadow-hard",
-          "transition-[transform,box-shadow] duration-[120ms] ease-out",
+          "transition-[translate,box-shadow] duration-[120ms] ease-out",
           "motion-safe:hover:-translate-x-0.5 motion-safe:hover:-translate-y-0.5 hover:shadow-hard-lg",
           "peer-checked:shadow-none peer-checked:hover:shadow-none",
           "motion-safe:peer-checked:translate-x-1 motion-safe:peer-checked:translate-y-1",

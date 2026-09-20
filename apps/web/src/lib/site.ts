@@ -1,6 +1,6 @@
 export const SITE = { name: "Nyay Patra" } as const;
 
-const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_SHAPE = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
 /**
  * The contact address for the legal pages. Read from the CONTACT_EMAIL environment variable at run

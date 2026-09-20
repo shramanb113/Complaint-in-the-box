@@ -9,7 +9,7 @@ export function SiteHeader({ locale }: { locale: UiLocale }) {
   return (
     <header className="sticky top-0 z-40 border-b-[3px] border-ink bg-cream">
       <div className="mx-auto flex max-w-[1040px] items-center justify-between gap-3 px-4 py-3">
-        <Link href="/" className="inline-flex min-h-11 items-center font-display text-xl font-extrabold tracking-tight">
+        <Link href="/" lang="en" className="inline-flex min-h-11 items-center font-display text-xl font-extrabold tracking-tight">
           {SITE.name}
         </Link>
         <div className="flex items-center gap-4">

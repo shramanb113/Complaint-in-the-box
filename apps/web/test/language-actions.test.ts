@@ -39,16 +39,21 @@ describe("setLocale", () => {
   });
 });
 
+/** A cookie store that only knows np_lang: reading any other name gets undefined, so a wrong name fails the test. */
+function cookieNamed(value: string | undefined) {
+  return (name: string) => (name === "np_lang" && value !== undefined ? { name, value } : undefined);
+}
+
 describe("getLocale", () => {
   it("reads the cookie", async () => {
-    vi.mocked(cookies).mockResolvedValue({ get: () => ({ name: "np_lang", value: "hi" }) } as never);
+    vi.mocked(cookies).mockResolvedValue({ get: cookieNamed("hi") } as never);
     expect(await getLocale()).toBe("hi");
   });
 
   it("falls back to English when the cookie is missing or junk", async () => {
-    vi.mocked(cookies).mockResolvedValue({ get: () => undefined } as never);
+    vi.mocked(cookies).mockResolvedValue({ get: cookieNamed(undefined) } as never);
     expect(await getLocale()).toBe("en");
-    vi.mocked(cookies).mockResolvedValue({ get: () => ({ name: "np_lang", value: "zz" }) } as never);
+    vi.mocked(cookies).mockResolvedValue({ get: cookieNamed("zz") } as never);
     expect(await getLocale()).toBe("en");
   });
 });

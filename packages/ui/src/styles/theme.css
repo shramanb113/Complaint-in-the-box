@@ -91,6 +91,7 @@
  */
 .font-mono:lang(hi) {
   font-family: var(--font-space-mono), var(--font-mukta), ui-monospace, monospace;
+  letter-spacing: normal;
 }
 
 .font-hi-display:lang(hi) {

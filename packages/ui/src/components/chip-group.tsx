@@ -29,7 +29,7 @@ export function ChipGroup({ name, legend, value, onValueChange, options, classNa
           <span
             className={cn(
               "inline-flex min-h-11 items-center rounded-chip border-2 border-ink bg-white px-4 text-sm font-extrabold",
-              "shadow-hard-sm transition-[transform,box-shadow,background-color] duration-[120ms]",
+              "shadow-hard-sm transition-[translate,box-shadow,background-color] duration-[120ms]",
               "motion-safe:hover:-translate-x-px motion-safe:hover:-translate-y-px",
               "peer-checked:bg-turmeric peer-checked:shadow-none",
               "motion-safe:peer-checked:translate-x-px motion-safe:peer-checked:translate-y-px",

@@ -1,6 +1,6 @@
 import { computeDeadlineYMD, formatYMDEn, formatYMDHi, generatePacket, loadCompanyCatalog, type Intake } from "@nyaypatra/core";
 
-/** Fixed on purpose: a moving date would change the prerendered page on every build. 12:00 IST. */
+/** Fixed on purpose: a moving date would make the output differ on every run, so tests could not pin it. 12:00 IST. */
 const SAMPLE_NOW = new Date("2026-09-19T06:30:00Z");
 
 /*

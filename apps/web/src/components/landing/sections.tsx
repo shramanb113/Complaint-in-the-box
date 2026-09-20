@@ -20,11 +20,11 @@ export function WhatYouGet({ locale }: { locale: UiLocale }) {
       <SectionTitle kicker={t.kicker}>
         <span id="what-you-get">{t.title}</span>
       </SectionTitle>
-      <ul className="grid gap-5 md:grid-cols-3">
+      <ul role="list" className="grid gap-5 md:grid-cols-3">
         {t.items.map((item, index) => (
           <li
             key={item.title}
-            className={`${CARD_TONES[index]} rounded-card border-[2.5px] border-ink p-5 shadow-hard transition-[transform,box-shadow] duration-[120ms] motion-safe:hover:-translate-y-1 motion-safe:hover:shadow-hard-lg`}
+            className={`${CARD_TONES[index]} rounded-card border-[2.5px] border-ink p-5 shadow-hard transition-[translate,box-shadow] duration-[120ms] motion-safe:hover:-translate-y-1 motion-safe:hover:shadow-hard-lg`}
           >
             <p className="mb-3 font-mono text-xs hi:text-sm font-bold">{item.tag}</p>
             <h3 className="mb-2 font-display text-xl font-extrabold tracking-tight">{item.title}</h3>
@@ -43,7 +43,7 @@ export function HowItWorks({ locale }: { locale: UiLocale }) {
       <SectionTitle kicker={t.kicker}>
         <span id="how-it-works">{t.title}</span>
       </SectionTitle>
-      <ol className="grid gap-5 md:grid-cols-3">
+      <ol role="list" className="grid gap-5 md:grid-cols-3">
         {t.steps.map((step, index) => (
           <li key={step.title} className="flex gap-4">
             <span
@@ -73,7 +73,7 @@ export function Promises({ locale }: { locale: UiLocale }) {
       <h2 id="promises" className="mb-5 font-display text-3xl font-extrabold leading-tight tracking-tight">
         {t.title}
       </h2>
-      <ul className="grid gap-5 sm:grid-cols-2">
+      <ul role="list" className="grid gap-5 sm:grid-cols-2">
         {t.items.map((promise) => (
           <li key={promise.title}>
             <h3 className="font-display text-lg font-extrabold tracking-tight">{promise.title}</h3>

@@ -68,12 +68,12 @@ export function CategoryPicker({
         {selected ? (
           <div key={selected} className="mt-8 motion-safe:animate-rise">
             <h3 className="mb-3 font-display text-xl font-extrabold tracking-tight">{templatesHeading}</h3>
-            <ul className="grid gap-3 sm:grid-cols-2">
+            <ul role="list" className="grid gap-3 sm:grid-cols-2">
               {templates[selected].map((template) => (
                 <li key={template.id}>
                   <Link
                     href={`/new/${selected}?template=${template.id}`}
-                    className="flex min-h-11 items-center justify-between gap-3 rounded-xl border-[2.5px] border-ink bg-white px-4 py-3 font-bold shadow-hard-sm transition-[transform,box-shadow] duration-[120ms] motion-safe:hover:-translate-x-px motion-safe:hover:-translate-y-px hover:shadow-hard"
+                    className="flex min-h-11 items-center justify-between gap-3 rounded-xl border-[2.5px] border-ink bg-white px-4 py-3 font-bold shadow-hard-sm transition-[translate,box-shadow] duration-[120ms] motion-safe:hover:-translate-x-px motion-safe:hover:-translate-y-px hover:shadow-hard"
                   >
                     <span>{template.label}</span>
                     <span aria-hidden="true" className="font-display text-lg font-extrabold">

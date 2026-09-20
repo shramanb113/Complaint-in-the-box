@@ -51,7 +51,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {shellMessages[locale].skipToContent}
         </a>
         <SiteHeader locale={locale} />
-        <main id="main" className="mx-auto w-full max-w-[1040px] flex-1 px-4 py-10 sm:py-14">
+        <main
+          id="main"
+          tabIndex={-1}
+          className="mx-auto w-full max-w-[1040px] flex-1 scroll-mt-20 px-4 py-10 outline-none sm:py-14"
+        >
           {children}
         </main>
         <SiteFooter locale={locale} />

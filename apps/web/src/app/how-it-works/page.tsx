@@ -20,7 +20,7 @@ export default async function HowItWorksPage() {
         <p className="mt-3 max-w-2xl text-lg font-medium">{t.intro}</p>
       </header>
 
-      <ol className="flex flex-col gap-6">
+      <ol role="list" className="flex flex-col gap-6">
         {t.steps.map((step, index) => (
           <li key={step.title} className="flex gap-4">
             <span

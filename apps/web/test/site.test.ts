@@ -17,6 +17,11 @@ describe("contactEmail", () => {
     expect(contactEmail({ CONTACT_EMAIL: "a@b" })).toBeUndefined();
   });
 
+  it("ignores a value that would smuggle a mailto parameter or a scheme into the link", () => {
+    expect(contactEmail({ CONTACT_EMAIL: "x?cc=y.com@z.org" })).toBeUndefined();
+    expect(contactEmail({ CONTACT_EMAIL: "javascript:x@a.b" })).toBeUndefined();
+  });
+
   it("names the site", () => {
     expect(SITE.name).toBe("Nyay Patra");
   });

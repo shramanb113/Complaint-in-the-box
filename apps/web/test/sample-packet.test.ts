@@ -18,7 +18,7 @@ describe("buildSampleLetter", () => {
     expect(sample.whatsapp.hi).not.toContain(UTR_TOKEN);
   });
 
-  it("is deterministic, so the prerendered page does not change from build to build", () => {
+  it("is deterministic, so the output does not change from run to run", () => {
     expect(buildSampleLetter()).toEqual(sample);
   });
 
