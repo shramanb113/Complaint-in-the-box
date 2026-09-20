@@ -1,6 +1,9 @@
 import type { Packet } from "@nyaypatra/core";
 
-/** How long a saved letter link works (spec §5). One constant, so retention can change in one place. */
+/**
+ * How long a saved letter link works (spec §5). One constant, so retention can change in one place.
+ * The text "7 days" is also written by hand in src/lib/i18n/messages/how-it-works.ts, src/lib/legal-content.ts and README.md: change them together with this constant.
+ */
 export const PACKET_TTL_DAYS = 7;
 const DAY_MS = 86_400_000;
 

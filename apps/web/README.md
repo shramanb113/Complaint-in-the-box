@@ -18,14 +18,14 @@ Every page is rendered per request, because the layout reads the `np_lang` langu
 
 Routes: `/`, `/how-it-works`, `/new/[category]` (the situation list, or the intake form when `?template=` names one), `/packet/[id]` (a plain-text stopgap for a saved letter; Milestone 4 replaces it), `/legal/disclaimer`, `/legal/privacy`, `/legal/terms`, `/api/health`, and the hidden `/design`.
 
-`npm run smoke -w @nyaypatra/web` starts the built standalone server on port 3457, copies `.next/static` and `public/` into place as a deploy would, and checks the health endpoint, the home page, every public page, the 404s, that the language cookie switches `<html lang>` and the Hindi text, the hidden `/design` page and that the stylesheet is served.
+`npm run smoke -w @nyaypatra/web` starts the built standalone server on port 3457, copies `.next/static` and `public/` into place as a deploy would, and checks the health endpoint, the home page, every public page, the situation list (as plain links, no JavaScript needed), that the intake form is in the server-rendered page in English and in Hindi (with the `np_lang=hi` cookie), the two `/packet/<id>` 404 shapes (an unknown well-formed id shows the friendly "expired" message; a malformed id is a plain 404), the other 404s, that the language cookie switches `<html lang>` and the Hindi text, the hidden `/design` page and that the stylesheet is served. It runs with `PACKET_STORE=memory`, so it never needs a database.
 
 ## Configuration and storage
 
 Letters are saved for 7 days behind a random link. Storage is chosen by environment (see `.env.example`):
 
 - `DATABASE_URL` set: plain Postgres through Drizzle. Apply the schema with `npm run db:migrate -w @nyaypatra/web` (a deploy step; it reads `DATABASE_URL`). Change the schema in `src/server/store/db-schema.ts`, then `npm run db:generate -w @nyaypatra/web` and commit the new SQL under `drizzle/`.
-- Not set: letters live in memory (fine for development, lost on restart). A production build refuses to start without `DATABASE_URL` unless `PACKET_STORE=memory` is set on purpose (demos only).
+- Not set: letters live in memory (fine for development, lost on restart). In production, not having `DATABASE_URL` is an error unless `PACKET_STORE=memory` is set on purpose (demos only). The settings are read by the first request that needs storage (a submission or a `/packet/<id>` visit), not at startup, so the server still starts and `/api/health` (which never touches storage) still passes: that request fails with a clear error instead. After deploying, check a real submission.
 - `IP_HASH_SALT` (16+ characters, required whenever `DATABASE_URL` is set, in any environment; the in-memory store uses a public development salt) salts the hash used for rate limiting; addresses themselves are never stored. `RATE_LIMIT_PER_HOUR` defaults to 10.
 
-The UTR never reaches the server: the form has no field for it, the server action ignores any `utr` it is sent, and the server leaves a `[[UTR]]` placeholder in UPI letters for the browser to fill in.
+The UTR never reaches the server: the form has no field for it, the server action ignores any `utr` it is sent, and the server leaves a `[[UTR]]` placeholder in UPI letters for the browser to fill in (the browser step arrives in Milestone 4; until then the letter page shows "UTR not available" for UPI letters).
