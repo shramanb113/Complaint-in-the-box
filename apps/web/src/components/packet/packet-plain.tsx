@@ -1,0 +1,109 @@
+import { CopyButton } from "@nyaypatra/ui";
+import { applyUtr, formatYMDEn, formatYMDHi, packetDeadline, type Packet } from "@nyaypatra/core";
+import { fill } from "@/lib/i18n/define";
+import type { UiLocale } from "@/lib/i18n/locale";
+import type { PacketStrings } from "@/lib/i18n/messages/packet";
+
+interface PacketPlainProps {
+  packet: Packet;
+  locale: UiLocale;
+  strings: PacketStrings;
+  /** Ready-made "This link works until ..." line. Leave out when the letter was not saved. */
+  expiresLine?: string;
+}
+
+const box = "whitespace-pre-wrap break-words rounded-field border-2 border-ink p-3 text-[15px] font-medium";
+
+function PortalList({ fields }: { fields: Record<string, string> }) {
+  return (
+    <dl lang="en" className="grid gap-3">
+      {Object.entries(fields).map(([label, value]) => (
+        <div key={label}>
+          <dt className="text-sm font-extrabold">{label}</dt>
+          <dd className="break-words text-[15px] font-medium">{value}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+/**
+ * A plain, no-frills view of a letter: the stopgap until Milestone 4's tabbed page.
+ * It ALWAYS shows applyUtr(packet, undefined), so the server's [[UTR]] placeholder never reaches a page.
+ */
+export function PacketPlain({ packet, locale, strings: t, expiresLine }: PacketPlainProps) {
+  const { artifacts } = applyUtr(packet, undefined);
+  const format = locale === "hi" ? formatYMDHi : formatYMDEn;
+  const languages: UiLocale[] = locale === "hi" ? ["hi", "en"] : ["en", "hi"];
+
+  return (
+    <article className="mx-auto flex max-w-2xl flex-col gap-8">
+      <header>
+        <h2 className="font-display text-3xl font-extrabold leading-tight tracking-tight">{t.title}</h2>
+        <p className="mt-2 text-base font-bold">{fill(t.deadline, { date: format(packetDeadline(packet)) })}</p>
+        {expiresLine ? <p className="mt-1 text-base font-medium">{expiresLine}</p> : null}
+      </header>
+
+      {languages.map((lang) => (
+        <section key={lang} lang={lang} aria-label={t.language[lang]} className="flex flex-col gap-4 rounded-card border-[3px] border-ink bg-white p-4 shadow-hard">
+          <h3 className="font-display text-xl font-extrabold tracking-tight">
+            {t.whatsapp} <span className="font-medium">({t.language[lang]})</span>
+          </h3>
+          <pre className={`${box} bg-chat`}>{artifacts.whatsapp[lang]}</pre>
+          <CopyButton className="self-start" text={artifacts.whatsapp[lang]} idleLabel={t.copy} doneLabel={t.copied} />
+
+          <h3 className="font-display text-xl font-extrabold tracking-tight">
+            {t.email} <span className="font-medium">({t.language[lang]})</span>
+          </h3>
+          <p className="-mb-2 text-sm font-extrabold">{t.subject}</p>
+          <pre className={`${box} bg-cream`}>{artifacts.emailSubject[lang]}</pre>
+          <CopyButton className="self-start" text={artifacts.emailSubject[lang]} idleLabel={t.copy} doneLabel={t.copied} />
+          <p className="-mb-2 text-sm font-extrabold">{t.body}</p>
+          <pre className={`${box} bg-cream`}>{artifacts.emailBody[lang]}</pre>
+          <CopyButton className="self-start" text={artifacts.emailBody[lang]} idleLabel={t.copy} doneLabel={t.copied} />
+        </section>
+      ))}
+
+      <section aria-label={t.portal} className="flex flex-col gap-3 rounded-card border-[3px] border-ink bg-mint p-4 shadow-hard">
+        <h3 className="font-display text-xl font-extrabold tracking-tight">{t.portal}</h3>
+        <p className="text-base font-medium">{t.portalHelp}</p>
+        <PortalList fields={artifacts.nchFields} />
+      </section>
+
+      {artifacts.bankFields ? (
+        <section aria-label={t.bank} className="flex flex-col gap-3 rounded-card border-[3px] border-ink bg-sky p-4 shadow-hard">
+          <h3 className="font-display text-xl font-extrabold tracking-tight">{t.bank}</h3>
+          <PortalList fields={artifacts.bankFields} />
+        </section>
+      ) : null}
+
+      <section aria-label={t.links}>
+        <h3 className="mb-2 font-display text-xl font-extrabold tracking-tight">{t.links}</h3>
+        <ul role="list" lang="en" className="grid gap-3">
+          {artifacts.portalLinks.map((link) => (
+            <li key={link.href}>
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center font-extrabold underline decoration-2 underline-offset-4 hover:decoration-turmeric"
+              >
+                {link.label}
+              </a>
+              <p className="text-sm font-medium">{link.help}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-label={t.nextSteps}>
+        <h3 className="mb-2 font-display text-xl font-extrabold tracking-tight">{t.nextSteps}</h3>
+        <ol role="list" className="list-decimal space-y-2 pl-6 text-base font-medium">
+          {artifacts.nextSteps[locale].map((step) => (
+            <li key={step}>{step}</li>
+          ))}
+        </ol>
+      </section>
+    </article>
+  );
+}
