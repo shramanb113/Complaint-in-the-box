@@ -104,7 +104,9 @@ export function IntakeForm({ templateId, locale, strings: t, packetStrings, disc
     food: t.labels.platformFood,
     hidden_fee: t.labels.platformHiddenFee,
   }[config.category];
-  const deadlineLabels = { "2": t.deadlines.d2, "7": t.deadlines.d7, "15": t.deadlines.d15 };
+  // The UTR has no field in this version, so a UPI payer may type it into the free text, which is stored. Say not to.
+  const upiNoUtrId = config.category === "upi" ? "field-whatHappened-upi-note" : undefined;
+  const deadlineLabels = { "2":t.deadlines.d2, "7": t.deadlines.d7, "15": t.deadlines.d15 };
   const problem =
     state.status === "rate_limited"
       ? t.form.rateLimited
@@ -188,6 +190,7 @@ export function IntakeForm({ templateId, locale, strings: t, packetStrings, disc
           <>
             <Textarea
               {...control}
+              aria-describedby={[control["aria-describedby"], upiNoUtrId].filter(Boolean).join(" ") || undefined}
               name="whatHappened"
               rows={5}
               placeholder={t.placeholders.whatHappened}
@@ -195,6 +198,11 @@ export function IntakeForm({ templateId, locale, strings: t, packetStrings, disc
               onChange={(event) => setField("whatHappened", event.target.value)}
             />
             <p className="mt-1 text-sm font-medium">{fill(t.counter, { count: values.whatHappened.length, max: LIMITS.whatHappened.max })}</p>
+            {upiNoUtrId ? (
+              <p id={upiNoUtrId} className="mt-1 text-sm font-bold">
+                {t.hints.upiNoUtr}
+              </p>
+            ) : null}
           </>
         )}
       </Field>

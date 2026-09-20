@@ -100,6 +100,38 @@ describe("IntakeForm: fields", () => {
     expect(disclaimer.compareDocumentPosition(button) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
+  it("tells a UPI payer not to type the UTR into the free text, and links the note to the textarea", () => {
+    setup("upi_double_debit");
+    const note = screen.getByText(intakeMessages.en.hints.upiNoUtr);
+    expect(note).toBeVisible();
+    expect(note).toHaveClass("text-sm");
+    const describedBy = screen.getByLabelText("What happened?").getAttribute("aria-describedby") ?? "";
+    expect(describedBy.split(" ")).toContain(note.id);
+    expect(describedBy.split(" ")).toContain("field-whatHappened-hint");
+    expect(document.getElementById("field-whatHappened-hint")).toHaveTextContent(intakeMessages.en.hints.whatHappened);
+  });
+
+  it("shows the UPI note in Hindi", () => {
+    setup("upi_double_debit", "hi");
+    expect(screen.getByText(intakeMessages.hi.hints.upiNoUtr)).toBeInTheDocument();
+    expect(screen.getByText(intakeMessages.hi.hints.upiNoUtr).id).not.toBe("");
+  });
+
+  it("keeps the UTR note for UPI templates only", () => {
+    setup("ecom_wrong_item");
+    expect(screen.queryByText(intakeMessages.en.hints.upiNoUtr)).toBeNull();
+    expect(screen.getByLabelText("What happened?").getAttribute("aria-describedby")).toBe("field-whatHappened-hint");
+  });
+
+  it("keeps the error linked as well when the UPI note is shown", async () => {
+    const { user } = setup("upi_double_debit");
+    await user.click(screen.getByRole("button", { name: "Make my letter" }));
+    const textarea = screen.getByLabelText("What happened?");
+    const ids = (textarea.getAttribute("aria-describedby") ?? "").split(" ");
+    expect(ids).toContain("field-whatHappened-error");
+    expect(ids).toContain(screen.getByText(intakeMessages.en.hints.upiNoUtr).id);
+  });
+
   it("renders in Hindi", () => {
     setup("upi_double_debit", "hi");
     expect(screen.getByRole("button", { name: "मेरा पत्र बनाएँ" })).toBeInTheDocument();

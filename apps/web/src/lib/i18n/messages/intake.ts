@@ -38,6 +38,8 @@ export interface IntakeStrings {
     listedPriceInr: string;
     deliveredOn: string;
     whatHappened: string;
+    /** Shown under "What happened?" for UPI situations only: the UTR has no field yet and must not end up in the stored text. */
+    upiNoUtr: string;
     alreadyDid: string;
     deadlineDays: string;
     city: string;
@@ -101,6 +103,7 @@ export const intakeMessages = defineMessages<IntakeStrings>(
       listedPriceInr: "The price on the product page or cart before the extra charges.",
       deliveredOn: "Leave blank if you are not sure.",
       whatHappened: "Facts only, in your own words. English or Hindi is fine.",
+      upiNoUtr: "You do not need the UTR here. Please do not type it in: it is never needed on this page.",
       alreadyDid: "For example: chatted with support twice, no reply.",
       deadlineDays: "Two days is for urgent cases. Seven is the usual choice.",
       city: "Printed at the end of the letter.",
@@ -183,6 +186,7 @@ export const intakeMessages = defineMessages<IntakeStrings>(
       listedPriceInr: "प्रोडक्ट पेज या कार्ट में अतिरिक्त शुल्क से पहले दिखी क़ीमत।",
       deliveredOn: "पक्का न हो तो खाली छोड़ दें।",
       whatHappened: "सिर्फ़ तथ्य, अपने शब्दों में। हिंदी या अंग्रेज़ी, दोनों चलेंगी।",
+      upiNoUtr: "यहाँ UTR लिखने की ज़रूरत नहीं है। कृपया उसे न लिखें: इस पेज पर उसकी कभी ज़रूरत नहीं पड़ती।",
       alreadyDid: "जैसे: सपोर्ट से दो बार चैट की, जवाब नहीं आया।",
       deadlineDays: "दो दिन जल्दी वाले मामलों के लिए हैं। सात दिन आम चुनाव है।",
       city: "पत्र के अंत में छपेगा।",
