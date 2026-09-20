@@ -21,16 +21,22 @@ export interface SubmitInput {
 
 /**
  * Logs what went wrong, never what the person wrote (ruling R12). Drizzle wraps a driver error in one
- * whose message is "Failed query: <sql> params: <the bound values>" (the whole letter, for a save),
- * so when there is a cause we log only that: the driver's own error carries no bound values.
+ * whose message is "Failed query: <sql> params: <the bound values>" (the whole letter, for a save).
+ * So when an error has a cause we log only the cause's message (the driver's own error carries no bound
+ * values) and, if the cause is not an Error, only the wrapper's name, never its message.
  */
 function logFailure(what: string, error: unknown): void {
   if (!(error instanceof Error)) {
     console.error(`${what}: unknown error`);
     return;
   }
-  const shown = error.cause instanceof Error ? error.cause : error;
-  console.error(`${what}: ${shown.name}: ${shown.message}`);
+  if (error.cause === undefined) {
+    console.error(`${what}: ${error.name}: ${error.message}`);
+  } else if (error.cause instanceof Error) {
+    console.error(`${what}: ${error.cause.name}: ${error.cause.message}`);
+  } else {
+    console.error(`${what}: ${error.name}`);
+  }
 }
 
 /**

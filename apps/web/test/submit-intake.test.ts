@@ -136,6 +136,22 @@ describe("submitIntake: failures", () => {
     expect(logged).not.toContain("params");
   });
 
+  it("logs only the wrapper's name when it has a cause that is not an Error, never its message", async () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    const wrapped = Object.assign(
+      new Error("Failed query: insert into packets (id, body) values ($1, $2)\nparams: 01ABC,OD123456 The item never reached me even after the promised date passed. Pune Asha"),
+      { cause: "connection refused (a string, not an Error)" }
+    );
+    const store: PacketStore = { save: async () => { throw wrapped; }, get: async () => undefined, deleteExpired: async () => 0 };
+    expect((await run(deps({ store }), "ecom_wrong_item")).status).toBe("unsaved");
+    const logged = String(error.mock.calls);
+    expect(logged).toContain("could not save the letter: Error");
+    expect(logged).not.toContain("OD123456");
+    expect(logged).not.toContain("never reached me");
+    expect(logged).not.toContain("params");
+    expect(logged).not.toContain("Failed query");
+  });
+
   it("logs a plain error without a cause by its own message", async () => {
     const error = vi.spyOn(console, "error").mockImplementation(() => {});
     const store: PacketStore = { save: async () => { throw new Error("disk full"); }, get: async () => undefined, deleteExpired: async () => 0 };
