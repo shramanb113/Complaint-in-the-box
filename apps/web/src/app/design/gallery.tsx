@@ -7,9 +7,13 @@ import {
   ChatBubble,
   ChipGroup,
   CopyButton,
+  DateField,
   DeadlineTag,
+  Field,
+  FieldGroup,
   Input,
   Label,
+  MoneyField,
   Sticker,
   Tabs,
   TabsContent,
@@ -130,6 +134,33 @@ export function Gallery() {
             <Label htmlFor="what">What happened?</Label>
             <Textarea id="what" placeholder="Only facts, in your own words." />
           </div>
+        </div>
+      </Section>
+
+      <Section title="Form fields">
+        <div className="grid gap-5 sm:max-w-md">
+          <Field id="demo-name" label="Your name" optionalLabel="(optional)" hint="Printed as the sender.">
+            {(control) => <Input {...control} placeholder="For example: Asha Patil" />}
+          </Field>
+          <Field id="demo-amount" label="Amount you paid" error="Use numbers only, for example 2499.">
+            {(control) => <MoneyField {...control} defaultValue="24x9" />}
+          </Field>
+          <Field id="demo-date" label="Date you paid">
+            {(control) => <DateField {...control} min="2016-01-01" />}
+          </Field>
+          <FieldGroup id="demo-platform" label="Where did you order?" hint="Pick one.">
+            <ChipGroup
+              name="demo-platform"
+              legend="Where did you order?"
+              value={platform}
+              onValueChange={setPlatform}
+              options={[
+                { value: "flipkart", label: "Flipkart" },
+                { value: "amazon", label: "Amazon" },
+                { value: "other", label: "Other" },
+              ]}
+            />
+          </FieldGroup>
         </div>
       </Section>
 
