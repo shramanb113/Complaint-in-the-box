@@ -33,8 +33,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { default: meta.title, template: `%s | ${SITE.name}` },
     description: meta.description,
-    // Pre-launch: keep out of search until Milestone 4.
-    robots: { index: false, follow: false },
+    // Public pages are indexable from Milestone 4. /packet/[id] and /design each set their own
+    // noindex in their own generateMetadata and are unaffected by this.
+    robots: { index: true, follow: true },
   };
 }
 
