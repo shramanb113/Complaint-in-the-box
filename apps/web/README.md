@@ -10,13 +10,13 @@ The standalone output does not include `.next/static` or `public/`. A deploy mus
 
 The `/design` gallery is hidden by default and returns 404 in production. Set `NEXT_PUBLIC_SHOW_DESIGN=1` at build time, not run time, to expose it.
 
-`noindex` is set in page metadata only; `robots.txt` and the `X-Robots-Tag` header arrive with Milestone 4.
+`noindex` is set per-page via metadata (`/packet/[id]` and `/design` each opt out of indexing); a `robots.txt`/sitemap are not yet built — the public pages currently rely on the metadata-based noindex/index split above being sufficient for launch.
 
 Do not add `"type": "module"` to `apps/web/package.json`. The standalone build copies that file next to a CommonJS `server.js`, which would then fail to load.
 
 Every page is rendered per request, because the layout reads the `np_lang` language cookie (Next opts a route into dynamic rendering when it reads cookies). The cookie is set by a Server Action from the header's language toggle, is `HttpOnly`, lasts a year, and only accepts `en` or `hi`. The legal pages read an optional `CONTACT_EMAIL` environment variable **at run time** and show a contact line only when it is set.
 
-Routes: `/`, `/how-it-works`, `/new/[category]` (the situation list, or the intake form when `?template=` names one), `/packet/[id]` (a plain-text stopgap for a saved letter; Milestone 4 replaces it), `/legal/disclaimer`, `/legal/privacy`, `/legal/terms`, `/api/health`, and the hidden `/design`.
+Routes: `/`, `/how-it-works`, `/new/[category]` (the situation list, or the intake form when `?template=` names one), `/packet/[id]` (the tabbed WhatsApp/Email+PDF/Portal packet page for a saved letter), `/legal/disclaimer`, `/legal/privacy`, `/legal/terms`, `/api/health`, and the hidden `/design`.
 
 `npm run smoke -w @nyaypatra/web` starts the built standalone server on port 3457, copies `.next/static` and `public/` into place as a deploy would, and checks the health endpoint, the home page, every public page, the situation list (as plain links, no JavaScript needed), that the intake form is in the server-rendered page in English and in Hindi (with the `np_lang=hi` cookie), the two `/packet/<id>` 404 shapes (an unknown well-formed id shows the friendly "expired" message; a malformed id is a plain 404), the other 404s, that the language cookie switches `<html lang>` and the Hindi text, the hidden `/design` page and that the stylesheet is served. It runs with `PACKET_STORE=memory`, so it never needs a database.
 
@@ -36,7 +36,7 @@ shipping the standalone server elsewhere; do not expect it to work from a direct
 - Not set: letters live in memory (fine for development, lost on restart). In production, not having `DATABASE_URL` is an error unless `PACKET_STORE=memory` is set on purpose (demos only). The settings are read by the first request that needs storage (a submission or a `/packet/<id>` visit), not at startup, so the server still starts and `/api/health` (which never touches storage) still passes: that request fails with a clear error instead. After deploying, check a real submission.
 - `IP_HASH_SALT` (16+ characters, required whenever `DATABASE_URL` is set, in any environment; the in-memory store uses a public development salt) salts the hash used for rate limiting; addresses themselves are never stored. `RATE_LIMIT_PER_HOUR` defaults to 10.
 
-The UTR never reaches the server: the form has no field for it, the server action ignores any `utr` it is sent, and the server leaves a `[[UTR]]` placeholder in UPI letters for the browser to fill in (the browser step arrives in Milestone 4; until then the letter page shows "UTR not available" for UPI letters).
+The UTR never reaches the server: the form has no field for it, the server action ignores any `utr` it is sent, and the server leaves a `[[UTR]]` placeholder in UPI letters for the browser to fill in (the browser fills it in client-side via the packet page's optional UTR field — see `UtrBox`/`applyUtr`).
 
 ## Expiry cleanup
 

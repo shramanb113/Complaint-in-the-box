@@ -22,6 +22,9 @@ test.describe("golden path: complaint to packet", () => {
     await page.getByLabel(/what happened/i).fill("The item delivered does not match what I ordered.");
     await page.getByRole("button", { name: /make my letter/i }).click();
     await expect(page).toHaveURL(/\/packet\/[0-9A-HJKMNP-TV-Z]{26}/);
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth))
+      .toBe(true);
     await expect(page.getByRole("tab", { name: "WhatsApp" })).toBeVisible();
     await expect(page.getByText(/TEST-12345/).first()).toBeVisible();
   });
@@ -37,6 +40,9 @@ test.describe("golden path: complaint to packet", () => {
     await page.getByLabel(/क्या हुआ/).fill("जो सामान आया वह ऑर्डर से मेल नहीं खाता।");
     await page.getByRole("button", { name: /मेरा पत्र बनाएँ/ }).click();
     await expect(page).toHaveURL(/\/packet\/[0-9A-HJKMNP-TV-Z]{26}/);
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth))
+      .toBe(true);
     await expect(page.getByText(/TEST-67890/).first()).toBeVisible();
   });
 });

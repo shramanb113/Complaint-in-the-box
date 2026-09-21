@@ -1,4 +1,5 @@
 import { runCleanup } from "@/server/cleanup";
+import { logFailure } from "@/server/log-failure";
 import { getServices } from "@/server/services";
 
 export const dynamic = "force-dynamic";
@@ -9,6 +10,11 @@ export async function POST(request: Request) {
   if (!secret || request.headers.get("authorization") !== `Bearer ${secret}`) {
     return Response.json({ error: "unauthorized" }, { status: 403 });
   }
-  const result = await runCleanup(getServices());
-  return Response.json(result);
+  try {
+    const result = await runCleanup(getServices());
+    return Response.json(result);
+  } catch (error) {
+    logFailure("cleanup failed", error);
+    return Response.json({ error: "cleanup failed" }, { status: 500 });
+  }
 }

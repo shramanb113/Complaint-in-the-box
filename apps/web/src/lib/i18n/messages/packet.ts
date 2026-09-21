@@ -27,7 +27,7 @@ export interface PacketStrings {
   loadError: { title: string; body: string; retry: string };
 }
 
-/** Text for the stopgap packet page. Milestone 4 replaces the page and reuses or rewrites these. */
+/** Text for the packet page (tabbed WhatsApp/Email+PDF/Portal view). */
 export const packetMessages = defineMessages<PacketStrings>(
   {
     title: "Your complaint is ready",
@@ -41,7 +41,7 @@ export const packetMessages = defineMessages<PacketStrings>(
     bank: "Answers for the bank complaint form",
     utr: {
       label: "Your UTR (optional)",
-      hint: "Only you can see this. It is added to the letter in this browser and never sent anywhere.",
+      hint: "Only you can see this. It is added to the letter in this browser and is never sent to us.",
       placeholder: "12 digits from your payment app",
     },
     portalHelp: "Paste these into the matching boxes on the portal. The portal is in English.",
@@ -87,7 +87,7 @@ export const packetMessages = defineMessages<PacketStrings>(
     bank: "बैंक शिकायत फ़ॉर्म के जवाब",
     utr: {
       label: "आपका UTR (वैकल्पिक)",
-      hint: "यह सिर्फ़ आपको दिखता है। यह इसी ब्राउज़र में पत्र में जुड़ता है, कहीं भेजा नहीं जाता।",
+      hint: "यह सिर्फ़ आपको दिखता है। यह इसी ब्राउज़र में पत्र में जुड़ता है, हमें कभी नहीं भेजा जाता।",
       placeholder: "आपके पेमेंट ऐप के 12 अंक",
     },
     portalHelp: "पोर्टल पर इन्हें संबंधित खानों में पेस्ट करें। पोर्टल अंग्रेज़ी में है।",

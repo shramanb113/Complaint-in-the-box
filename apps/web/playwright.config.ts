@@ -9,7 +9,7 @@ export default defineConfig({
     baseURL: "http://127.0.0.1:3458",
     viewport: { width: 360, height: 800 },
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"], viewport: { width: 360, height: 800 } } }],
   webServer: {
     command: "node scripts/serve-standalone.mjs",
     url: "http://127.0.0.1:3458/api/health",
