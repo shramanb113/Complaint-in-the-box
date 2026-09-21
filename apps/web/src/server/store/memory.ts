@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { Packet } from "@nyaypatra/core";
 import {
   packetExpiresAt,

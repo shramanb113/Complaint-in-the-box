@@ -1,3 +1,5 @@
+import "server-only";
+
 import { generatePacket, UTR_TOKEN, type CompanyCatalog, type Intake, type Packet, type TemplateId } from "@nyaypatra/core";
 import type { RawIntake } from "@/lib/intake/fields";
 import type { SubmitResult } from "@/lib/intake/result";

@@ -1,3 +1,5 @@
+import "server-only";
+
 import { and, eq, gt, lte, lt, sql } from "drizzle-orm";
 import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core";
 import type { Packet } from "@nyaypatra/core";

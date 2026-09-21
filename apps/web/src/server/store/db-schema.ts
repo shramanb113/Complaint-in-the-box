@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { Packet } from "@nyaypatra/core";
 import { index, integer, jsonb, pgTable, primaryKey, text, timestamp } from "drizzle-orm/pg-core";
 
