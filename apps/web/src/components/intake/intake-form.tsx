@@ -4,6 +4,7 @@ import { startTransition, useActionState, useEffect, useRef, useState, type Form
 import { Button, ChipGroup, DateField, Field, FieldGroup, Input, MoneyField, Textarea } from "@nyaypatra/ui";
 import { MIN_ISO_DATE, type TemplateId } from "@nyaypatra/core";
 import { PacketPlain } from "@/components/packet/packet-plain";
+import { track } from "@/lib/analytics/track";
 import { fill } from "@/lib/i18n/define";
 import type { UiLocale } from "@/lib/i18n/locale";
 import type { IntakeStrings } from "@/lib/i18n/messages/intake";
@@ -44,6 +45,7 @@ export function IntakeForm({ templateId, locale, strings: t, packetStrings, disc
   const [errors, setErrors] = useState<FormErrors>({});
   const [state, formAction, pending] = useActionState(action, IDLE);
   const formRef = useRef<HTMLFormElement>(null);
+  const startedRef = useRef(false);
 
   // The server checks everything again; what it finds shows up in the same places as our own errors.
   useEffect(() => {
@@ -51,6 +53,10 @@ export function IntakeForm({ templateId, locale, strings: t, packetStrings, disc
   }, [state]);
 
   function setField(name: FieldName, value: string) {
+    if (!startedRef.current) {
+      startedRef.current = true;
+      track("form_started", { templateId });
+    }
     setValues((current) => ({ ...current, [name]: value }));
     setErrors((current) => {
       if (!current[name]) return current;
@@ -79,6 +85,7 @@ export function IntakeForm({ templateId, locale, strings: t, packetStrings, disc
     const data = new FormData();
     data.set("templateId", templateId);
     for (const name of FIELD_NAMES) data.set(name, values[name]);
+    track("form_completed", { templateId });
     startTransition(() => formAction(data));
   }
 

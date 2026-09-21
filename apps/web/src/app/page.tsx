@@ -2,6 +2,7 @@ import { Button, Sticker } from "@nyaypatra/ui";
 import { CategoryPicker } from "@/components/landing/category-picker";
 import { SampleLetter } from "@/components/landing/sample-letter";
 import { HowItWorks, Promises, WhatYouGet } from "@/components/landing/sections";
+import { TrackOnMount } from "@/lib/analytics/track-on-mount";
 import { CATEGORY_ORDER, templatesByCategory } from "@/lib/catalog";
 import { fill } from "@/lib/i18n/define";
 import { getLocale } from "@/lib/i18n/get-locale";
@@ -21,6 +22,7 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-col gap-16">
+      <TrackOnMount event="landing_view" />
       <section className="grid items-start gap-10 lg:grid-cols-[1fr_minmax(0,460px)]">
         <div className="flex flex-col items-start gap-6">
           <div className="motion-safe:animate-rise" style={rise(0)}>

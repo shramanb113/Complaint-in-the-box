@@ -6,6 +6,7 @@ import type { Category, TemplateId } from "@nyaypatra/core";
 import { CATEGORY_ICON } from "@/components/icons";
 import { Kicker } from "@/components/kicker";
 import { SituationLink } from "@/components/situation-link";
+import { track } from "@/lib/analytics/track";
 
 const TONE: Record<Category, "peach" | "mint" | "butter" | "sky"> = {
   ecommerce: "peach",
@@ -58,7 +59,10 @@ export function CategoryPicker({
               tone={TONE[category.id]}
               icon={<Icon />}
               checked={selected === category.id}
-              onSelect={(value) => setSelected(value as Category)}
+              onSelect={(value) => {
+                setSelected(value as Category);
+                track("category_selected", { category: value });
+              }}
             />
           );
         })}
