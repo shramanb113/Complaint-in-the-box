@@ -24,6 +24,7 @@ export interface PacketStrings {
   copied: string;
   unsaved: { title: string; body: string };
   expired: { title: string; body: string; cta: string };
+  loadError: { title: string; body: string; retry: string };
 }
 
 /** Text for the stopgap packet page. Milestone 4 replaces the page and reuses or rewrites these. */
@@ -68,6 +69,11 @@ export const packetMessages = defineMessages<PacketStrings>(
       body: "Letter links work for {days} days and are then deleted. You can make a new letter in a couple of minutes.",
       cta: "Make a new letter",
     },
+    loadError: {
+      title: "This letter could not load",
+      body: "Something went wrong on our side, not because of anything you did. Try again in a moment.",
+      retry: "Try again",
+    },
   },
   {
     title: "आपकी शिकायत तैयार है",
@@ -108,6 +114,11 @@ export const packetMessages = defineMessages<PacketStrings>(
       title: "इस पत्र का लिंक समाप्त हो गया",
       body: "पत्र के लिंक {days} दिन चलते हैं, फिर मिटा दिए जाते हैं। आप कुछ ही मिनटों में नया पत्र बना सकते हैं।",
       cta: "नया पत्र बनाएँ",
+    },
+    loadError: {
+      title: "यह पत्र लोड नहीं हो सका",
+      body: "हमारी तरफ़ से कुछ गड़बड़ हुई, आपकी वजह से नहीं। थोड़ी देर में फिर कोशिश करें।",
+      retry: "फिर कोशिश करें",
     },
   }
 );

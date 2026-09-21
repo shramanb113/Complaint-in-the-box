@@ -5,6 +5,7 @@ import { PacketView } from "@/components/packet/packet-view";
 import { fill } from "@/lib/i18n/define";
 import { getLocale } from "@/lib/i18n/get-locale";
 import { packetMessages } from "@/lib/i18n/messages/packet";
+import { logFailure } from "@/server/log-failure";
 import { getServices } from "@/server/services";
 import { packetExpiresAt } from "@/server/store/types";
 
@@ -23,7 +24,13 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function PacketPage({ params, searchParams }: Props) {
   const { id } = await params;
   if (!ULID.test(id)) notFound();
-  const packet = await getServices().store.get(id);
+  let packet;
+  try {
+    packet = await getServices().store.get(id);
+  } catch (error) {
+    logFailure("could not load the letter", error);
+    throw new Error("could not load the letter");
+  }
   if (!packet) notFound();
 
   const { new: isNewParam } = await searchParams;

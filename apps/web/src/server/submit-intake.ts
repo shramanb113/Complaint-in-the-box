@@ -5,6 +5,7 @@ import type { RawIntake } from "@/lib/intake/fields";
 import type { SubmitResult } from "@/lib/intake/result";
 import { validateIntakeForm } from "@/lib/intake/validate";
 import { hashIp } from "./ip";
+import { logFailure } from "./log-failure";
 import type { PacketStore, RateLimiter } from "./store/types";
 
 export interface SubmitDeps {
@@ -19,26 +20,6 @@ export interface SubmitInput {
   raw: Partial<RawIntake>;
   ip: string;
   now?: Date;
-}
-
-/**
- * Logs what went wrong, never what the person wrote (ruling R12). Drizzle wraps a driver error in one
- * whose message is "Failed query: <sql> params: <the bound values>" (the whole letter, for a save).
- * So when an error has a cause we log only the cause's message (the driver's own error carries no bound
- * values) and, if the cause is not an Error, only the wrapper's name, never its message.
- */
-function logFailure(what: string, error: unknown): void {
-  if (!(error instanceof Error)) {
-    console.error(`${what}: unknown error`);
-    return;
-  }
-  if (error.cause === undefined) {
-    console.error(`${what}: ${error.name}: ${error.message}`);
-  } else if (error.cause instanceof Error) {
-    console.error(`${what}: ${error.cause.name}: ${error.cause.message}`);
-  } else {
-    console.error(`${what}: ${error.name}`);
-  }
 }
 
 /**

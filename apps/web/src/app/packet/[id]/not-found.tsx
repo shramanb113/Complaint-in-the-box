@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@nyaypatra/ui";
+import { TrackOnMount } from "@/lib/analytics/track-on-mount";
 import { fill } from "@/lib/i18n/define";
 import { getLocale } from "@/lib/i18n/get-locale";
 import { packetMessages } from "@/lib/i18n/messages/packet";
@@ -10,6 +11,7 @@ export default async function PacketNotFound() {
   const t = packetMessages[await getLocale()].expired;
   return (
     <div className="mx-auto flex max-w-xl flex-col items-start gap-4">
+      <TrackOnMount event="packet_expired_view" />
       <h1 className="font-display text-4xl font-extrabold leading-tight tracking-tighter">{t.title}</h1>
       <p className="text-lg font-medium">{fill(t.body, { days: PACKET_TTL_DAYS })}</p>
       <Button asChild size="lg">
