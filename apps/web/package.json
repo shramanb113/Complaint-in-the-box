@@ -13,6 +13,7 @@
     "db:migrate": "node scripts/migrate.mjs"
   },
   "dependencies": {
+    "@next/env": "16.3.5",
     "@nyaypatra/core": "*",
     "@nyaypatra/ui": "*",
     "drizzle-orm": "^0.45.2",

@@ -1,6 +1,13 @@
 // Applies the SQL migrations in apps/web/drizzle to the database in DATABASE_URL.
 // Run it as a deploy step: npm run db:migrate -w @nyaypatra/web
 import { fileURLToPath } from "node:url";
+import nextEnv from "@next/env";
+
+// next dev/build load .env.local automatically; a standalone script like this one does not, so a
+// developer running `npm run db:migrate` locally against DATABASE_URL in .env.local got nothing. This
+// only fills in variables process.env doesn't already have, so a real deploy's own DATABASE_URL wins.
+nextEnv.loadEnvConfig(fileURLToPath(new URL("..", import.meta.url)));
+
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import pg from "pg";

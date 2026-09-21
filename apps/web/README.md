@@ -25,6 +25,14 @@ Routes: `/`, `/how-it-works`, `/new/[category]` (the situation list, or the inta
 Letters are saved for 7 days behind a random link. Storage is chosen by environment (see `.env.example`):
 
 - `DATABASE_URL` set: plain Postgres through Drizzle. Apply the schema with `npm run db:migrate -w @nyaypatra/web` (a deploy step; it reads `DATABASE_URL`). Change the schema in `src/server/store/db-schema.ts`, then `npm run db:generate -w @nyaypatra/web` and commit the new SQL under `drizzle/`.
+
+`db:migrate` needs `scripts/migrate.mjs` and the SQL files under `drizzle/`, neither of which Next's
+`output: "standalone"` build traces or copies (it only traces the JS module graph the server actually
+imports at runtime, and migrations are SQL files nothing imports). Run `db:migrate` from a full source
+checkout — a CI job, a Vercel build step, or the same machine you built on — before or independently of
+shipping the standalone server elsewhere; do not expect it to work from a directory that only has
+`.next/standalone/` copied into it.
+
 - Not set: letters live in memory (fine for development, lost on restart). In production, not having `DATABASE_URL` is an error unless `PACKET_STORE=memory` is set on purpose (demos only). The settings are read by the first request that needs storage (a submission or a `/packet/<id>` visit), not at startup, so the server still starts and `/api/health` (which never touches storage) still passes: that request fails with a clear error instead. After deploying, check a real submission.
 - `IP_HASH_SALT` (16+ characters, required whenever `DATABASE_URL` is set, in any environment; the in-memory store uses a public development salt) salts the hash used for rate limiting; addresses themselves are never stored. `RATE_LIMIT_PER_HOUR` defaults to 10.
 
