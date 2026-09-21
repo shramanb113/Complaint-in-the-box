@@ -20,3 +20,13 @@
     }
   }
 }
+
+@media print {
+  @page {
+    margin: 18mm;
+  }
+  header,
+  footer {
+    display: none !important;
+  }
+}
