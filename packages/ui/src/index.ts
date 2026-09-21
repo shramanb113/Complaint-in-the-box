@@ -14,3 +14,4 @@ export { CategoryTile, type CategoryTileProps } from "./components/category-tile
 export { Field, FieldGroup, type FieldProps, type FieldGroupProps, type FieldControlProps } from "./components/field";
 export { MoneyField } from "./components/money-field";
 export { DateField } from "./components/date-field";
+export { TextLink, textLinkVariants, type TextLinkProps, type TextLinkVariants } from "./components/text-link";

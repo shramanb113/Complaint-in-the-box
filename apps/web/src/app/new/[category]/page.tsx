@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Button } from "@nyaypatra/ui";
+import { Button, cn, textLinkVariants } from "@nyaypatra/ui";
 import { IntakeForm } from "@/components/intake/intake-form";
 import { Kicker } from "@/components/kicker";
 import { SituationLink } from "@/components/situation-link";
@@ -70,7 +70,7 @@ export default async function NewComplaintPage({ params, searchParams }: Props) 
       </div>
       <Link
         href={`/new/${route.category}`}
-        className="inline-flex min-h-11 items-center self-start text-sm font-extrabold underline decoration-2 underline-offset-4 hover:decoration-turmeric"
+        className={cn(textLinkVariants({ size: "sm" }), "self-start")}
       >
         {t.page.change}
       </Link>

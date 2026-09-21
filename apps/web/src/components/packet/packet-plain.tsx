@@ -1,4 +1,4 @@
-import { CopyButton } from "@nyaypatra/ui";
+import { CopyButton, TextLink } from "@nyaypatra/ui";
 import { applyUtr, formatYMDEn, formatYMDHi, packetDeadline, type Packet } from "@nyaypatra/core";
 import { fill } from "@/lib/i18n/define";
 import type { UiLocale } from "@/lib/i18n/locale";
@@ -85,14 +85,9 @@ export function PacketPlain({ packet, locale, strings: t, expiresLine }: PacketP
         <ul role="list" lang="en" className="grid gap-3">
           {artifacts.portalLinks.map((link) => (
             <li key={link.href}>
-              <a
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-11 items-center font-extrabold underline decoration-2 underline-offset-4 hover:decoration-turmeric"
-              >
+              <TextLink href={link.href} target="_blank" rel="noopener noreferrer">
                 {link.label}
-              </a>
+              </TextLink>
               <p className="text-sm font-medium">{link.help}</p>
             </li>
           ))}

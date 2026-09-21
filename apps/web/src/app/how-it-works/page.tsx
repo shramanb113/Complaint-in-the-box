@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Button } from "@nyaypatra/ui";
+import { Button, textLinkVariants } from "@nyaypatra/ui";
 import { getLocale } from "@/lib/i18n/get-locale";
 import { howItWorksMessages } from "@/lib/i18n/messages/how-it-works";
 
@@ -8,8 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: howItWorksMessages[await getLocale()].title };
 }
 
-const inlineLink =
-  "inline-flex min-h-11 items-center text-sm font-extrabold underline decoration-2 underline-offset-4 hover:decoration-turmeric";
+const inlineLink = `${textLinkVariants({ size: "sm" })} mt-2`;
 
 export default async function HowItWorksPage() {
   const t = howItWorksMessages[await getLocale()];

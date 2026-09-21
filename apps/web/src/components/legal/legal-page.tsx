@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { TextLink } from "@nyaypatra/ui";
 import type { LegalDocument } from "@/lib/legal-content";
 import type { UiLocale } from "@/lib/i18n/locale";
 import { shellMessages } from "@/lib/i18n/messages/shell";
@@ -46,12 +47,9 @@ export function LegalPage({ doc, locale, contactEmail, children }: LegalPageProp
           <h2 className="font-display text-2xl font-extrabold tracking-tight">Contact</h2>
           <p className="mt-2 text-base font-medium">
             Questions about your data or these terms:{" "}
-            <a
-              href={`mailto:${contactEmail}`}
-              className="inline-flex min-h-11 items-center font-extrabold underline decoration-2 underline-offset-4 hover:decoration-turmeric"
-            >
+            <TextLink href={`mailto:${contactEmail}`}>
               {contactEmail}
-            </a>
+            </TextLink>
           </p>
         </section>
       ) : null}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { cn, textLinkVariants } from "@nyaypatra/ui";
 import type { UiLocale } from "@/lib/i18n/locale";
 import { shellMessages } from "@/lib/i18n/messages/shell";
 import { SITE } from "@/lib/site";
@@ -15,7 +16,7 @@ export function SiteHeader({ locale }: { locale: UiLocale }) {
         <div className="flex items-center gap-4">
           <Link
             href="/how-it-works"
-            className="hidden min-h-11 items-center font-display text-sm font-extrabold underline decoration-2 underline-offset-4 hover:decoration-turmeric sm:inline-flex"
+            className={cn(textLinkVariants({ size: "sm", display: true }), "hidden sm:inline-flex")}
           >
             {t.nav.howItWorks}
           </Link>

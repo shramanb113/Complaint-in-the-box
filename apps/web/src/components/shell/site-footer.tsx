@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { textLinkVariants } from "@nyaypatra/ui";
 import type { UiLocale } from "@/lib/i18n/locale";
 import { shellMessages } from "@/lib/i18n/messages/shell";
 import { SITE } from "@/lib/site";
@@ -21,10 +22,7 @@ export function SiteFooter({ locale }: { locale: UiLocale }) {
           <ul role="list" className="flex flex-wrap gap-x-5 gap-y-1">
             {links.map((link) => (
               <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className="inline-flex min-h-11 items-center text-sm font-extrabold underline decoration-2 underline-offset-4 hover:decoration-turmeric"
-                >
+                <Link href={link.href} className={textLinkVariants({ size: "sm" })}>
                   {link.label}
                 </Link>
               </li>
