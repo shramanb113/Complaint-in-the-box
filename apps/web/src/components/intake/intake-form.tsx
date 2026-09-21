@@ -3,7 +3,7 @@
 import { startTransition, useActionState, useEffect, useRef, useState, type FormEvent } from "react";
 import { Button, ChipGroup, DateField, Field, FieldGroup, Input, MoneyField, Textarea } from "@nyaypatra/ui";
 import { MIN_ISO_DATE, type TemplateId } from "@nyaypatra/core";
-import { PacketPlain } from "@/components/packet/packet-plain";
+import { PacketView } from "@/components/packet/packet-view";
 import { track } from "@/lib/analytics/track";
 import { fill } from "@/lib/i18n/define";
 import type { UiLocale } from "@/lib/i18n/locale";
@@ -96,7 +96,7 @@ export function IntakeForm({ templateId, locale, strings: t, packetStrings, disc
           <h2 className="font-display text-xl font-extrabold tracking-tight">{packetStrings.unsaved.title}</h2>
           <p className="mt-1 text-base font-medium">{packetStrings.unsaved.body}</p>
         </div>
-        <PacketPlain packet={state.packet} locale={locale} strings={packetStrings} />
+        <PacketView packet={state.packet} locale={locale} strings={packetStrings} isNew />
       </div>
     );
   }

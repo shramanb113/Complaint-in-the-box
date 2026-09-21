@@ -30,7 +30,7 @@ beforeEach(async () => {
 
 afterEach(() => vi.useRealTimers());
 
-const open = async (id: string) => render(await PacketPage({ params: Promise.resolve({ id }) }));
+const open = async (id: string) => render(await PacketPage({ params: Promise.resolve({ id }), searchParams: Promise.resolve({}) }));
 
 describe("/packet/[id]", () => {
   it("shows a saved letter with the date its link expires", async () => {

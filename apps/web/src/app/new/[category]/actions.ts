@@ -31,6 +31,6 @@ export async function submitIntakeAction(_previous: SubmitState, formData: FormD
     now: new Date(),
   });
   // redirect() throws, so it must stay outside any try/catch.
-  if (result.status === "saved") redirect(`/packet/${result.id}`);
+  if (result.status === "saved") redirect(`/packet/${result.id}?new=1`);
   return result;
 }

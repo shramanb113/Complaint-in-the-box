@@ -10,6 +10,7 @@ export interface PacketStrings {
   body: string;
   portal: string;
   bank: string;
+  utr: { label: string; hint: string; placeholder: string };
   portalHelp: string;
   links: string;
   nextSteps: string;
@@ -32,6 +33,11 @@ export const packetMessages = defineMessages<PacketStrings>(
     body: "Message",
     portal: "Answers for the complaint portal form",
     bank: "Answers for the bank complaint form",
+    utr: {
+      label: "Your UTR (optional)",
+      hint: "Only you can see this. It is added to the letter in this browser and never sent anywhere.",
+      placeholder: "12 digits from your payment app",
+    },
     portalHelp: "Paste these into the matching boxes on the portal. The portal is in English.",
     links: "Official links",
     nextSteps: "What to do next",
@@ -58,6 +64,11 @@ export const packetMessages = defineMessages<PacketStrings>(
     body: "संदेश",
     portal: "पोर्टल फ़ॉर्म के जवाब",
     bank: "बैंक शिकायत फ़ॉर्म के जवाब",
+    utr: {
+      label: "आपका UTR (वैकल्पिक)",
+      hint: "यह सिर्फ़ आपको दिखता है। यह इसी ब्राउज़र में पत्र में जुड़ता है, कहीं भेजा नहीं जाता।",
+      placeholder: "आपके पेमेंट ऐप के 12 अंक",
+    },
     portalHelp: "पोर्टल पर इन्हें संबंधित खानों में पेस्ट करें। पोर्टल अंग्रेज़ी में है।",
     links: "आधिकारिक लिंक",
     nextSteps: "आगे क्या करें",

@@ -34,7 +34,7 @@ beforeEach(() => {
 describe("submitIntakeAction", () => {
   it("saves a valid form and redirects to the packet link", async () => {
     await expect(submitIntakeAction(idle, form("ecom_wrong_item", validRaw("ecom_wrong_item")))).rejects.toThrow(
-      /^REDIRECT \/packet\/[0-9A-HJKMNP-TV-Z]{26}$/
+      /^REDIRECT \/packet\/[0-9A-HJKMNP-TV-Z]{26}\?new=1$/
     );
   });
 
@@ -55,7 +55,7 @@ describe("submitIntakeAction", () => {
       () => undefined,
       (e: unknown) => e as Error
     );
-    const id = /\/packet\/(\w+)$/.exec(error?.message ?? "")?.[1];
+    const id = /\/packet\/(\w+)\?new=1$/.exec(error?.message ?? "")?.[1];
     expect(id).toBeDefined();
     expect(id).not.toBe("01HACKERAAAAAAAAAAAAAAAAAA");
     const saved = await store.get(id as string, new Date());
