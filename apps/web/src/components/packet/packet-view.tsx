@@ -51,14 +51,14 @@ export function PacketView({ packet, locale, strings: t, expiresLine, isNew }: P
     generatedTracked.current = true;
     if (isNew) {
       track("packet_generated", { category: packet.intake.category, templateId: packet.intake.templateId });
+      if (typeof window !== "undefined" && window.location.search.includes("new=1")) {
+        window.history.replaceState(null, "", window.location.pathname);
+      }
       return;
     }
     const daysSinceCreated = Math.floor((Date.now() - new Date(packet.createdAt).getTime()) / 86_400_000);
     const pastDeadline = new Date() > new Date(`${packetDeadline(packet)}T23:59:59`);
     track("packet_revisited", { days_since_created: daysSinceCreated, past_deadline: pastDeadline });
-    if (typeof window !== "undefined" && window.location.search.includes("new=1")) {
-      window.history.replaceState(null, "", window.location.pathname);
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
