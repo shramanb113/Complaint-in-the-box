@@ -29,3 +29,22 @@ Letters are saved for 7 days behind a random link. Storage is chosen by environm
 - `IP_HASH_SALT` (16+ characters, required whenever `DATABASE_URL` is set, in any environment; the in-memory store uses a public development salt) salts the hash used for rate limiting; addresses themselves are never stored. `RATE_LIMIT_PER_HOUR` defaults to 10.
 
 The UTR never reaches the server: the form has no field for it, the server action ignores any `utr` it is sent, and the server leaves a `[[UTR]]` placeholder in UPI letters for the browser to fill in (the browser step arrives in Milestone 4; until then the letter page shows "UTR not available" for UPI letters).
+
+## Expiry cleanup
+
+`POST /api/cleanup` deletes packets past `PACKET_TTL_DAYS` and old rate-limit windows. Reads already
+treat an expired packet as gone (`PacketStore.get`), so this route only reclaims storage — nothing
+breaks if it is never called, but disk/row growth is unbounded without it.
+
+Protect it with `CRON_SECRET` (any long random string) and call it on a schedule. On Vercel, add to
+`vercel.json`:
+
+```json
+{
+  "crons": [{ "path": "/api/cleanup", "schedule": "0 3 * * *" }]
+}
+```
+
+Vercel Cron sends `Authorization: Bearer <CRON_SECRET>` automatically once `CRON_SECRET` is set as an
+environment variable — no extra wiring needed. Outside Vercel, call it the same way from any scheduler
+(`curl -X POST -H "Authorization: Bearer $CRON_SECRET" https://<host>/api/cleanup`).
