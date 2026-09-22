@@ -10,7 +10,7 @@ export interface PacketStrings {
   body: string;
   portal: string;
   bank: string;
-  utr: { label: string; hint: string; placeholder: string };
+  utr: { label: string; hint: string; placeholder: string; invalid: string };
   portalHelp: string;
   links: string;
   nextSteps: string;
@@ -43,6 +43,7 @@ export const packetMessages = defineMessages<PacketStrings>(
       label: "Your UTR (optional)",
       hint: "Only you can see this. It is added to the letter in this browser and is never sent to us.",
       placeholder: "12 digits from your payment app",
+      invalid: "That doesn't look like a UTR — it should be 8-35 letters/digits. The letter will say \"not available\" until this is fixed.",
     },
     portalHelp: "Paste these into the matching boxes on the portal. The portal is in English.",
     links: "Official links",
@@ -89,6 +90,7 @@ export const packetMessages = defineMessages<PacketStrings>(
       label: "आपका UTR (वैकल्पिक)",
       hint: "यह सिर्फ़ आपको दिखता है। यह इसी ब्राउज़र में पत्र में जुड़ता है, हमें कभी नहीं भेजा जाता।",
       placeholder: "आपके पेमेंट ऐप के 12 अंक",
+      invalid: "यह UTR जैसा नहीं लगता — यह 8-35 अक्षर/अंकों का होना चाहिए। जब तक यह ठीक नहीं होता, पत्र में \"उपलब्ध नहीं\" लिखा रहेगा।",
     },
     portalHelp: "पोर्टल पर इन्हें संबंधित खानों में पेस्ट करें। पोर्टल अंग्रेज़ी में है।",
     links: "आधिकारिक लिंक",

@@ -72,6 +72,11 @@ describe("the date floor", () => {
   it("still reports a future date with its own message", () => {
     expect(messagesFor({ ...base, paidOn: "2026-09-25" }, "paidOn")).toContain(SCHEMA_ISSUES.futureDate);
   });
+
+  it("rejects a calendar date that does not exist, instead of silently rolling it over", () => {
+    expect(schema.safeParse({ ...base, paidOn: "2026-02-30" }).success).toBe(false);
+    expect(schema.safeParse({ ...base, paidOn: "2026-04-31" }).success).toBe(false);
+  });
 });
 
 describe("SCHEMA_ISSUES", () => {

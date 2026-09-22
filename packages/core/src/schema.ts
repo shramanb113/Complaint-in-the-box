@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { nowToIstYMD, ymdFromISODate, type YMD } from "./dates";
+import { isRealCalendarDate, nowToIstYMD, ymdFromISODate, type YMD } from "./dates";
 import type { Intake } from "./types";
 import { TEMPLATE_CATEGORY } from "./templateCategory";
 import { UTR_TOKEN } from "./utr";
@@ -76,6 +76,7 @@ export function isNotFutureIsoDate(val: string, now: Date = new Date()): boolean
   const d = new Date(val + "T00:00:00Z");
   if (Number.isNaN(d.getTime())) return false;
   const submitted = ymdFromISODate(val);
+  if (!isRealCalendarDate(submitted)) return false;
   const todayIst = nowToIstYMD(now);
   return ymdToComparable(submitted) <= ymdToComparable(todayIst);
 }

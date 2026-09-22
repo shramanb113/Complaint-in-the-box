@@ -21,6 +21,16 @@ export function ymdFromISODate(iso: string): YMD {
   return { y, m, d };
 }
 
+/**
+ * True only for a date that actually exists on the calendar. `new Date(...)` silently rolls invalid
+ * dates over (e.g. 2024-02-30 becomes 2024-03-01), so this round-trips the value through Date.UTC and
+ * checks the fields come back unchanged.
+ */
+export function isRealCalendarDate(ymd: YMD): boolean {
+  const dt = new Date(Date.UTC(ymd.y, ymd.m - 1, ymd.d));
+  return dt.getUTCFullYear() === ymd.y && dt.getUTCMonth() === ymd.m - 1 && dt.getUTCDate() === ymd.d;
+}
+
 /** India has no DST, so a fixed +5:30 offset is always correct. */
 export function nowToIstYMD(now: Date = new Date()): YMD {
   const shifted = new Date(now.getTime() + IST_OFFSET_MS);

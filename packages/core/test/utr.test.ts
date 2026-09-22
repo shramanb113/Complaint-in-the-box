@@ -43,10 +43,16 @@ describe("normalizeUtr", () => {
   it("accepts alphanumeric references of 8-35 characters", () => {
     expect(normalizeUtr("AXIS1234567890")).toBe("AXIS1234567890");
   });
+  it("strips dashes, colons and a leading UTR/RRN label pasted in from a payment app", () => {
+    expect(normalizeUtr("4099-1234-5678")).toBe("409912345678");
+    expect(normalizeUtr("UTR: 409912345678")).toBe("409912345678");
+    expect(normalizeUtr("UTR 409912345678")).toBe("409912345678");
+    expect(normalizeUtr("RRN:409912345678")).toBe("409912345678");
+  });
   it("rejects too short, too long, or non-alphanumeric input", () => {
     expect(normalizeUtr("1234567")).toBeUndefined();
     expect(normalizeUtr("A".repeat(36))).toBeUndefined();
-    expect(normalizeUtr("4099-1234-5678")).toBeUndefined();
+    expect(normalizeUtr("4099@1234#5678")).toBeUndefined();
     expect(normalizeUtr("")).toBeUndefined();
   });
 });

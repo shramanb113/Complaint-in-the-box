@@ -17,9 +17,16 @@ export function utrLine(utr: string | undefined, locale: "en" | "hi"): string {
   return locale === "en" ? UTR_MISSING_EN : UTR_MISSING_HI;
 }
 
-/** Strips whitespace; returns undefined unless the result is 8-35 letters/digits. */
+/**
+ * Strips whitespace, a leading "UTR"/"RRN" label, and the dashes/colons people paste in from their
+ * payment app's own display (e.g. "UTR: 1234-5678-9012"). Returns undefined unless what remains is
+ * 8-35 letters/digits.
+ */
 export function normalizeUtr(input: string): string | undefined {
-  const compact = input.replace(/\s+/g, "");
+  const compact = input
+    .trim()
+    .replace(/^(utr|rrn)\b[\s:-]*/i, "")
+    .replace(/[\s:-]+/g, "");
   return /^[A-Za-z0-9]{8,35}$/.test(compact) ? compact : undefined;
 }
 

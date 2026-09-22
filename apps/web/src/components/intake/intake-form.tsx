@@ -124,7 +124,7 @@ export function IntakeForm({ templateId, locale, strings: t, packetStrings, disc
           : undefined;
 
   return (
-    <form ref={formRef} onSubmit={onSubmit} noValidate className="flex flex-col gap-6">
+    <form ref={formRef} action={formAction} onSubmit={onSubmit} noValidate className="flex flex-col gap-6">
       <FieldGroup id="field-platform" data-field="platform" label={platformLabel} error={error("platform")}>
         <ChipGroup
           name="platform"

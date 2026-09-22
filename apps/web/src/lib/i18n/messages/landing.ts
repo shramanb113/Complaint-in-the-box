@@ -2,11 +2,11 @@ import { defineMessages } from "../define";
 
 export const landingMessages = defineMessages(
   {
-    sticker: "Coming soon",
+    sticker: "Free · No login",
     title: "A complaint they can't ignore.",
     lead: "Refund stuck? Answer a few questions and get the message to paste in the app chat, a formal email with a deadline, and the exact boxes to fill on the complaint portal. English and Hindi. Free, no login.",
     cta: "Start my complaint",
-    ctaNote: "Opening soon. This is what the finished letter looks like.",
+    ctaNote: "Takes about two minutes. This is what the finished letter looks like.",
     sample: {
       label: "Sample: wrong item delivered",
       deadline: "Reply by {date} · {days} days",
@@ -69,11 +69,11 @@ export const landingMessages = defineMessages(
     },
   },
   {
-    sticker: "जल्द आ रहा है",
+    sticker: "मुफ़्त · बिना लॉगिन",
     title: "ऐसी शिकायत, जिसे वे अनदेखा न कर सकें।",
     lead: "रिफंड अटका है? कुछ सवालों के जवाब दें और पाएँ ऐप की चैट में चिपकाने वाला संदेश, तारीख़ के साथ औपचारिक ईमेल, और शिकायत पोर्टल के हर खाने में क्या भरना है। हिंदी और अंग्रेज़ी में। मुफ़्त, बिना लॉगिन।",
     cta: "मेरी शिकायत शुरू करें",
-    ctaNote: "जल्द खुल रहा है। तैयार पत्र ऐसा दिखता है।",
+    ctaNote: "करीब दो मिनट लगते हैं। तैयार पत्र ऐसा दिखता है।",
     sample: {
       label: "नमूना: ग़लत सामान मिला",
       deadline: "{date} तक जवाब दें · {days} दिन",
