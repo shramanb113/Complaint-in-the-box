@@ -24,10 +24,11 @@ export async function submitIntakeAction(_previous: SubmitState, formData: FormD
     if (typeof value === "string") raw[name] = value;
   }
 
-  const result = await submitIntake(getServices(), {
+  const services = getServices();
+  const result = await submitIntake(services, {
     templateId: template.data,
     raw,
-    ip: clientIp(await headers()),
+    ip: clientIp(await headers(), services.trustProxyHops),
     now: new Date(),
   });
   // redirect() throws, so it must stay outside any try/catch.

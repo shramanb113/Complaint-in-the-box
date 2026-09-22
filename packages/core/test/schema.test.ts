@@ -70,7 +70,7 @@ describe("IntakeSchema", () => {
     // already the 16th, even though the UTC calendar date is still the 15th.
     const fixedNow = new Date("2026-09-15T19:30:00Z");
     const schema = createIntakeSchema(fixedNow);
-    expect(() => schema.parse({ ...baseIntake, paidOn: "2026-09-16" })).not.toThrow();
+    expect(() => schema.parse({ ...baseIntake, paidOn: "2026-09-16", deliveredOn: "2026-09-16" })).not.toThrow();
   });
 
   it("still rejects a date that is in the future even in IST (regression sanity check)", () => {

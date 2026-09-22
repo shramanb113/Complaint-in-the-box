@@ -56,6 +56,7 @@ export const SCHEMA_ISSUES = {
   listedPrice: "listedPriceInr is required and must be less than amountInr for fee_drip_pricing",
   templateCategory: "templateId does not belong to the chosen category",
   reservedText: "Text cannot contain the reserved marker [[UTR]]",
+  deliveredBeforePaid: "deliveredOn cannot be before paidOn",
 } as const;
 
 /** [[UTR]] is the server's placeholder for the UTR; nobody may type it into free text. */
@@ -102,20 +103,20 @@ export function createIntakeSchema(now: Date = new Date()): z.ZodType<Intake> {
       locale: LocaleSchema,
       platform: PlatformSchema,
       companyName: noReservedMarker(z.string().trim().min(1).max(60)).optional(),
-      orderId: noReservedMarker(z.string().max(30)).optional(),
+      orderId: noReservedMarker(z.string().trim().max(30)).optional(),
       utr: z.string().max(35).optional(),
       amountInr: z.number().int().positive().max(MAX_AMOUNT_INR),
       listedPriceInr: z.number().int().positive().max(MAX_AMOUNT_INR).optional(),
       paidOn: isoDateNotFuture,
       deliveredOn: isoDateNotFuture.optional(),
       issueOn: isoDateNotFuture.optional(),
-      city: noReservedMarker(z.string().max(50)).optional(),
-      state: noReservedMarker(z.string().max(50)).optional(),
-      whatHappened: noReservedMarker(z.string().min(20).max(400)),
-      alreadyDid: noReservedMarker(z.string().max(200)).optional(),
+      city: noReservedMarker(z.string().trim().max(50)).optional(),
+      state: noReservedMarker(z.string().trim().max(50)).optional(),
+      whatHappened: noReservedMarker(z.string().trim().min(20).max(400)),
+      alreadyDid: noReservedMarker(z.string().trim().max(200)).optional(),
       desiredRemedy: DesiredRemedySchema,
       deadlineDays: z.union([z.literal(2), z.literal(7), z.literal(15)]),
-      userDisplayName: noReservedMarker(z.string().max(50)).optional(),
+      userDisplayName: noReservedMarker(z.string().trim().max(50)).optional(),
     })
     .refine((data) => data.platform !== "other" || !!data.companyName, {
       message: SCHEMA_ISSUES.companyRequired,
@@ -130,6 +131,10 @@ export function createIntakeSchema(now: Date = new Date()): z.ZodType<Intake> {
         path: ["listedPriceInr"],
       }
     )
+    .refine((data) => data.deliveredOn === undefined || data.deliveredOn >= data.paidOn, {
+      message: SCHEMA_ISSUES.deliveredBeforePaid,
+      path: ["deliveredOn"],
+    })
     .refine((data) => TEMPLATE_CATEGORY[data.templateId] === data.category, {
       message: SCHEMA_ISSUES.templateCategory,
       path: ["templateId"],

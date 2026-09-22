@@ -14,6 +14,7 @@ export interface Services {
   limiter: RateLimiter;
   catalog: CompanyCatalog;
   ipHashSalt: string;
+  trustProxyHops: number;
 }
 
 export function createServices(config: ServerConfig): Services {
@@ -28,6 +29,7 @@ export function createServices(config: ServerConfig): Services {
       limiter: new PostgresRateLimiter(db, config.rateLimitPerHour),
       catalog,
       ipHashSalt: config.ipHashSalt,
+      trustProxyHops: config.trustProxyHops,
     };
   }
   return {
@@ -35,6 +37,7 @@ export function createServices(config: ServerConfig): Services {
     limiter: new InMemoryRateLimiter(config.rateLimitPerHour),
     catalog,
     ipHashSalt: config.ipHashSalt,
+    trustProxyHops: config.trustProxyHops,
   };
 }
 

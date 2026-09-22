@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { applyUtr, generatePacket, loadCompanyCatalog, UTR_TOKEN } from "@nyaypatra/core";
@@ -150,5 +150,19 @@ describe("PacketView", () => {
     const steps = screen.getByRole("region", { name: packetMessages.hi.nextSteps });
     expect(within(steps).getAllByRole("listitem")).toHaveLength(3);
     expect(steps.textContent).toMatch(/[ऀ-ॿ]/);
+  });
+
+  // packetDeadline() returns a YMD object; stringifying it directly with a template literal produced
+  // "[object Object]T23:59:59" (an Invalid Date), so past_deadline was always false. Regression coverage.
+  it("reports past_deadline correctly on revisit, for both an expired and a still-open letter", () => {
+    const plausible = (window.plausible = vi.fn());
+    render(<PacketView packet={samplePacket("id1", new Date("2015-01-01T00:00:00Z"))} locale="en" strings={packetMessages.en} isNew={false} />);
+    expect(plausible).toHaveBeenCalledWith("packet_revisited", { props: expect.objectContaining({ past_deadline: true }) });
+
+    plausible.mockClear();
+    render(<PacketView packet={samplePacket("id2", new Date(Date.now() + 400 * 86_400_000))} locale="en" strings={packetMessages.en} isNew={false} />);
+    expect(plausible).toHaveBeenCalledWith("packet_revisited", { props: expect.objectContaining({ past_deadline: false }) });
+
+    delete window.plausible;
   });
 });

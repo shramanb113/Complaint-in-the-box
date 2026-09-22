@@ -7,6 +7,7 @@ export interface ServerConfig {
   databaseUrl?: string;
   ipHashSalt: string;
   rateLimitPerHour: number;
+  trustProxyHops: number;
 }
 
 /** Public, so it protects nothing: used only with the in-memory store, where no hash is ever written to a database. */
@@ -21,6 +22,8 @@ const EnvSchema = z.object({
   PACKET_STORE: z.preprocess(unlessBlank, z.enum(["memory", "postgres"]).optional()),
   IP_HASH_SALT: z.preprocess(unlessBlank, z.string().min(16).optional()),
   RATE_LIMIT_PER_HOUR: z.preprocess(unlessBlank, z.coerce.number().int().min(1).max(1000).default(10)),
+  // How many of our own proxies sit between the internet and this server (see server/ip.ts).
+  TRUST_PROXY_HOPS: z.preprocess(unlessBlank, z.coerce.number().int().min(1).max(10).default(1)),
 });
 
 /**
@@ -33,7 +36,7 @@ export function loadConfig(env: Record<string, string | undefined>): ServerConfi
     const names = [...new Set(parsed.error.issues.map((issue) => String(issue.path[0])))].join(", ");
     throw new Error(`Invalid environment variable(s): ${names}`);
   }
-  const { NODE_ENV, DATABASE_URL, PACKET_STORE, IP_HASH_SALT, RATE_LIMIT_PER_HOUR } = parsed.data;
+  const { NODE_ENV, DATABASE_URL, PACKET_STORE, IP_HASH_SALT, RATE_LIMIT_PER_HOUR, TRUST_PROXY_HOPS } = parsed.data;
   const production = NODE_ENV === "production";
   const storage = PACKET_STORE ?? (DATABASE_URL ? "postgres" : "memory");
 
@@ -52,5 +55,6 @@ export function loadConfig(env: Record<string, string | undefined>): ServerConfi
     databaseUrl: DATABASE_URL,
     ipHashSalt: IP_HASH_SALT ?? DEV_SALT,
     rateLimitPerHour: RATE_LIMIT_PER_HOUR,
+    trustProxyHops: TRUST_PROXY_HOPS,
   };
 }

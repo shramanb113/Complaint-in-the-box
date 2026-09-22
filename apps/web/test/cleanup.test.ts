@@ -45,25 +45,33 @@ describe("runCleanup", () => {
 });
 
 describe("POST /api/cleanup", () => {
+  const SECRET = "test-secret-well-over-sixteen-chars";
   const originalSecret = process.env.CRON_SECRET;
   const originalStore = process.env.PACKET_STORE;
+  const originalIpSalt = process.env.IP_HASH_SALT;
   beforeEach(() => {
-    process.env.CRON_SECRET = "test-secret";
+    process.env.CRON_SECRET = SECRET;
     process.env.PACKET_STORE = "memory";
+    process.env.IP_HASH_SALT = "x".repeat(16);
   });
   afterEach(() => {
     process.env.CRON_SECRET = originalSecret;
     process.env.PACKET_STORE = originalStore;
+    process.env.IP_HASH_SALT = originalIpSalt;
   });
 
   it("rejects a request with no or the wrong bearer token", async () => {
     const response = await POST(new Request("http://x/api/cleanup", { method: "POST" }));
     expect(response.status).toBe(403);
+    const wrong = await POST(
+      new Request("http://x/api/cleanup", { method: "POST", headers: { authorization: "Bearer nope-nope-nope" } })
+    );
+    expect(wrong.status).toBe(403);
   });
 
   it("runs cleanup for a request with the right bearer token", async () => {
     const response = await POST(
-      new Request("http://x/api/cleanup", { method: "POST", headers: { authorization: "Bearer test-secret" } })
+      new Request("http://x/api/cleanup", { method: "POST", headers: { authorization: `Bearer ${SECRET}` } })
     );
     expect(response.status).toBe(200);
     const body = await response.json();
@@ -73,7 +81,15 @@ describe("POST /api/cleanup", () => {
   it("refuses every request when CRON_SECRET is unset (safe default deny)", async () => {
     delete process.env.CRON_SECRET;
     const response = await POST(
-      new Request("http://x/api/cleanup", { method: "POST", headers: { authorization: "Bearer anything" } })
+      new Request("http://x/api/cleanup", { method: "POST", headers: { authorization: "Bearer anything-long-enough" } })
+    );
+    expect(response.status).toBe(403);
+  });
+
+  it("refuses a CRON_SECRET shorter than 16 characters, even when it matches exactly", async () => {
+    process.env.CRON_SECRET = "short-secret";
+    const response = await POST(
+      new Request("http://x/api/cleanup", { method: "POST", headers: { authorization: "Bearer short-secret" } })
     );
     expect(response.status).toBe(403);
   });

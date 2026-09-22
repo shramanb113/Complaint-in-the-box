@@ -79,6 +79,44 @@ describe("the date floor", () => {
   });
 });
 
+describe("deliveredOn cannot be before paidOn", () => {
+  it("rejects a delivery date earlier than the payment date", () => {
+    expect(messagesFor({ ...base, paidOn: "2026-09-10", deliveredOn: "2026-09-05" }, "deliveredOn")).toContain(
+      SCHEMA_ISSUES.deliveredBeforePaid
+    );
+  });
+
+  it("accepts a delivery date on or after the payment date", () => {
+    expect(schema.safeParse({ ...base, paidOn: "2026-09-10", deliveredOn: "2026-09-10" }).success).toBe(true);
+    expect(schema.safeParse({ ...base, paidOn: "2026-09-10", deliveredOn: "2026-09-14" }).success).toBe(true);
+  });
+
+  it("does not apply when deliveredOn is absent", () => {
+    expect(schema.safeParse({ ...base, deliveredOn: undefined }).success).toBe(true);
+  });
+});
+
+describe("whitespace-only free text", () => {
+  it("cannot satisfy whatHappened's 20-character minimum by padding with spaces", () => {
+    expect(schema.safeParse({ ...base, whatHappened: " ".repeat(25) }).success).toBe(false);
+  });
+
+  it("trims real text before checking length, so surrounding padding does not count", () => {
+    const result = schema.safeParse({ ...base, whatHappened: `  ${"a".repeat(20)}  ` });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.whatHappened).toBe("a".repeat(20));
+  });
+
+  it("trims optional free-text fields instead of storing bare whitespace", () => {
+    const result = schema.safeParse({ ...base, city: "  Pune  ", orderId: "   " });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.city).toBe("Pune");
+      expect(result.data.orderId).toBe("");
+    }
+  });
+});
+
 describe("SCHEMA_ISSUES", () => {
   it("matches the messages the schema really emits, so the form can map them", () => {
     expect(messagesFor({ ...base, platform: "other" }, "companyName")).toContain(SCHEMA_ISSUES.companyRequired);

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button, ChatBubble, CopyButton, DeadlineTag, Tabs, TabsContent, TabsList, TabsTrigger } from "@nyaypatra/ui";
-import { applyUtr, formatYMDEn, formatYMDHi, packetDeadline, type Packet } from "@nyaypatra/core";
+import { applyUtr, formatYMDEn, formatYMDHi, packetDeadline, ymdToIsoDate, type Packet } from "@nyaypatra/core";
 import { UtrBox } from "@/components/packet/utr-box";
 import { fill } from "@/lib/i18n/define";
 import { track } from "@/lib/analytics/track";
@@ -57,7 +57,7 @@ export function PacketView({ packet, locale, strings: t, expiresLine, isNew }: P
       return;
     }
     const daysSinceCreated = Math.floor((Date.now() - new Date(packet.createdAt).getTime()) / 86_400_000);
-    const pastDeadline = new Date() > new Date(`${packetDeadline(packet)}T23:59:59`);
+    const pastDeadline = new Date() > new Date(`${ymdToIsoDate(packetDeadline(packet))}T23:59:59`);
     track("packet_revisited", { days_since_created: daysSinceCreated, past_deadline: pastDeadline });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

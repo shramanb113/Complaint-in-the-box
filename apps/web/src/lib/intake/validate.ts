@@ -98,7 +98,11 @@ export function validateIntakeForm(templateId: TemplateId, raw: Partial<RawIntak
   }
 
   const paidOn = dateField(raw.paidOn, "paidOn", errors, now, true);
-  const deliveredOn = config.showDeliveredOn ? dateField(raw.deliveredOn, "deliveredOn", errors, now, false) : undefined;
+  let deliveredOn = config.showDeliveredOn ? dateField(raw.deliveredOn, "deliveredOn", errors, now, false) : undefined;
+  if (deliveredOn !== undefined && paidOn !== undefined && deliveredOn < paidOn) {
+    errors.deliveredOn = "beforePaid";
+    deliveredOn = undefined;
+  }
 
   const whatHappened = textField(raw.whatHappened, "whatHappened", errors, LIMITS.whatHappened, true);
   const alreadyDid = textField(raw.alreadyDid, "alreadyDid", errors, LIMITS.alreadyDid);
@@ -154,6 +158,8 @@ function codeFor(message: string): FieldError {
       return "required";
     case SCHEMA_ISSUES.listedPrice:
       return "listedNotLess";
+    case SCHEMA_ISSUES.deliveredBeforePaid:
+      return "beforePaid";
     case SCHEMA_ISSUES.reservedText:
       return "reservedText";
     default:

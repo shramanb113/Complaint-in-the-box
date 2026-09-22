@@ -35,6 +35,7 @@ export const FIELD_ERRORS = [
   "futureDate",
   "tooOld",
   "listedNotLess",
+  "beforePaid",
   "invalidChoice",
   "reservedText",
   "invalid",

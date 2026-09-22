@@ -23,6 +23,17 @@ describe("clientIp", () => {
     expect(clientIp(headers({ "x-real-ip": "198.51.100.4" }))).toBe("198.51.100.4");
     expect(clientIp(headers({}))).toBe("unknown");
   });
+
+  it("with more than one trusted hop, counts that many entries back from the end", () => {
+    const h = headers({ "x-forwarded-for": "203.0.113.9, 10.0.0.1, 10.0.0.2" });
+    expect(clientIp(h, 1)).toBe("10.0.0.2"); // the last proxy's own peer
+    expect(clientIp(h, 2)).toBe("10.0.0.1"); // one hop further back
+    expect(clientIp(h, 3)).toBe("203.0.113.9"); // the real client, 3 trusted hops deep
+  });
+
+  it("does not throw when trustedHops exceeds the number of entries; picks the first entry instead", () => {
+    expect(clientIp(headers({ "x-forwarded-for": "203.0.113.9" }), 5)).toBe("203.0.113.9");
+  });
 });
 
 describe("hashIp", () => {

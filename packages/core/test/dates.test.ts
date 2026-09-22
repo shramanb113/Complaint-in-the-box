@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   ymdFromISODate,
+  ymdToIsoDate,
   nowToIstYMD,
   addDaysToYMD,
   computeDeadlineYMD,
@@ -35,5 +36,11 @@ describe("dates", () => {
     const now = new Date("2026-09-15T12:00:00Z"); // 2026-09-15 17:30 IST
     expect(computeDeadlineYMD(7, now)).toEqual({ y: 2026, m: 9, d: 22 });
     expect(computeDeadlineYMD(2, now)).toEqual({ y: 2026, m: 9, d: 17 });
+  });
+
+  it("formats a YMD back to a zero-padded ISO date, round-tripping with ymdFromISODate", () => {
+    expect(ymdToIsoDate({ y: 2026, m: 9, d: 10 })).toBe("2026-09-10");
+    expect(ymdToIsoDate({ y: 2026, m: 1, d: 3 })).toBe("2026-01-03");
+    expect(ymdFromISODate(ymdToIsoDate({ y: 2026, m: 9, d: 10 }))).toEqual({ y: 2026, m: 9, d: 10 });
   });
 });

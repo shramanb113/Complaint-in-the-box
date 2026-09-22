@@ -63,6 +63,13 @@ describe("loadConfig", () => {
     expect(() => loadConfig({ RATE_LIMIT_PER_HOUR: "lots" })).toThrow(/RATE_LIMIT_PER_HOUR/);
   });
 
+  it("defaults TRUST_PROXY_HOPS to 1 and reads an explicit value, rejecting nonsense", () => {
+    expect(loadConfig({}).trustProxyHops).toBe(1);
+    expect(loadConfig({ TRUST_PROXY_HOPS: "2" }).trustProxyHops).toBe(2);
+    expect(() => loadConfig({ TRUST_PROXY_HOPS: "0" })).toThrow(/TRUST_PROXY_HOPS/);
+    expect(() => loadConfig({ TRUST_PROXY_HOPS: "nope" })).toThrow(/TRUST_PROXY_HOPS/);
+  });
+
   it("never puts a secret value in an error message", () => {
     try {
       loadConfig({ DATABASE_URL: "postgres://user:hunter2@host/db", RATE_LIMIT_PER_HOUR: "lots" });

@@ -21,6 +21,7 @@ export {
   computeDeadlineYMD,
   addDaysToYMD,
   ymdFromISODate,
+  ymdToIsoDate,
   formatYMDEn,
   formatYMDHi,
   type YMD,

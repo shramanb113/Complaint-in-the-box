@@ -28,6 +28,7 @@ describe("@nyaypatra/core public entry point", () => {
       "computeDeadlineYMD",
       "addDaysToYMD",
       "ymdFromISODate",
+      "ymdToIsoDate",
       "formatYMDEn",
       "formatYMDHi",
       "formatInr",

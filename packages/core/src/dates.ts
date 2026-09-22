@@ -51,6 +51,10 @@ export function computeDeadlineYMD(deadlineDays: number, now: Date = new Date())
   return addDaysToYMD(nowToIstYMD(now), deadlineDays);
 }
 
+export function ymdToIsoDate(ymd: YMD): string {
+  return `${String(ymd.y).padStart(4, "0")}-${String(ymd.m).padStart(2, "0")}-${String(ymd.d).padStart(2, "0")}`;
+}
+
 export function formatYMDEn(ymd: YMD): string {
   return `${ymd.d} ${EN_MONTHS[ymd.m - 1]} ${ymd.y}`;
 }

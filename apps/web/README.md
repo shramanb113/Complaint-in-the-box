@@ -35,6 +35,7 @@ shipping the standalone server elsewhere; do not expect it to work from a direct
 
 - Not set: letters live in memory (fine for development, lost on restart). In production, not having `DATABASE_URL` is an error unless `PACKET_STORE=memory` is set on purpose (demos only). The settings are read by the first request that needs storage (a submission or a `/packet/<id>` visit), not at startup, so the server still starts and `/api/health` (which never touches storage) still passes: that request fails with a clear error instead. After deploying, check a real submission.
 - `IP_HASH_SALT` (16+ characters, required whenever `DATABASE_URL` is set, in any environment; the in-memory store uses a public development salt) salts the hash used for rate limiting; addresses themselves are never stored. `RATE_LIMIT_PER_HOUR` defaults to 10.
+- `TRUST_PROXY_HOPS` (default 1) is how many of our own reverse proxies sit between the internet and this server; it decides which entry in `X-Forwarded-For` `clientIp()` (`src/server/ip.ts`) trusts as the real address. On a typical single-proxy deployment (including a bare Vercel deployment) the default is correct. Adding another hop in front (a CDN, a second load balancer) without raising this collapses every visitor onto that hop's own address and makes the per-address rate limit useless — if submissions start being rate-limited for everyone at once, check this first.
 
 The UTR never reaches the server: the form has no field for it, the server action ignores any `utr` it is sent, and the server leaves a `[[UTR]]` placeholder in UPI letters for the browser to fill in (the browser fills it in client-side via the packet page's optional UTR field — see `UtrBox`/`applyUtr`).
 
@@ -44,8 +45,9 @@ The UTR never reaches the server: the form has no field for it, the server actio
 treat an expired packet as gone (`PacketStore.get`), so this route only reclaims storage — nothing
 breaks if it is never called, but disk/row growth is unbounded without it.
 
-Protect it with `CRON_SECRET` (any long random string) and call it on a schedule. On Vercel, add to
-`vercel.json`:
+Protect it with `CRON_SECRET` (a random string of at least 16 characters — shorter values are refused)
+and call it on a schedule. The route compares it in constant time and rate-limits failed attempts per
+address, same as form submissions. On Vercel, add to `vercel.json`:
 
 ```json
 {

@@ -106,7 +106,7 @@ describe("validateIntakeForm: amounts", () => {
 
 describe("validateIntakeForm: dates", () => {
   it("accepts today (IST) and rejects tomorrow", () => {
-    expect(ok("ecom_wrong_item", { paidOn: "2026-09-20" }).ok).toBe(true);
+    expect(ok("ecom_wrong_item", { paidOn: "2026-09-20", deliveredOn: "2026-09-20" }).ok).toBe(true);
     expect(errorsOf("ecom_wrong_item", { paidOn: "2026-09-21" })).toEqual({ paidOn: "futureDate" });
   });
 
@@ -130,6 +130,13 @@ describe("validateIntakeForm: dates", () => {
     expect(ok("ecom_wrong_item", { deliveredOn: "" }).ok).toBe(true);
     expect(errorsOf("ecom_wrong_item", { deliveredOn: "2026-09-25" })).toEqual({ deliveredOn: "futureDate" });
     expect(errorsOf("ecom_wrong_item", { deliveredOn: "nope" })).toEqual({ deliveredOn: "badDate" });
+  });
+
+  it("rejects a delivery date before the payment date", () => {
+    expect(errorsOf("ecom_wrong_item", { paidOn: "2026-09-10", deliveredOn: "2026-09-05" })).toEqual({
+      deliveredOn: "beforePaid",
+    });
+    expect(ok("ecom_wrong_item", { paidOn: "2026-09-10", deliveredOn: "2026-09-10" }).ok).toBe(true);
   });
 });
 

@@ -1,6 +1,9 @@
 {
   "name": "nyaypatra",
   "private": true,
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "workspaces": [
     "packages/*",
     "apps/*"

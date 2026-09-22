@@ -21,6 +21,12 @@ export const shellMessages = defineMessages(
       body: "That page does not exist, or it has moved.",
       home: "Go to the home page",
     },
+    error: {
+      title: "Something went wrong",
+      body: "Something went wrong on our side, not because of anything you did. Try again, or go back to the home page.",
+      retry: "Try again",
+      home: "Go to the home page",
+    },
     englishOnly: "This page is in English only for now.",
   },
   {
@@ -41,6 +47,12 @@ export const shellMessages = defineMessages(
     notFound: {
       title: "पृष्ठ नहीं मिला",
       body: "यह पृष्ठ मौजूद नहीं है, या हटा दिया गया है।",
+      home: "होम पेज पर जाएँ",
+    },
+    error: {
+      title: "कुछ गड़बड़ हुई",
+      body: "हमारी तरफ़ से कुछ गड़बड़ हुई, आपकी वजह से नहीं। फिर कोशिश करें, या होम पेज पर जाएँ।",
+      retry: "फिर कोशिश करें",
       home: "होम पेज पर जाएँ",
     },
     englishOnly: "यह पृष्ठ फ़िलहाल केवल अंग्रेज़ी में है।",

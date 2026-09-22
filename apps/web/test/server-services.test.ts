@@ -14,7 +14,7 @@ afterEach(() => {
 
 describe("createServices", () => {
   it("builds working in-memory services with the company catalog", async () => {
-    const services = createServices({ storage: "memory", ipHashSalt: "x".repeat(16), rateLimitPerHour: 3 });
+    const services = createServices({ storage: "memory", ipHashSalt: "x".repeat(16), rateLimitPerHour: 3, trustProxyHops: 1 });
     const packet = samplePacket();
     await services.store.save(packet);
     expect(await services.store.get(packet.id, SAVED_AT)).toEqual(packet);
