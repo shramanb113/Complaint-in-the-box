@@ -1,22 +1,6 @@
 import path from "node:path";
 import type { NextConfig } from "next";
 
-const isProd = process.env.NODE_ENV === "production";
-
-// Plausible (analytics-script.tsx) is the only third-party origin this app ever talks to. Dev mode
-// needs 'unsafe-eval' and a websocket allowance for React Refresh/HMR; production does not.
-const CSP = [
-  "default-src 'self'",
-  `script-src 'self' https://plausible.io${isProd ? "" : " 'unsafe-eval'"}`,
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data:",
-  "font-src 'self' data:",
-  `connect-src 'self' https://plausible.io${isProd ? "" : " ws://localhost:* http://localhost:*"}`,
-  "frame-ancestors 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-].join("; ");
-
 const config: NextConfig = {
   output: "standalone",
   transpilePackages: ["@nyaypatra/core", "@nyaypatra/ui"],
@@ -29,7 +13,8 @@ const config: NextConfig = {
       {
         source: "/:path*",
         headers: [
-          { key: "Content-Security-Policy", value: CSP },
+          // Content-Security-Policy is set per-request by middleware.ts (it needs a fresh nonce every
+          // request so Next's own injected hydration scripts can run under a strict script-src).
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "DENY" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },

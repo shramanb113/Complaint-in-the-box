@@ -10,7 +10,7 @@ import Script from "next/script";
  * `packet_expired_view` (see components/packet/packet-view.tsx) — are unaffected by the exclusion and
  * keep reporting packet activity without ever passing the URL.
  */
-export function AnalyticsScript() {
+export function AnalyticsScript({ nonce }: { nonce: string }) {
   const domain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
   if (!domain) return null;
   return (
@@ -20,6 +20,7 @@ export function AnalyticsScript() {
       data-exclude="/packet/**"
       src="https://plausible.io/js/script.js"
       strategy="afterInteractive"
+      nonce={nonce}
     />
   );
 }
