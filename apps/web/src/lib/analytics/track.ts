@@ -13,6 +13,7 @@ export type AnalyticsEvent =
   | "copy_clicked"
   | "pdf_downloaded"
   | "whatsapp_opened"
+  | "email_opened"
   | "portal_opened"
   | "utr_entered"
   | "next_step_interest";

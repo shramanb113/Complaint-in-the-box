@@ -63,8 +63,22 @@ export function PacketView({ packet, locale, strings: t, expiresLine, isNew }: P
   }, []);
 
   const whatsappHref = `https://wa.me/?text=${encodeURIComponent(artifacts.whatsapp[locale])}`;
-  const mailHref = `mailto:?subject=${encodeURIComponent(artifacts.emailSubject[locale])}&body=${encodeURIComponent(artifacts.emailBody[locale])}`;
+  // Body is deliberately NOT the full letter: URL-encoded Hindi runs ~9,500 chars for a typical
+  // letter (each Devanagari char -> %XX%XX%XX), well past the ~2,083 char mailto limit most
+  // Windows/Outlook clients enforce, which silently truncates the deadline/escalation paragraph.
+  // Full text goes to the clipboard on click instead; this note is a short, length-safe pointer.
+  const mailHref = `mailto:?subject=${encodeURIComponent(artifacts.emailSubject[locale])}&body=${encodeURIComponent(t.emailMailtoNote)}`;
   const filenameDate = packet.createdAt.slice(0, 10);
+
+  async function openEmail() {
+    try {
+      await navigator.clipboard.writeText(artifacts.emailBody[locale]);
+    } catch {
+      // Clipboard API can fail (permissions, insecure context) — the Copy button next to
+      // this one covers that case, so the mailto note's instruction just goes unfulfilled.
+    }
+    track("email_opened", { lang: locale });
+  }
 
   function downloadPdf() {
     const previousTitle = document.title;
@@ -144,7 +158,9 @@ export function PacketView({ packet, locale, strings: t, expiresLine, isNew }: P
                 />
                 {lang === locale ? (
                   <Button asChild variant="secondary">
-                    <a href={mailHref}>{t.emailOpen}</a>
+                    <a href={mailHref} onClick={openEmail}>
+                      {t.emailOpen}
+                    </a>
                   </Button>
                 ) : null}
               </div>
