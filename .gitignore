@@ -15,3 +15,5 @@ apps/web/CLAUDE.md
 *.tsbuildinfo
 playwright-report/
 test-results/
+.neon
+.vercel
