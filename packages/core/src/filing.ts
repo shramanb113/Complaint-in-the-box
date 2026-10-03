@@ -48,7 +48,7 @@ export type FilingFacts = z.infer<typeof FilingFactsSchema>;
 
 export type Forum = "district" | "state" | "national";
 
-/** Pecuniary limits by consideration paid. Secondary-sourced; see spec section 2. */
+/** Pecuniary limits by consideration paid: Consumer Protection (Jurisdiction) Rules 2021, notified 30 Dec 2021 (District up to 50 lakh, State up to 2 crore). Confirmed in two independent summaries; the gazette PDF itself was not read. */
 export function suggestForum(amountPaidInr: number): Forum {
   if (amountPaidInr <= 5_000_000) return "district";
   if (amountPaidInr <= 20_000_000) return "state";
