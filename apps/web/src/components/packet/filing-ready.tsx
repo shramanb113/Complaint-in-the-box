@@ -156,6 +156,25 @@ export function FilingReady({ packet, locale, strings: t, copy, onPrintKit }: Fi
   const issueFor = (field: string): ReadinessIssue | undefined => readiness.blockers.find((b) => b.field === field);
   const err = (field: string) => (checked && issueFor(field) ? READINESS_MESSAGES[issueFor(field)!.code][locale] : undefined);
   const f = t.fields;
+  const labelFor = (field?: string): string | undefined => {
+    const map: Record<string, string> = {
+      amountClaimed: f.amountClaimed,
+      compensationClaimedInr: f.compensation,
+      issueOn: f.issueOn,
+      firstComplaintOn: f.firstComplaintOn,
+      lastReplyOn: f.lastReplyOn,
+      "complainant.fullName": f.fullName,
+      "complainant.addressLine": f.addressLine,
+      "complainant.city": f.city,
+      "complainant.state": f.state,
+      "complainant.pincode": f.pincode,
+      "complainant.mobile": f.mobile,
+      "complainant.email": f.email,
+      "opposite.legalName": f.legalName,
+      "opposite.registeredOffice": f.registeredOffice,
+    };
+    return field ? map[field] : undefined;
+  };
 
   function printKit() {
     track("filing_kit_printed", {});
@@ -273,7 +292,8 @@ export function FilingReady({ packet, locale, strings: t, copy, onPrintKit }: Fi
                 <ul role="list" className="mt-2 list-disc space-y-1 pl-5 text-[15px] font-medium">
                   {readiness.blockers.map((b, i) => (
                     <li key={`${b.code}-${b.field}-${i}`}>
-                      {READINESS_MESSAGES[b.code][locale]} {b.field ? <span className="font-extrabold">({b.field})</span> : null}
+                      {labelFor(b.field) ? <span className="font-extrabold">{labelFor(b.field)}: </span> : null}
+                      {READINESS_MESSAGES[b.code][locale]}
                     </li>
                   ))}
                 </ul>
