@@ -58,6 +58,7 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <div data-reveal>
       <CategoryPicker
         kicker={picker.kicker}
         title={picker.title}
@@ -76,10 +77,11 @@ export default async function HomePage() {
           hidden_fee: grouped.hidden_fee.map((id) => ({ id, label: picker.templates[id] })),
         }}
       />
+      </div>
 
-      <WhatYouGet locale={locale} />
-      <HowItWorks locale={locale} />
-      <Promises locale={locale} />
+      <div data-reveal><WhatYouGet locale={locale} /></div>
+      <div data-reveal><HowItWorks locale={locale} /></div>
+      <div data-reveal><Promises locale={locale} /></div>
     </div>
   );
 }

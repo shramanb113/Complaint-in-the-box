@@ -16,7 +16,9 @@ export type AnalyticsEvent =
   | "email_opened"
   | "portal_opened"
   | "utr_entered"
-  | "next_step_interest";
+  | "next_step_interest"
+  | "filing_checked"
+  | "filing_kit_printed";
 
 export type AnalyticsProps = Record<string, string | number | boolean>;
 

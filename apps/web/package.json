@@ -14,10 +14,12 @@
     "db:migrate": "node scripts/migrate.mjs"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@next/env": "16.3.5",
     "@nyaypatra/core": "*",
     "@nyaypatra/ui": "*",
     "drizzle-orm": "^0.45.2",
+    "gsap": "^3.15.0",
     "next": "16.3.5",
     "pg": "^8.23.0",
     "react": "^19.3.0",

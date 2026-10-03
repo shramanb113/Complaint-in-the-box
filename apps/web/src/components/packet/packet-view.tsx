@@ -3,10 +3,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button, ChatBubble, CopyButton, DeadlineTag, Tabs, TabsContent, TabsList, TabsTrigger } from "@nyaypatra/ui";
 import { applyUtr, formatYMDEn, formatYMDHi, packetDeadline, ymdToIsoDate, type Packet } from "@nyaypatra/core";
+import { FilingReady } from "@/components/packet/filing-ready";
 import { UtrBox } from "@/components/packet/utr-box";
 import { fill } from "@/lib/i18n/define";
 import { track } from "@/lib/analytics/track";
 import type { UiLocale } from "@/lib/i18n/locale";
+import { filingMessages } from "@/lib/i18n/messages/filing";
 import type { PacketStrings } from "@/lib/i18n/messages/packet";
 
 export interface PacketViewProps {
@@ -40,6 +42,7 @@ function PortalList({ fields }: { fields: Record<string, string> }) {
  */
 export function PacketView({ packet, locale, strings: t, expiresLine, isNew }: PacketViewProps) {
   const [utr, setUtr] = useState("");
+  const [printingKit, setPrintingKit] = useState(false);
   const generatedTracked = useRef(false);
   const isUpi = packet.intake.category === "upi";
   const { artifacts } = useMemo(() => applyUtr(packet, utr.trim() === "" ? undefined : utr), [packet, utr]);
@@ -106,6 +109,7 @@ export function PacketView({ packet, locale, strings: t, expiresLine, isNew }: P
           <TabsTrigger value="whatsapp">{t.tabLabels.whatsapp}</TabsTrigger>
           <TabsTrigger value="email">{t.tabLabels.email}</TabsTrigger>
           <TabsTrigger value="portal">{t.tabLabels.portal}</TabsTrigger>
+          <TabsTrigger value="file">{filingMessages[locale].tab}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="whatsapp" className="flex flex-col gap-6">
@@ -202,6 +206,16 @@ export function PacketView({ packet, locale, strings: t, expiresLine, isNew }: P
             </ul>
           </section>
         </TabsContent>
+
+        <TabsContent value="file">
+          <FilingReady
+            packet={packet}
+            locale={locale}
+            strings={filingMessages[locale]}
+            copy={{ idle: t.copy, done: t.copied }}
+            onPrintKit={setPrintingKit}
+          />
+        </TabsContent>
       </Tabs>
 
       <section aria-label={t.nextSteps} className="flex flex-col gap-3">
@@ -231,7 +245,7 @@ export function PacketView({ packet, locale, strings: t, expiresLine, isNew }: P
       </section>
     </article>
 
-    <div aria-hidden="true" className="hidden print:block">
+    <div aria-hidden="true" className={printingKit ? "hidden" : "hidden print:block"}>
       <p className="mb-4 text-sm font-bold">{t.pdf.letterhead}</p>
       <pre className="whitespace-pre-wrap font-sans text-[13px]">{artifacts.emailBody[locale]}</pre>
     </div>
