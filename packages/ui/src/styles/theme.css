@@ -120,7 +120,7 @@ textarea:not([aria-invalid="true"]) {
 
 input:not([type="checkbox"], [type="radio"], [aria-invalid="true"]):focus-visible,
 textarea:not([aria-invalid="true"]):focus-visible {
-  box-shadow: var(--shadow-hard-lg);
+  box-shadow: 6px 6px 0 var(--color-ink);
   translate: -1px -1px;
 }
 
