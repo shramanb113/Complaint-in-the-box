@@ -94,7 +94,7 @@ export function PacketView({ packet, locale, strings: t, expiresLine, isNew }: P
   return (
     <>
     <article lang={locale} className="mx-auto flex max-w-2xl flex-col gap-8 print:hidden">
-      <header className="flex flex-wrap items-center gap-3">
+      <header data-intro className="flex flex-wrap items-center gap-3">
         <div>
           <h2 className="font-display text-3xl font-extrabold leading-tight tracking-tight">{t.title}</h2>
           {expiresLine ? <p className="mt-1 text-base font-medium">{expiresLine}</p> : null}
@@ -104,6 +104,7 @@ export function PacketView({ packet, locale, strings: t, expiresLine, isNew }: P
 
       {isUpi ? <UtrBox value={utr} onChange={setUtr} strings={t.utr} /> : null}
 
+      <div data-intro>
       <Tabs defaultValue="whatsapp">
         <TabsList aria-label={t.title}>
           <TabsTrigger value="whatsapp">{t.tabLabels.whatsapp}</TabsTrigger>
@@ -217,6 +218,7 @@ export function PacketView({ packet, locale, strings: t, expiresLine, isNew }: P
           />
         </TabsContent>
       </Tabs>
+      </div>
 
       <section aria-label={t.nextSteps} className="flex flex-col gap-3">
         <h3 className="font-display text-xl font-extrabold tracking-tight">{t.nextSteps}</h3>

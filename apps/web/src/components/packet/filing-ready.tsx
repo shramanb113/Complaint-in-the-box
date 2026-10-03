@@ -287,7 +287,7 @@ export function FilingReady({ packet, locale, strings: t, copy, onPrintKit }: Fi
               {t.check}
             </Button>
             {checked ? (
-              <div className="rounded-card border-[3px] border-ink bg-peach p-4 shadow-hard">
+              <div data-pop className="rounded-card border-[3px] border-ink bg-peach p-4 shadow-hard">
                 <h3 className="font-display text-lg font-extrabold">{t.fixThese}</h3>
                 <ul role="list" className="mt-2 list-disc space-y-1 pl-5 text-[15px] font-medium">
                   {readiness.blockers.map((b, i) => (
@@ -316,7 +316,7 @@ export function FilingReady({ packet, locale, strings: t, copy, onPrintKit }: Fi
 
       {output ? (
         <div className="flex flex-col gap-8" data-reveal>
-          <div className="rounded-card border-[3px] border-ink bg-mint p-4 shadow-hard">
+          <div data-pop className="rounded-card border-[3px] border-ink bg-mint p-4 shadow-hard">
             <h3 className="font-display text-xl font-extrabold">{t.readyTitle}</h3>
             <p className="text-[15px] font-medium">{t.readyBody}</p>
           </div>
