@@ -34,6 +34,15 @@ describe("@nyaypatra/core public entry point", () => {
       "formatInr",
       "formatInrNumber",
       "packetDeadline",
+      "EVIDENCE_KEYS",
+      "EVIDENCE_TITLE",
+      "FORUM_NAME",
+      "FilingFactsSchema",
+      "READINESS_MESSAGES",
+      "buildFilingKit",
+      "buildNchBlock",
+      "checkFilingReadiness",
+      "suggestForum",
     ];
     for (const name of expected) {
       expect(core, name).toHaveProperty(name);
