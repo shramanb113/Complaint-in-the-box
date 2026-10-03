@@ -74,8 +74,8 @@ const PORTAL_LINKS_ECOM = [
     help: "File a formal consumer complaint online.",
   },
   {
-    label: "e-Daakhil / e-Jagriti",
-    href: "https://e-daakhil.nic.in/",
+    label: "e-Jagriti (Consumer Commission)",
+    href: "https://e-jagriti.gov.in/",
     help: "File a case with the Consumer Commission.",
   },
 ];
@@ -226,12 +226,12 @@ function nextSteps(intake: Intake): { en: string[]; hi: string[] } {
     en: [
       "Send this message/email to the platform's official grievance channel.",
       "If unresolved after the deadline, file a complaint on the National Consumer Helpline (1915) or consumerhelpline.gov.in.",
-      "If still unresolved, file a case on e-Daakhil under the Consumer Protection Act, 2019.",
+      "If still unresolved, file a case on e-Jagriti under the Consumer Protection Act, 2019.",
     ],
     hi: [
       "यह संदेश/ईमेल प्लेटफ़ॉर्म के आधिकारिक शिकायत चैनल पर भेजें।",
       "यदि डेडलाइन के बाद भी समाधान नहीं होता, तो नेशनल कंज्यूमर हेल्पलाइन (1915) या consumerhelpline.gov.in पर शिकायत दर्ज करें।",
-      "यदि फिर भी समाधान नहीं होता, तो उपभोक्ता संरक्षण अधिनियम, 2019 के तहत e-Daakhil पर मामला दर्ज करें।",
+      "यदि फिर भी समाधान नहीं होता, तो उपभोक्ता संरक्षण अधिनियम, 2019 के तहत e-Jagriti पर मामला दर्ज करें।",
     ],
   };
 }
