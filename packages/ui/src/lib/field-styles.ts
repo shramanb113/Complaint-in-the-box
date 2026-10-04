@@ -1,7 +1,8 @@
 /** Shared look of text-like fields: chunky ink border, hard shadow, green focus ring, tomato when invalid. */
 export const fieldBase = [
   "w-full min-h-12 rounded-field border-[2.5px] border-ink bg-white px-3 py-2",
-  "text-[15px] font-bold shadow-hard",
+  // 16px on phones: iOS Safari zooms the page in when a field under 16px is focused.
+  "text-base font-bold shadow-hard sm:text-[15px]",
   "placeholder:font-medium placeholder:text-ink/65",
   "focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-wa",
   "aria-[invalid=true]:border-tomato aria-[invalid=true]:shadow-[4px_4px_0_var(--color-tomato)]",
