@@ -60,6 +60,7 @@ export interface IntakeStrings {
   form: {
     submit: string;
     submitting: string;
+    privacy: string;
     fixErrors: string;
     rateLimited: string;
     serverError: string;
@@ -145,6 +146,7 @@ export const intakeMessages = defineMessages<IntakeStrings>(
     },
     form: {
       submit: "Make my letter",
+      privacy: "Your letter is kept for 7 days on a private link, then deleted. We never sell it, and your UTR never leaves your browser.",
       submitting: "Making your letter…",
       fixErrors: "Please check the fields marked below and try again.",
       rateLimited: "You have made several letters in the last hour. Please try again a little later.",
@@ -229,6 +231,7 @@ export const intakeMessages = defineMessages<IntakeStrings>(
     },
     form: {
       submit: "मेरा पत्र बनाएँ",
+      privacy: "आपका पत्र 7 दिन तक एक निजी लिंक पर रखा जाता है, फिर हटा दिया जाता है। हम इसे कभी नहीं बेचते, और आपका UTR आपके ब्राउज़र से बाहर नहीं जाता।",
       submitting: "आपका पत्र बन रहा है…",
       fixErrors: "कृपया नीचे चिह्नित खाने जाँचें और फिर कोशिश करें।",
       rateLimited: "आपने पिछले एक घंटे में कई पत्र बनाए हैं। कृपया थोड़ी देर बाद फिर कोशिश करें।",

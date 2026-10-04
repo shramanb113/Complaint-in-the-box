@@ -7,6 +7,7 @@ export const landingMessages = defineMessages(
     lead: "Refund stuck? Answer a few questions and get the message to paste in the app chat, a formal email with a deadline, and the exact boxes to fill on the complaint portal. English and Hindi. Free, no login.",
     cta: "Start my complaint",
     ctaNote: "Takes about two minutes. This is what the finished letter looks like.",
+    ctaTrust: "Kept 7 days on a private link, then deleted. Never sold.",
     sample: {
       label: "Sample: wrong item delivered",
       deadline: "Reply by {date} · {days} days",
@@ -55,7 +56,7 @@ export const landingMessages = defineMessages(
     promises: {
       title: "Plain promises",
       items: [
-        { title: "Free. No login.", body: "Nothing to sign up for." },
+        { title: "Free. No login.", body: "Nothing to sign up for. Your letter is deleted after 7 days and your details are never sold." },
         {
           title: "Your UTR stays on your phone.",
           body: "It is added to the letter in your browser and never sent to us.",
@@ -74,6 +75,7 @@ export const landingMessages = defineMessages(
     lead: "रिफंड अटका है? कुछ सवालों के जवाब दें और पाएँ ऐप की चैट में चिपकाने वाला संदेश, तारीख़ के साथ औपचारिक ईमेल, और शिकायत पोर्टल के हर खाने में क्या भरना है। हिंदी और अंग्रेज़ी में। मुफ़्त, बिना लॉगिन।",
     cta: "मेरी शिकायत शुरू करें",
     ctaNote: "करीब दो मिनट लगते हैं। तैयार पत्र ऐसा दिखता है।",
+    ctaTrust: "7 दिन तक निजी लिंक पर, फिर हटा दिया जाता है। कभी बेचा नहीं जाता।",
     sample: {
       label: "नमूना: ग़लत सामान मिला",
       deadline: "{date} तक जवाब दें · {days} दिन",
@@ -122,7 +124,7 @@ export const landingMessages = defineMessages(
     promises: {
       title: "सीधे वादे",
       items: [
-        { title: "मुफ़्त। बिना लॉगिन।", body: "कहीं साइन-अप नहीं करना।" },
+        { title: "मुफ़्त। बिना लॉगिन।", body: "कहीं साइन-अप नहीं करना। आपका पत्र 7 दिन बाद हटा दिया जाता है और आपकी जानकारी कभी बेची नहीं जाती।" },
         {
           title: "आपका UTR आपके फ़ोन में ही रहता है।",
           body: "यह आपके ब्राउज़र में पत्र में जुड़ता है, हमें कभी नहीं भेजा जाता।",

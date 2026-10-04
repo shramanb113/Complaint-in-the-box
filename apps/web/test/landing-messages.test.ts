@@ -21,4 +21,12 @@ describe("landingMessages", () => {
     expect(landingMessages.en.promises.items[1].title).toContain("UTR");
     expect(landingMessages.hi.promises.items[1].title).toContain("UTR");
   });
+
+  it("states retention and no-sale on the landing page and the form, in both languages", () => {
+    for (const l of ["en", "hi"] as const) {
+      expect(landingMessages[l].ctaTrust).toContain("7");
+      expect(landingMessages[l].promises.items[0].body).toContain("7");
+    }
+    expect(landingMessages.en.ctaTrust).toContain("Never sold");
+  });
 });

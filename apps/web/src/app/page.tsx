@@ -42,6 +42,7 @@ export default async function HomePage() {
               <a href="#start">{t.cta}</a>
             </Button>
             <p className="text-sm font-medium">{t.ctaNote}</p>
+            <p className="text-sm font-bold">{t.ctaTrust}</p>
           </div>
         </div>
         <div className="motion-safe:animate-rise" style={rise(2)}>

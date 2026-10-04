@@ -285,6 +285,8 @@ export function IntakeForm({ templateId, locale, strings: t, packetStrings, disc
         <p className="text-sm font-bold">{disclaimer}</p>
       </div>
 
+      <p className="text-sm font-medium">{t.form.privacy}</p>
+
       <Button type="submit" size="lg" disabled={pending} className="w-full sm:w-auto">
         {pending ? t.form.submitting : t.form.submit}
       </Button>
