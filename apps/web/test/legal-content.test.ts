@@ -28,6 +28,13 @@ describe("legal content", () => {
     expect(text).toMatch(/do not sell/i);
   });
 
+  it("privacy explains how letters are protected and how to delete one early", () => {
+    const text = textOf(LEGAL.privacy);
+    expect(text).toMatch(/HTTPS/);
+    expect(text).toMatch(/Delete this letter now/);
+    expect(text).toMatch(/backup/i);
+  });
+
   it("the disclaimer says this is not a lawyer, not the government, and files no cases", () => {
     const text = textOf(LEGAL.disclaimer);
     expect(text).toMatch(/not a lawyer/i);

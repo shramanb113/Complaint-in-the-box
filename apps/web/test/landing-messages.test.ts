@@ -22,6 +22,12 @@ describe("landingMessages", () => {
     expect(landingMessages.hi.promises.items[1].title).toContain("UTR");
   });
 
+  it("tells shopkeepers the letter says only what the sender typed and allows time to fix it, in both languages", () => {
+    expect(landingMessages.en.promises.items[3].body).toMatch(/only what you tell it/);
+    expect(landingMessages.en.promises.items[3].body).toMatch(/time to put it right/);
+    expect(landingMessages.hi.promises.items[3].body).toContain("सुधारने का समय");
+  });
+
   it("states retention and no-sale on the landing page and the form, in both languages", () => {
     for (const l of ["en", "hi"] as const) {
       expect(landingMessages[l].ctaTrust).toContain("7");

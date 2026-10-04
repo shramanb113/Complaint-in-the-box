@@ -160,6 +160,18 @@ describe("generatePacket - upi_debit_merchant_no_credit", () => {
     expect(packet.artifacts.portalLinks.some((l) => l.label.includes("RBI"))).toBe(true);
   });
 
+  it("sends UPI complaints to the bank first, then the RBI CMS, then the consumer court", () => {
+    const packet = generatePacket(upiFixture, catalog, FIXED_NOW);
+    for (const steps of [packet.artifacts.nextSteps.en, packet.artifacts.nextSteps.hi]) {
+      expect(steps).toHaveLength(3);
+      expect(steps[1]).toContain("CMS");
+      expect(steps[1]).toContain("30");
+      expect(steps[2]).toContain("e-Jagriti");
+    }
+    expect(packet.artifacts.nextSteps.en[0]).toMatch(/^First, .*bank/);
+    expect(packet.artifacts.nextSteps.en[0]).not.toContain("e-Jagriti");
+  });
+
   it("computes the 2-day deadline from now, in IST", () => {
     const packet = generatePacket(upiFixture, catalog, FIXED_NOW);
     expect(packet.artifacts.whatsapp.en).toContain("17 Sep 2026");

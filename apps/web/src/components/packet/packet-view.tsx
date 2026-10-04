@@ -7,6 +7,7 @@ import { FilingReady } from "@/components/packet/filing-ready";
 import { UtrBox } from "@/components/packet/utr-box";
 import { fill } from "@/lib/i18n/define";
 import { track } from "@/lib/analytics/track";
+import { buildReminderIcs } from "@/lib/reminder";
 import type { UiLocale } from "@/lib/i18n/locale";
 import { filingMessages } from "@/lib/i18n/messages/filing";
 import type { PacketStrings } from "@/lib/i18n/messages/packet";
@@ -21,6 +22,8 @@ export interface PacketViewProps {
   isNew: boolean;
   /** Form action that deletes this letter now. Leave out when the letter was not saved. */
   deleteAction?: (formData: FormData) => Promise<void>;
+  /** Where "Tell us how it went" emails go. Leave out and that link is not shown. */
+  contactEmail?: string;
 }
 
 const box = "whitespace-pre-wrap break-words rounded-field border-2 border-ink p-3 text-[15px] font-medium";
@@ -42,7 +45,7 @@ function PortalList({ fields }: { fields: Record<string, string> }) {
  * The one place a Packet becomes WhatsApp/email/portal content. `applyUtr` runs here, client-side,
  * with whatever the person has typed into UtrBox — the token never resolves on the server (D3).
  */
-export function PacketView({ packet, locale, strings: t, expiresLine, isNew, deleteAction }: PacketViewProps) {
+export function PacketView({ packet, locale, strings: t, expiresLine, isNew, deleteAction, contactEmail }: PacketViewProps) {
   const [utr, setUtr] = useState("");
   const [printingKit, setPrintingKit] = useState(false);
   const generatedTracked = useRef(false);
@@ -83,6 +86,30 @@ export function PacketView({ packet, locale, strings: t, expiresLine, isNew, del
       // this one covers that case, so the mailto note's instruction just goes unfulfilled.
     }
     track("email_opened", { lang: locale });
+  }
+
+  const outcomeHref = contactEmail
+    ? `mailto:${contactEmail}?subject=${encodeURIComponent(t.whatNext.outcomeSubject)}&body=${encodeURIComponent(t.whatNext.outcomeBody)}`
+    : undefined;
+
+  function downloadReminder() {
+    const company = packet.intake.companyName ?? t.whatNext.companyFallback;
+    const ics = buildReminderIcs({
+      uid: packet.id,
+      deadline: packetDeadline(packet),
+      title: fill(t.whatNext.remindTitle, { company }),
+      description: fill(t.whatNext.remindBody, { company, step: artifacts.nextSteps[locale][1] ?? "" }),
+      now: new Date(),
+    });
+    const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `nyaypatra-deadline-${filenameDate}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    track("reminder_downloaded", {});
   }
 
   function downloadPdf() {
@@ -233,18 +260,19 @@ export function PacketView({ packet, locale, strings: t, expiresLine, isNew, del
 
       <section aria-label={t.whatNext.title} className="flex flex-col gap-3 rounded-card border-[3px] border-ink bg-butter p-4 shadow-hard">
         <h3 className="font-display text-xl font-extrabold tracking-tight">{t.whatNext.title}</h3>
-        <div className="flex flex-col gap-2">
-          {(["escalate", "remind"] as const).map((step) => (
-            <button
-              key={step}
-              type="button"
-              onClick={() => track("next_step_interest", { step })}
-              className="flex min-h-11 flex-col items-start rounded-field border-2 border-ink bg-white px-3 py-2 text-left"
-            >
-              <span className="font-extrabold">{t.whatNext[step]}</span>
-              <span className="text-sm font-medium">{t.whatNext.comingSoon}</span>
-            </button>
-          ))}
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col items-start gap-1">
+            <Button variant="secondary" onClick={downloadReminder}>{t.whatNext.remind}</Button>
+            <p className="text-sm font-medium">{t.whatNext.remindHint}</p>
+          </div>
+          {outcomeHref ? (
+            <div className="flex flex-col items-start gap-1">
+              <Button asChild variant="secondary">
+                <a href={outcomeHref} onClick={() => track("outcome_link_clicked", {})}>{t.whatNext.outcome}</a>
+              </Button>
+              <p className="text-sm font-medium">{t.whatNext.outcomeHint}</p>
+            </div>
+          ) : null}
         </div>
       </section>
 

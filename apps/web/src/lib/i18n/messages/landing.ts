@@ -64,7 +64,7 @@ export const landingMessages = defineMessages(
         { title: "English and Hindi.", body: "Pick the language the company will read." },
         {
           title: "A drafting tool, not a law firm.",
-          body: "No legal advice, and no promise of a refund. It makes your case clear and dated.",
+          body: "No legal advice, and no promise of a refund. The letter says only what you tell it, politely, and gives the company time to put it right.",
         },
       ],
     },
@@ -132,7 +132,7 @@ export const landingMessages = defineMessages(
         { title: "हिंदी और अंग्रेज़ी।", body: "वह भाषा चुनें जो कंपनी पढ़ेगी।" },
         {
           title: "मसौदा बनाने का टूल, कोई लॉ फ़र्म नहीं।",
-          body: "कोई क़ानूनी सलाह नहीं, और रिफंड का कोई वादा नहीं। यह आपकी बात साफ़ और तारीख़ के साथ रखता है।",
+          body: "कोई क़ानूनी सलाह नहीं, और रिफंड का कोई वादा नहीं। पत्र में सिर्फ़ वही लिखा जाता है जो आप बताते हैं, विनम्र भाषा में, और कंपनी को सुधारने का समय दिया जाता है।",
         },
       ],
     },

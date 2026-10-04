@@ -6,6 +6,7 @@ import { PacketView } from "@/components/packet/packet-view";
 import { fill } from "@/lib/i18n/define";
 import { getLocale } from "@/lib/i18n/get-locale";
 import { packetMessages } from "@/lib/i18n/messages/packet";
+import { contactEmail } from "@/lib/site";
 import { logFailure } from "@/server/log-failure";
 import { getServices } from "@/server/services";
 import { packetExpiresAt } from "@/server/store/types";
@@ -39,5 +40,5 @@ export default async function PacketPage({ params, searchParams }: Props) {
   const t = packetMessages[locale];
   const format = locale === "hi" ? formatYMDHi : formatYMDEn;
   const expiresLine = fill(t.expires, { date: format(nowToIstYMD(packetExpiresAt(packet))) });
-  return <PacketView packet={packet} locale={locale} strings={t} expiresLine={expiresLine} isNew={isNewParam === "1"} deleteAction={deletePacket} />;
+  return <PacketView packet={packet} locale={locale} strings={t} expiresLine={expiresLine} isNew={isNewParam === "1"} deleteAction={deletePacket} contactEmail={contactEmail(process.env)} />;
 }

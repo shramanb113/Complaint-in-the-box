@@ -13,7 +13,7 @@ export interface LegalDocument {
 }
 
 /** Bump when any document changes. */
-export const LEGAL_UPDATED = "19 September 2026";
+export const LEGAL_UPDATED = "4 October 2026";
 
 // Draft text written by an AI, not a lawyer. It needs the legal review already scheduled in spec §11
 // before wide distribution.
@@ -74,6 +74,16 @@ const privacy: LegalDocument = {
       heading: "Your private link",
       paragraphs: [
         "Each letter has a long, random link. Anyone who has the link can open the letter, so share it carefully. Letters are not listed anywhere and search engines are asked to ignore them.",
+      ],
+    },
+    {
+      heading: "How we protect it",
+      bullets: [
+        "The site only works over HTTPS, so what you type is encrypted on its way to us.",
+        "Letters live in a managed database that only our own server can reach. There is no public list or search of letters.",
+        "Letters are deleted automatically after 7 days. You can delete yours sooner with the \"Delete this letter now\" button on the letter page.",
+        "After a deletion, a copy may stay for a short while in our database provider's own backup history before it is overwritten.",
+        "We keep the form deliberately small, so there is less to protect. If you would rather not put your city or name in, leave them out and the letter still works.",
       ],
     },
     {

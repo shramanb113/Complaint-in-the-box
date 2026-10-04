@@ -175,4 +175,32 @@ describe("PacketView", () => {
     expect(screen.getByRole("button", { name: packetMessages.en.deleteNow.button, hidden: true })).toBeInTheDocument();
     expect(container.querySelector('input[name="id"]')).toHaveValue(packet.id);
   });
+
+  it("downloads a calendar file for the deadline from the browser, without any request to the server", async () => {
+    const user = userEvent.setup();
+    let blob: Blob | undefined;
+    const create = vi.fn((b: Blob) => ((blob = b), "blob:reminder"));
+    const revoke = vi.fn();
+    Object.assign(URL, { createObjectURL: create, revokeObjectURL: revoke });
+    const click = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    const packet = upiPacket();
+    render(<PacketView packet={packet} locale="en" strings={packetMessages.en} isNew />);
+    await user.click(screen.getByRole("button", { name: packetMessages.en.whatNext.remind }));
+    expect(click).toHaveBeenCalledTimes(1);
+    expect(revoke).toHaveBeenCalledWith("blob:reminder");
+    const text = await blob!.text();
+    expect(text).toContain("BEGIN:VCALENDAR");
+    expect(text).toContain(`UID:${packet.id}@nyaypatra`);
+    expect(text).toContain("SUMMARY:Reply deadline");
+    click.mockRestore();
+  });
+
+  it("shows the 'tell us how it went' link only when a contact email is set", () => {
+    const { rerender } = render(<PacketView packet={upiPacket()} locale="en" strings={packetMessages.en} isNew />);
+    expect(screen.queryByRole("link", { name: packetMessages.en.whatNext.outcome })).toBeNull();
+    rerender(<PacketView packet={upiPacket()} locale="en" strings={packetMessages.en} isNew contactEmail="help@example.com" />);
+    const link = screen.getByRole("link", { name: packetMessages.en.whatNext.outcome });
+    expect(link.getAttribute("href")).toMatch(/^mailto:help@example\.com\?subject=/);
+    expect(decodeURIComponent(link.getAttribute("href")!)).not.toContain(upiPacket().id);
+  });
 });

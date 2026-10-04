@@ -16,7 +16,8 @@ export type AnalyticsEvent =
   | "email_opened"
   | "portal_opened"
   | "utr_entered"
-  | "next_step_interest"
+  | "reminder_downloaded"
+  | "outcome_link_clicked"
   | "filing_checked"
   | "filing_kit_printed";
 
