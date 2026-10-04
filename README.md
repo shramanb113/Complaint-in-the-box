@@ -6,6 +6,12 @@ Live: **https://nyaypatra.vercel.app**
 
 No AI model in the loop. The letters come from deterministic template logic in `packages/core`, not an LLM — same input, same output, every time.
 
+## Watch it in 90 seconds
+
+[![Nyay Patra promo video: a stuck refund, a dated message, a case file](media/nyaypatra-promo-poster.jpg)](media/nyaypatra-promo.mp4)
+
+Click the picture to play the promo (93s, sound on).
+
 ## Layout
 
 npm workspaces monorepo:
