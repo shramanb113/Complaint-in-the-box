@@ -25,6 +25,10 @@ export class InMemoryPacketStore implements PacketStore {
     return structuredClone(row.packet);
   }
 
+  async delete(id: string): Promise<boolean> {
+    return this.rows.delete(id);
+  }
+
   async deleteExpired(now: Date = new Date()): Promise<number> {
     let removed = 0;
     for (const [id, row] of this.rows) {

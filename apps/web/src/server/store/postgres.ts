@@ -37,6 +37,14 @@ export class PostgresPacketStore implements PacketStore {
     return rows[0]?.packet;
   }
 
+  async delete(id: string): Promise<boolean> {
+    const rows = await this.db
+      .delete(schema.packets)
+      .where(eq(schema.packets.id, id))
+      .returning({ id: schema.packets.id });
+    return rows.length > 0;
+  }
+
   async deleteExpired(now: Date = new Date()): Promise<number> {
     const rows = await this.db
       .delete(schema.packets)

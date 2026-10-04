@@ -165,4 +165,14 @@ describe("PacketView", () => {
 
     delete window.plausible;
   });
+
+  it("offers delete-now only when a delete action is given, carrying this letter's id", () => {
+    const packet = samplePacket();
+    const { container, rerender } = render(<PacketView packet={packet} locale="en" strings={packetMessages.en} isNew={false} />);
+    expect(screen.queryByText(packetMessages.en.deleteNow.summary)).toBeNull();
+    rerender(<PacketView packet={packet} locale="en" strings={packetMessages.en} isNew={false} deleteAction={async () => {}} />);
+    expect(screen.getByText(packetMessages.en.deleteNow.summary)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: packetMessages.en.deleteNow.button, hidden: true })).toBeInTheDocument();
+    expect(container.querySelector('input[name="id"]')).toHaveValue(packet.id);
+  });
 });

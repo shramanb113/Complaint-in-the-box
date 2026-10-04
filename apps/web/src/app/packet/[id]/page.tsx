@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { formatYMDEn, formatYMDHi, nowToIstYMD } from "@nyaypatra/core";
+import { deletePacket } from "@/app/packet/actions";
 import { PacketView } from "@/components/packet/packet-view";
 import { fill } from "@/lib/i18n/define";
 import { getLocale } from "@/lib/i18n/get-locale";
@@ -38,5 +39,5 @@ export default async function PacketPage({ params, searchParams }: Props) {
   const t = packetMessages[locale];
   const format = locale === "hi" ? formatYMDHi : formatYMDEn;
   const expiresLine = fill(t.expires, { date: format(nowToIstYMD(packetExpiresAt(packet))) });
-  return <PacketView packet={packet} locale={locale} strings={t} expiresLine={expiresLine} isNew={isNewParam === "1"} />;
+  return <PacketView packet={packet} locale={locale} strings={t} expiresLine={expiresLine} isNew={isNewParam === "1"} deleteAction={deletePacket} />;
 }

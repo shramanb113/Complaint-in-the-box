@@ -19,6 +19,8 @@ export interface PacketViewProps {
   expiresLine?: string;
   /** True for a packet just generated this request (saved or not); false for revisiting a saved link. */
   isNew: boolean;
+  /** Form action that deletes this letter now. Leave out when the letter was not saved. */
+  deleteAction?: (formData: FormData) => Promise<void>;
 }
 
 const box = "whitespace-pre-wrap break-words rounded-field border-2 border-ink p-3 text-[15px] font-medium";
@@ -40,7 +42,7 @@ function PortalList({ fields }: { fields: Record<string, string> }) {
  * The one place a Packet becomes WhatsApp/email/portal content. `applyUtr` runs here, client-side,
  * with whatever the person has typed into UtrBox — the token never resolves on the server (D3).
  */
-export function PacketView({ packet, locale, strings: t, expiresLine, isNew }: PacketViewProps) {
+export function PacketView({ packet, locale, strings: t, expiresLine, isNew, deleteAction }: PacketViewProps) {
   const [utr, setUtr] = useState("");
   const [printingKit, setPrintingKit] = useState(false);
   const generatedTracked = useRef(false);
@@ -245,6 +247,17 @@ export function PacketView({ packet, locale, strings: t, expiresLine, isNew }: P
           ))}
         </div>
       </section>
+
+      {deleteAction ? (
+        <details className="rounded-card border-2 border-ink bg-white p-4">
+          <summary className="min-h-11 cursor-pointer font-extrabold">{t.deleteNow.summary}</summary>
+          <form action={deleteAction} className="mt-3 flex flex-col items-start gap-3">
+            <input type="hidden" name="id" value={packet.id} />
+            <p className="text-sm font-medium">{t.deleteNow.warning}</p>
+            <Button type="submit" variant="danger">{t.deleteNow.button}</Button>
+          </form>
+        </details>
+      ) : null}
     </article>
 
     <div aria-hidden="true" className={printingKit ? "hidden" : "hidden print:block"}>

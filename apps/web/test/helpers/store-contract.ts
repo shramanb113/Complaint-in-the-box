@@ -38,6 +38,17 @@ export function describePacketStore(name: string, make: () => Promise<PacketStor
       await expect(store.save(packet)).rejects.toThrow();
     });
 
+    it("deletes one packet on request and says whether it existed", async () => {
+      const packet = samplePacket();
+      const other = samplePacket("01K5NEWAAAAAAAAAAAAAAAAAAA", SAVED_AT);
+      await store.save(packet);
+      await store.save(other);
+      expect(await store.delete(packet.id)).toBe(true);
+      expect(await store.get(packet.id, SAVED_AT)).toBeUndefined();
+      expect(await store.get(other.id, SAVED_AT)).toBeDefined();
+      expect(await store.delete(packet.id)).toBe(false);
+    });
+
     it("deletes only expired packets and says how many", async () => {
       const old = samplePacket("01K5OLDAAAAAAAAAAAAAAAAAAA", new Date("2026-09-01T00:00:00Z"));
       const fresh = samplePacket("01K5NEWAAAAAAAAAAAAAAAAAAA", SAVED_AT);

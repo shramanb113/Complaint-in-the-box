@@ -111,7 +111,7 @@ describe("submitIntake: rate limiting", () => {
 describe("submitIntake: failures", () => {
   it("still returns the generated letter when saving fails (spec §5.4)", async () => {
     const error = vi.spyOn(console, "error").mockImplementation(() => {});
-    const store: PacketStore = { save: async () => { throw new Error("connection refused"); }, get: async () => undefined, deleteExpired: async () => 0 };
+    const store: PacketStore = { save: async () => { throw new Error("connection refused"); }, get: async () => undefined, delete: async () => false, deleteExpired: async () => 0 };
     const result = await run(deps({ store }), "ecom_wrong_item");
     expect(result.status).toBe("unsaved");
     if (result.status !== "unsaved") return;
@@ -126,7 +126,7 @@ describe("submitIntake: failures", () => {
       new Error("Failed query: insert into packets (id, body) values ($1, $2)\nparams: 01ABC,OD123456 The item never reached me even after the promised date passed. Pune Asha"),
       { cause: new Error("connection refused") }
     );
-    const store: PacketStore = { save: async () => { throw drizzleShaped; }, get: async () => undefined, deleteExpired: async () => 0 };
+    const store: PacketStore = { save: async () => { throw drizzleShaped; }, get: async () => undefined, delete: async () => false, deleteExpired: async () => 0 };
     const result = await run(deps({ store }), "ecom_wrong_item");
     expect(result.status).toBe("unsaved");
     const logged = String(error.mock.calls);
@@ -142,7 +142,7 @@ describe("submitIntake: failures", () => {
       new Error("Failed query: insert into packets (id, body) values ($1, $2)\nparams: 01ABC,OD123456 The item never reached me even after the promised date passed. Pune Asha"),
       { cause: "connection refused (a string, not an Error)" }
     );
-    const store: PacketStore = { save: async () => { throw wrapped; }, get: async () => undefined, deleteExpired: async () => 0 };
+    const store: PacketStore = { save: async () => { throw wrapped; }, get: async () => undefined, delete: async () => false, deleteExpired: async () => 0 };
     expect((await run(deps({ store }), "ecom_wrong_item")).status).toBe("unsaved");
     const logged = String(error.mock.calls);
     expect(logged).toContain("could not save the letter: Error");
@@ -154,7 +154,7 @@ describe("submitIntake: failures", () => {
 
   it("logs a plain error without a cause by its own message", async () => {
     const error = vi.spyOn(console, "error").mockImplementation(() => {});
-    const store: PacketStore = { save: async () => { throw new Error("disk full"); }, get: async () => undefined, deleteExpired: async () => 0 };
+    const store: PacketStore = { save: async () => { throw new Error("disk full"); }, get: async () => undefined, delete: async () => false, deleteExpired: async () => 0 };
     expect((await run(deps({ store }), "ecom_wrong_item")).status).toBe("unsaved");
     expect(String(error.mock.calls)).toContain("disk full");
   });

@@ -16,6 +16,8 @@ export interface PacketStore {
   save(packet: Packet): Promise<void>;
   /** The saved packet, or undefined when the id is unknown or the link has expired (expiresAt <= now). */
   get(id: string, now?: Date): Promise<Packet | undefined>;
+  /** Deletes one packet whenever the person asks. True if it existed. */
+  delete(id: string): Promise<boolean>;
   /** Deletes expired packets and returns how many. */
   deleteExpired(now?: Date): Promise<number>;
 }

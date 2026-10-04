@@ -3,6 +3,8 @@ import { defineMessages } from "../define";
 export interface PacketStrings {
   title: string;
   expires: string;
+  deleteNow: { summary: string; warning: string; button: string };
+  deleted: { title: string; body: string; home: string };
   deadline: string;
   whatsapp: string;
   email: string;
@@ -33,6 +35,16 @@ export const packetMessages = defineMessages<PacketStrings>(
   {
     title: "Your complaint is ready",
     expires: "This link works until {date}. Copy what you need before then.",
+    deleteNow: {
+      summary: "Delete this letter now",
+      warning: "This removes your letter from our servers straight away. The link stops working and we cannot get it back, so copy what you need first.",
+      button: "Yes, delete it now",
+    },
+    deleted: {
+      title: "Your letter is deleted",
+      body: "It is gone from our servers and the link no longer works. Anything you already copied or sent is untouched.",
+      home: "Back to the home page",
+    },
     deadline: "Reply deadline you are giving them: {date}",
     whatsapp: "WhatsApp message",
     email: "Email",
@@ -82,6 +94,16 @@ export const packetMessages = defineMessages<PacketStrings>(
   {
     title: "आपकी शिकायत तैयार है",
     expires: "यह लिंक {date} तक चलेगा। उससे पहले ज़रूरी चीज़ें कॉपी कर लें।",
+    deleteNow: {
+      summary: "यह पत्र अभी हटाएँ",
+      warning: "इससे आपका पत्र हमारे सर्वर से तुरंत हट जाएगा। लिंक काम करना बंद कर देगा और इसे वापस नहीं लाया जा सकता, इसलिए पहले ज़रूरी चीज़ें कॉपी कर लें।",
+      button: "हाँ, अभी हटाएँ",
+    },
+    deleted: {
+      title: "आपका पत्र हटा दिया गया",
+      body: "यह हमारे सर्वर से हट गया है और लिंक अब काम नहीं करता। जो कुछ आपने पहले कॉपी या भेजा है, उस पर कोई असर नहीं पड़ा।",
+      home: "होम पेज पर वापस जाएँ",
+    },
     deadline: "आप उन्हें जवाब के लिए यह तारीख़ दे रहे हैं: {date}",
     whatsapp: "व्हाट्सऐप संदेश",
     email: "ईमेल",

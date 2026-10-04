@@ -10,6 +10,7 @@ export const shellMessages = defineMessages(
       disclaimer:
         "This tool drafts text from facts you entered. It is not a lawyer, not the government, and does not file cases for you. Check names, amounts, and dates before you send.",
       notAffiliated: "Not affiliated with any shop, app or bank.",
+      contact: "Questions or a deletion request:",
       links: { howItWorks: "How it works", disclaimer: "Disclaimer", privacy: "Privacy", terms: "Terms" },
     },
     meta: {
@@ -38,6 +39,7 @@ export const shellMessages = defineMessages(
       disclaimer:
         "यह टूल आपके दिए गए तथ्यों से पत्र का मसौदा तैयार करता है। यह वकील नहीं है, सरकार नहीं है, और आपकी ओर से कोई मामला दर्ज नहीं करता। भेजने से पहले नाम, राशि और तारीख़ें जाँच लें।",
       notAffiliated: "किसी दुकान, ऐप या बैंक से कोई संबंध नहीं।",
+      contact: "सवाल या हटाने का अनुरोध:",
       links: { howItWorks: "यह कैसे काम करता है", disclaimer: "अस्वीकरण", privacy: "गोपनीयता", terms: "शर्तें" },
     },
     meta: {
